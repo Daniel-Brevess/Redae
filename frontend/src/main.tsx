@@ -14,6 +14,8 @@ function App() {
     }
 
     const handleOutsideClick = (event: MouseEvent) => {
+      if ((event.target as Element).closest('.auth-trigger')) return
+
       if (authCardRef.current && !authCardRef.current.contains(event.target as Node)) {
         setActiveCard(null)
       }
@@ -37,8 +39,8 @@ function App() {
         <nav className="site-nav" aria-label="Navegacao principal">
           <a className="nav-link" href="#como-funciona" onClick={closeCard}>Como funciona</a>
           <a className="nav-link" href="#sobre-nos" onClick={closeCard}>Sobre nós</a>
-          <button className="nav-link nav-button" type="button" onClick={() => setActiveCard((current) => current === 'login' ? null : 'login')}>Login</button>
-          <button className="nav-link nav-link-cta nav-button" type="button" onClick={() => setActiveCard((current) => current === 'signup' ? null : 'signup')}>Cadastre-se</button>
+          <button className="nav-link nav-button auth-trigger" type="button" onClick={() => setActiveCard((current) => current === 'login' ? null : 'login')}>Login</button>
+          <button className="nav-link nav-link-cta nav-button auth-trigger" type="button" onClick={() => setActiveCard((current) => current === 'signup' ? null : 'signup')}>Cadastre-se</button>
         </nav>
       </header>
       {activeCard && (
