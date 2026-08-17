@@ -1,4 +1,4 @@
-# Reda(ê)
+# Redaê
 
 > Plataforma inteligente de treinamento e evolução para redação do ENEM.
 
