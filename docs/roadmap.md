@@ -8,6 +8,24 @@ O ponto de partida é uma landing page pública em React, TypeScript, Vite e Tai
 
 ## Ordem de trabalho
 
+## Checklist de progresso
+
+O andamento do projeto é acompanhado por caixas de seleção. Não há pontuação: uma fase só deve ser marcada como concluída quando seu gate for atendido.
+
+- [x] Fase 0 — Gerenciamento do projeto
+- [x] Fase 1 — Descoberta e requisitos
+- [ ] Fase 2 — Arquitetura e estrutura da solução
+- [ ] Fase 3 — Modelagem de domínio e dados
+- [ ] Fase 4 — Contratos de API e integrações
+- [ ] Fase 5 — Experiência, interface e acessibilidade
+- [ ] Fase 6 — Fundação implementável
+- [ ] Fase 7 — Autenticação e área privada
+- [ ] Fase 8 — Onboarding, diagnóstico e treino
+- [ ] Fase 9 — Qualidade, segurança e operação
+- [ ] Fase 10 — Piloto e lançamento
+
+**Legenda:** `[ ]` pendente · `[x]` concluída
+
 O projeto deve avançar por gates. Uma fase só é considerada concluída quando seus documentos foram revisados, suas decisões foram registradas e seus critérios de saída foram atendidos.
 
 ### Fase 0 — Gerenciamento do projeto
