@@ -1,0 +1,199 @@
+openapi: 3.1.0
+info:
+  title: Redaê API
+  version: 1.0.0
+  description: Contratos HTTP do MVP do Redaê.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+paths:
+  /auth/register:
+    post:
+      security: []
+      summary: Cria uma conta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterRequest' }
+      responses:
+        '201': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+  /auth/login:
+    post:
+      security: []
+      summary: Autentica uma conta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '401': { $ref: '#/components/responses/Error' }
+  /auth/refresh:
+    post:
+      security: []
+      summary: Renova a sessão pelo cookie de refresh
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '401': { $ref: '#/components/responses/Error' }
+  /auth/logout:
+    post:
+      summary: Revoga a sessão
+      responses:
+        '204': { description: Sessão encerrada }
+        '401': { $ref: '#/components/responses/Error' }
+  /profile:
+    get:
+      summary: Consulta o perfil autenticado
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+    patch:
+      summary: Atualiza dados básicos do perfil
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /evaluations:
+    get:
+      summary: Lista avaliações do usuário autenticado
+      parameters:
+        - { $ref: '#/components/parameters/Fields' }
+        - { $ref: '#/components/parameters/First' }
+        - { $ref: '#/components/parameters/After' }
+        - { $ref: '#/components/parameters/OrderBy' }
+        - { $ref: '#/components/parameters/Order' }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+    post:
+      summary: Cria avaliação digitada confirmada
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EvaluationRequest' }
+      responses:
+        '201': { $ref: '#/components/responses/Success' }
+        '409': { $ref: '#/components/responses/Error' }
+  /evaluations/{evaluationId}:
+    get:
+      summary: Consulta uma avaliação
+      parameters:
+        - { $ref: '#/components/parameters/EvaluationId' }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '403': { $ref: '#/components/responses/Error' }
+  /evaluation-inputs/images:
+    post:
+      summary: Envia imagens para transcrição temporária
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data: {}
+      responses:
+        '202': { $ref: '#/components/responses/Success' }
+  /evaluation-inputs/{inputId}/confirm:
+    post:
+      summary: Confirma transcrição e cria avaliação
+      parameters:
+        - { $ref: '#/components/parameters/InputId' }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      responses:
+        '201': { $ref: '#/components/responses/Success' }
+  /evaluation-inputs/{inputId}:
+    get:
+      summary: Consulta transcrição temporária
+      parameters:
+        - { $ref: '#/components/parameters/InputId' }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /credit-balance:
+    get:
+      summary: Consulta saldo derivado
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /credit-offers:
+    get:
+      summary: Lista ofertas ativas
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /purchases:
+    post:
+      summary: Inicia compra de créditos
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      responses:
+        '201': { $ref: '#/components/responses/Success' }
+  /purchases/{purchaseId}:
+    get:
+      summary: Consulta compra
+      parameters:
+        - { $ref: '#/components/parameters/PurchaseId' }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /webhooks/abacatepay:
+    post:
+      security: []
+      summary: Recebe evento de pagamento
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      responses:
+        '204': { description: Evento aceito }
+        '401': { $ref: '#/components/responses/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Fields: { name: fields, in: query, schema: { type: string } }
+    First: { name: first, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+    After: { name: after, in: query, schema: { type: string } }
+    OrderBy: { name: orderBy, in: query, schema: { type: string, enum: [createdAt] } }
+    Order: { name: order, in: query, schema: { type: string, enum: [asc, desc], default: desc } }
+    IdempotencyKey: { name: Idempotency-Key, in: header, required: true, schema: { type: string, maxLength: 128 } }
+    EvaluationId: { name: evaluationId, in: path, required: true, schema: { type: string, format: uuid } }
+    InputId: { name: inputId, in: path, required: true, schema: { type: string, format: uuid } }
+    PurchaseId: { name: purchaseId, in: path, required: true, schema: { type: string, format: uuid } }
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [name, email, password]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8, writeOnly: true }
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, writeOnly: true }
+    EvaluationRequest:
+      type: object
+      required: [theme, origin, text]
+      properties:
+        theme: { type: string, maxLength: 500 }
+        origin: { type: string, enum: [DIGITADA] }
+        text: { type: string, minLength: 1 }
+  responses:
+    Success:
+      description: Operação concluída
+      content:
+        application/json:
+          schema: { type: object, required: [data, meta, traceId] }
+    Error:
+      description: Erro da API
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error, traceId]
+            properties:
+              error: { type: object }
+              traceId: { type: string }
