@@ -1,9 +1,9 @@
 # Matriz de avaliação da redação — C1 a C5
 
-> **Status:** rascunho para validação  
-> **Fase:** 1 — Descoberta e requisitos
+> **Status:** base de critérios validada; detalhes de níveis e casos especiais continuam em consolidação  
+> **Fase:** 3 — Modelagem de domínio e dados
 
-Esta matriz define como o Redaê deverá organizar a avaliação automática. A referência oficial é a [Cartilha da Redação do Enem](https://www.gov.br/inep/pt-br/centrais-de-conteudo/acervo-linha-editorial/publicacoes-institucionais/avaliacoes-e-exames-da-educacao-basica/redacao-do-enem-2025-cartilha-do-a-participante) e as [Matrizes de Referência do Enem](https://www.gov.br/inep/pt-br/centrais-de-conteudo/acervo-linha-editorial/publicacoes-institucionais/avaliacoes-e-exames-da-educacao-basica/matrizes-de-referencia-enem).
+Esta matriz define como o Redaê deverá organizar a avaliação automática. Os critérios das competências serão baseados nos critérios oficiais do ENEM, conforme a [Cartilha da Redação do Enem](https://www.gov.br/inep/pt-br/centrais-de-conteudo/acervo-linha-editorial/publicacoes-institucionais/avaliacoes-e-exames-da-educacao-basica/redacao-do-enem-2025-cartilha-do-a-participante) e as [Matrizes de Referência do Enem](https://www.gov.br/inep/pt-br/centrais-de-conteudo/acervo-linha-editorial/publicacoes-institucionais/avaliacoes-e-exames-da-educacao-basica/matrizes-de-referencia-enem). O formato de evidências, explicações e orientações é uma adaptação do Redaê para fins pedagógicos.
 
 ## 1. Escala
 

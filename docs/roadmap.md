@@ -15,7 +15,7 @@ O andamento do projeto é acompanhado por caixas de seleção. Não há pontuaç
 - [x] Fase 0 — Gerenciamento do projeto
 - [x] Fase 1 — Descoberta e requisitos
 - [x] Fase 2 — Arquitetura e estrutura da solução
-- [ ] Fase 3 — Modelagem de domínio e dados
+- [x] Fase 3 — Modelagem de domínio e dados
 - [ ] Fase 4 — Contratos de API e integrações
 - [ ] Fase 5 — Experiência, interface e acessibilidade
 - [ ] Fase 6 — Fundação implementável
@@ -117,20 +117,18 @@ Documentos e entregas:
 - Estratégia de migrações e versionamento do banco.
 - Dados de exemplo para desenvolvimento e testes.
 
-Modelo inicial a avaliar:
+Modelo persistente definido:
 
 - Usuário.
-- Perfil do estudante.
-- Diagnóstico.
-- Competência.
-- Tema.
-- Exercício.
-- Redação.
-- Rascunho.
-- Correção.
+- Avaliação.
+- Nota por competência.
 - Feedback por competência.
-- Plano de estudo.
-- Registro de progresso.
+- Oferta de crédito.
+- Preço de crédito.
+- Compra de crédito.
+- Transação de crédito.
+
+Redação é entrada temporária; processamento é estrutura técnica efêmera. Diagnóstico, exercícios, rascunhos, plano de estudo e registro de progresso ficam fora do MVP atual.
 
 Gate: as entidades suportam os fluxos do MVP sem duplicação desnecessária, e cada campo possui tipo, regra e origem definidos.
 
