@@ -16,8 +16,8 @@ O andamento do projeto é acompanhado por caixas de seleção. Não há pontuaç
 - [x] Fase 1 — Descoberta e requisitos
 - [x] Fase 2 — Arquitetura e estrutura da solução
 - [x] Fase 3 — Modelagem de domínio e dados
-- [ ] Fase 4 — Contratos de API e integrações
-- [ ] Fase 5 — Experiência, interface e acessibilidade
+- [x] Fase 4 — Contratos de API e integrações
+- [x] Fase 5 — Experiência, interface e acessibilidade
 - [ ] Fase 6 — Fundação implementável
 - [ ] Fase 7 — Autenticação e área privada
 - [ ] Fase 8 — Onboarding, diagnóstico e treino
@@ -170,7 +170,7 @@ Gate: frontend e backend conseguem trabalhar de forma independente usando o mesm
 Documentos e entregas:
 
 - Fluxos de navegação.
-- Wireframes das telas principais.
+- Contratos das telas principais, sem wireframes formais nesta etapa.
 - Design direction e tokens visuais.
 - Componentes reutilizáveis e estados.
 - Estados de loading, erro, vazio e sucesso.
@@ -179,7 +179,7 @@ Documentos e entregas:
 - Textos de interface e mensagens de validação.
 - Critérios de usabilidade para teste com estudantes.
 
-Gate: cada tela prioritária possui objetivo, fluxo, estados e critérios de aceitação visual.
+Gate: cada tela prioritária possui objetivo, fluxo, estados, textos principais e critérios de aceitação visual. Um protótipo focado será criado depois da fundação para validação antes do desenvolvimento completo.
 
 ### Fase 6 — Fundação implementável
 
@@ -288,7 +288,7 @@ Ao final do ciclo acadêmico, o projeto deve possuir pelo menos:
 - Glossário de domínio.
 - Diagrama de dados e dicionário de dados.
 - OpenAPI da primeira versão.
-- Wireframes e documentação visual.
+- Documentação visual e contratos das telas.
 - Plano de testes.
 - Plano de implantação e operação.
 - Registro de decisões, mudanças e retrospectivas.
@@ -331,6 +331,6 @@ Ao final do ciclo acadêmico, o projeto deve possuir pelo menos:
 3. Registrar as primeiras ADRs de arquitetura e stack.
 4. Criar o glossário, modelo de domínio, DER e dicionário de dados.
 5. Especificar a API de autenticação em OpenAPI.
-6. Revisar os wireframes e estados dos cards atuais de login e cadastro.
+6. Revisar os estados e contratos visuais dos cards atuais de login e cadastro.
 
 Cada fase deve terminar com uma demonstração ou revisão documental, registro das decisões tomadas e atualização deste roadmap.
