@@ -40,16 +40,15 @@ Este roteiro define como verificar se o MVP do Redaê está funcional e apresent
 
 ### Fluxo C — redação digitada
 
-1. Escolher um tema ou exercício.
+1. Receber ou informar a proposta/tema associado à redação.
 2. Abrir o editor.
 3. Escrever ou colar uma redação.
-4. Salvar como rascunho.
-5. Sair e retornar ao editor.
-6. Confirmar que o conteúdo foi preservado.
-7. Enviar a redação.
-8. Consultar o feedback.
+4. Decidir se deseja confirmar o texto.
+5. Confirmar e enviar a redação.
+6. Acompanhar o processamento.
+7. Consultar o feedback.
 
-**Resultado esperado:** o texto é preservado, o envio muda o estado da redação e o feedback é associado à redação correta.
+**Resultado esperado:** somente o texto confirmado é persistido, o envio muda o estado da redação e o feedback é associado à redação correta.
 
 ### Fluxo D — redação por imagem
 
@@ -82,7 +81,6 @@ O MVP será aceito internamente quando todos os critérios abaixo forem atendido
 - [ ] cadastro, login e logout funcionam com validações básicas;
 - [ ] rotas privadas bloqueiam usuários não autenticados;
 - [ ] onboarding e diagnóstico salvam os dados esperados;
-- [ ] temas ou exercícios podem ser escolhidos;
 - [ ] redação digitada pode ser criada, salva, retomada e enviada;
 - [ ] imagens JPG e PNG podem ser enviadas dentro do limite definido;
 - [ ] arquivos inválidos ou acima do limite geram erro compreensível;
@@ -131,4 +129,3 @@ Ao finalizar, preencher:
 - **Bloqueadores encontrados:** a preencher
 - **Decisão:** aprovado / aprovado com ressalvas / reprovado
 - **Próximas ações:** a preencher
-

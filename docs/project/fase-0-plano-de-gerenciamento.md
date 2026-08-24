@@ -39,8 +39,7 @@ Ao final do ciclo, o projeto deverá ter documentação revisada, um MVP web exe
 - cadastro, login, logout e perfil básico;
 - onboarding com objetivo e disponibilidade de estudo;
 - diagnóstico inicial;
-- temas e exercícios;
-- escrita, salvamento de rascunho e envio de redação;
+- escrita, confirmação e envio de redação; salvamento manual de rascunho fica fora do MVP;
 - entrada de redação por texto e por imagem;
 - OCR/transcrição da imagem e conferência pelo estudante antes da análise;
 - feedback estruturado e histórico de evolução;

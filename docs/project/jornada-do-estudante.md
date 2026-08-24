@@ -8,7 +8,7 @@
 | Etapa | O que o estudante faz | Dificuldade principal | Oportunidade para o Redaê |
 |---|---|---|---|
 | Decide praticar | percebe que precisa melhorar para o ENEM | não sabe por onde começar | oferecer um próximo passo claro |
-| Escolhe um tema | procura uma proposta ou usa uma indicação | excesso de opções ou temas pouco adequados | organizar temas e exercícios |
+| Recebe uma proposta | recebe ou informa o tema associado à redação | não entende exatamente o recorte temático | apresentar o contexto necessário para a avaliação |
 | Escreve | produz no papel, celular ou computador | não sabe se está aplicando as competências corretamente | aceitar texto e imagem |
 | Tenta corrigir | compara com materiais, vídeos ou correções disponíveis | pouco tempo e conhecimento insuficiente | centralizar análise e explicação |
 | Recebe uma nota | vê um resultado ou avaliação | nota ruim sem explicação acionável | associar nota a erros e prioridades |
@@ -22,7 +22,7 @@
 | Entrada | acessa ou cria uma conta | apresenta uma entrada simples e clara | começa sem fricção |
 | Contexto | informa objetivo e disponibilidade | adapta o ponto de partida | recebe orientação relevante |
 | Diagnóstico | responde ao diagnóstico inicial | identifica necessidades iniciais | entende seu ponto de partida |
-| Escolha | seleciona tema ou exercício recomendado | oferece opções priorizadas | sabe o que praticar |
+| Contexto | confirma a proposta associada à redação | mantém o tema disponível para a análise | entende o que deve ser desenvolvido |
 | Produção | digita ou envia imagens da redação | aceita o formato e mostra progresso | consegue registrar sua prática |
 | Conferência | revisa a transcrição do OCR | permite editar antes da análise | garante que o texto analisado está correto |
 | Análise | envia a redação | apresenta nota e feedback por competência | entende onde perdeu pontos |

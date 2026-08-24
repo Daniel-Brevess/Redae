@@ -87,7 +87,7 @@ flowchart LR
 - Spring Security;
 - JWT;
 - Bean Validation;
-- Oracle Database Driver;
+- PostgreSQL Driver;
 - OpenAPI/Swagger.
 
 ### Infraestrutura e ferramentas
@@ -151,7 +151,7 @@ mvn test
 mvn package
 ```
 
-Nesta etapa, o backend inicia sem credenciais externas e sem conexão obrigatória com banco. A configuração de exemplo para Oracle, JWT e Resend está em [`backend/src/main/resources/application-example.yml`](backend/src/main/resources/application-example.yml). Nunca use secrets reais no repositório.
+Nesta etapa, o backend inicia sem credenciais externas e sem conexão obrigatória com banco. A configuração de exemplo para PostgreSQL, JWT e Resend está em [`backend/src/main/resources/application-example.yml`](backend/src/main/resources/application-example.yml). Nunca use secrets reais no repositório.
 
 ### Docker Compose
 
@@ -168,7 +168,7 @@ O projeto está na etapa de fundação técnica. Atualmente possui:
 - landing page pública inicial;
 - base React, TypeScript, Vite e Tailwind CSS;
 - aplicação Spring Boot mínima;
-- dependências preparadas para persistência, segurança, JWT, Oracle e OpenAPI;
+- dependências preparadas para persistência, segurança, JWT, PostgreSQL e OpenAPI;
 - configuração inicial de Docker e CI;
 - documentação e regras para agentes de IA.
 

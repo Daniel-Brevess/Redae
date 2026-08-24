@@ -14,7 +14,7 @@ O andamento do projeto é acompanhado por caixas de seleção. Não há pontuaç
 
 - [x] Fase 0 — Gerenciamento do projeto
 - [x] Fase 1 — Descoberta e requisitos
-- [ ] Fase 2 — Arquitetura e estrutura da solução
+- [x] Fase 2 — Arquitetura e estrutura da solução
 - [ ] Fase 3 — Modelagem de domínio e dados
 - [ ] Fase 4 — Contratos de API e integrações
 - [ ] Fase 5 — Experiência, interface e acessibilidade
@@ -73,7 +73,7 @@ Fluxos mínimos documentados:
 - Completar onboarding.
 - Fazer diagnóstico.
 - Escolher treino.
-- Escrever, salvar e enviar uma redação.
+- Escrever, confirmar e enviar uma redação.
 - Consultar feedback e histórico.
 
 Gate: cada requisito prioritário possui objetivo, ator, regra, critério de aceitação e prioridade.
@@ -228,7 +228,7 @@ Entregas:
 - Diagnóstico inicial.
 - Catálogo de temas e exercícios.
 - Editor de redação.
-- Salvamento de rascunhos.
+- Confirmação e envio de redações; rascunhos manuais ficam fora do MVP.
 - Envio de redação.
 - Histórico de atividades.
 - Feedback estruturado por competências do ENEM.

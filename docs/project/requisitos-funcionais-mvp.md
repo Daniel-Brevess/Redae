@@ -116,14 +116,15 @@ O sistema deve permitir que o estudante crie uma conta e acesse suas próprias r
 - o estudante consegue entrar e sair da conta;
 - um estudante não consegue acessar redações de outra conta.
 
-### RF-11 — Salvar redação e análise
+### RF-11 — Confirmar redação e salvar análise
 
-O sistema deve salvar a redação enviada, a nota e o feedback correspondente.
+O estudante escreve ou cola a redação no editor e decide se deseja confirmar o envio. Ao confirmar, o sistema deve persistir o texto enviado, a nota e o feedback correspondente. Não haverá salvamento manual de rascunho como etapa do MVP.
 
 **Critérios de aceitação:**
 
 - o resultado pode ser consultado novamente;
 - o texto analisado, a nota e o feedback permanecem associados;
+- antes da confirmação, o texto pode permanecer somente no estado da sessão do editor;
 - uma falha informada não faz o estudante acreditar que o resultado foi salvo.
 
 ## 3. Fora desta primeira especificação

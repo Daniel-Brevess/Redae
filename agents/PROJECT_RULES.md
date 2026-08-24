@@ -42,7 +42,7 @@ O agente NUNCA deve:
 - colocar passwords no código;
 - colocar JWT secrets no código;
 - colocar tokens no Git;
-- colocar credenciais do Oracle no Git;
+- colocar credenciais do PostgreSQL no Git;
 - colocar credenciais do Resend no Git;
 - colocar credenciais da Azure no Git;
 - criar arquivos `.env` contendo secrets reais;
@@ -170,7 +170,7 @@ O backend utiliza:
 - Spring Security;
 - JWT;
 - Bean Validation;
-- Oracle;
+- PostgreSQL;
 - OpenAPI/Swagger.
 
 Regras:
@@ -218,7 +218,7 @@ A arquitetura deve evoluir conforme as necessidades reais do produto.
 
 ## 9. Banco de dados
 
-O banco principal planejado é Oracle.
+O banco principal planejado é PostgreSQL.
 
 Regras:
 

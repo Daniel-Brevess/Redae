@@ -23,7 +23,7 @@
 ## Should — importante, mas pode ser ajustado
 
 - permitir revisar avaliações anteriores;
-- permitir salvar uma redação antes do envio;
+- permitir salvar uma redação antes do envio — removido do MVP; o estudante confirma ou abandona o texto;
 - apresentar o feedback agrupado por competência;
 - permitir tentar novamente uma análise que falhou sem duplicar a redação.
 
@@ -48,4 +48,3 @@
 ## Regra de priorização
 
 Se uma funcionalidade não ajudar diretamente o estudante a entender onde errou e como melhorar, ela não deve entrar no MVP sem uma justificativa explícita.
-
