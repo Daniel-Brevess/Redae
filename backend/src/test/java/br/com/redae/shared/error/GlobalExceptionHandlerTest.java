@@ -24,8 +24,7 @@ class GlobalExceptionHandlerTest {
     assertEquals("A redação não foi encontrada.", response.getBody().error().message());
     assertEquals(
         request.getAttribute(TraceIdFilter.TRACE_ID_ATTRIBUTE), response.getBody().traceId());
-  }
-
+}
   @Test
   void mapsUnexpectedExceptionWithoutExposingInternalDetails() {
     MockHttpServletRequest request = requestWithTraceId();

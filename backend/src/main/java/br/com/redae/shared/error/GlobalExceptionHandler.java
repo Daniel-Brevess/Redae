@@ -154,4 +154,3 @@ public class GlobalExceptionHandler {
         .body(new ApiErrorResponse(new ApiError(code, message, details), traceId));
   }
 }
-

@@ -7,5 +7,3 @@ public record ApiError(String code, String message, List<ApiErrorDetail> details
     details = details == null ? List.of() : List.copyOf(details);
   }
 }
-
-

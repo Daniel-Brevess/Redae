@@ -41,5 +41,3 @@ class TraceIdFilterTest {
     assertTrue(() -> UUID.fromString(traceId) != null);
   }
 }
-
-
