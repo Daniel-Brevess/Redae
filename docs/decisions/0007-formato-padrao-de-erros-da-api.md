@@ -13,9 +13,11 @@ As respostas de erro da API seguirão um envelope comum:
 
 ```json
 {
-  "code": "ESSAY_NOT_FOUND",
-  "message": "Não foi possível encontrar essa redação.",
-  "details": [],
+  "error": {
+    "code": "ESSAY_NOT_FOUND",
+    "message": "Não foi possível encontrar essa redação.",
+    "details": []
+  },
   "traceId": "8f8c1b7e..."
 }
 ```
