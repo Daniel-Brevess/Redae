@@ -22,4 +22,12 @@ jobs:
       - run: mvn --batch-mode test
       - run: mvn --batch-mode spotless:check
       - run: mvn --batch-mode verify -DskipTests
-      - run: mvn --batch-mode org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DskipTests
+      - name: OWASP dependency check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          if [ -z "$NVD_API_KEY" ]; then
+            echo "NVD_API_KEY is not configured in GitHub repository secrets."
+            exit 1
+          fi
+          mvn --batch-mode org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DskipTests -DnvdApiKeyEnvironmentVariable=NVD_API_KEY
