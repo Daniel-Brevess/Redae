@@ -36,9 +36,9 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: local
-      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:?ainda vou definir o postgres}
-      DB_USERNAME: ${POSTGRES_USER:?ainda vou definir}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:?ainda vou definir}
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
 
 volumes:
   postgres_data:

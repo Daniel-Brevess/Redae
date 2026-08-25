@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+MAVEN_VERSION=3.9.11
+WRAPPER_DIR="$SCRIPT_DIR/.mvn/wrapper"
+MAVEN_HOME="$WRAPPER_DIR/apache-maven-$MAVEN_VERSION"
+
+if [ ! -x "$MAVEN_HOME/bin/mvn" ]; then
+  echo "Maven Wrapper: baixando Apache Maven $MAVEN_VERSION..."
+  archive="$WRAPPER_DIR/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+  curl -fsSL "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$MAVEN_VERSION/apache-maven-$MAVEN_VERSION-bin.tar.gz" -o "$archive"
+  tar -xzf "$archive" -C "$WRAPPER_DIR"
+  rm -f "$archive"
+fi
+
+exec "$MAVEN_HOME/bin/mvn" "$@"

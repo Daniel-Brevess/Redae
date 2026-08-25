@@ -137,29 +137,52 @@ npm run build
 
 ### Backend
 
-Requisitos: Java 21 e Maven.
+Requisitos para execução local: Java 21. O Maven pode ser baixado automaticamente pelo Maven Wrapper.
 
 ```bash
 cd backend
-mvn spring-boot:run
+./mvnw spring-boot:run
+```
+
+No Windows:
+
+```powershell
+cd backend
+.\mvnw.cmd spring-boot:run
 ```
 
 Testes e build:
 
 ```bash
-mvn test
-mvn package
+./mvnw test
+./mvnw package
 ```
 
 O backend usa PostgreSQL e Flyway. As configurações devem ser fornecidas pelo ambiente local ou pela ferramenta de deploy; o repositório não contém arquivos de exemplo, senhas ou secrets. Nunca use secrets reais no repositório.
 
 ### Docker Compose
 
-Para executar as imagens de desenvolvimento definidas pelo projeto:
+O ambiente completo de desenvolvimento — PostgreSQL, backend e frontend — pode ser iniciado com um único comando:
 
 ```bash
 docker compose up --build
 ```
+
+Depois que os containers iniciarem, acesse:
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8080
+- Swagger: http://localhost:8080/swagger-ui.html
+
+Para encerrar e remover os containers e a rede do ambiente:
+
+```bash
+docker compose down
+```
+
+Os dados do PostgreSQL ficam no volume Docker `redae_postgres_data` e permanecem entre execuções. Para apagar também os dados locais, execute `docker compose down -v`.
+
+O Compose usa credenciais fixas e isoladas exclusivamente para o banco local. Elas não devem ser reutilizadas em produção. Secrets de produção continuam sendo fornecidos somente pela plataforma de deploy ou pelo GitHub Actions.
 
 ## Status atual
 

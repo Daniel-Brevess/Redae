@@ -3,7 +3,6 @@ package br.com.redae.shared.error;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -41,7 +40,7 @@ class GlobalExceptionHandlerTest {
     assertFalse(response.getBody().error().message().contains("database password"));
   }
 
-  private HttpServletRequest requestWithTraceId() {
+  private MockHttpServletRequest requestWithTraceId() {
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setMethod("GET");
     request.setRequestURI("/api/v1/test");

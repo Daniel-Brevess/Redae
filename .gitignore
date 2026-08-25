@@ -40,6 +40,7 @@ pnpm-debug.log*
 target/
 backend/target/
 backend/.mvn/wrapper/maven-wrapper.jar
+backend/.mvn/wrapper/apache-maven-*
 backend/.gradle/
 backend/build/
 backend/.cache/
