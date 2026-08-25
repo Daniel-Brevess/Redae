@@ -24,7 +24,8 @@ class GlobalExceptionHandlerTest {
     assertEquals("A redação não foi encontrada.", response.getBody().error().message());
     assertEquals(
         request.getAttribute(TraceIdFilter.TRACE_ID_ATTRIBUTE), response.getBody().traceId());
-}
+  }
+
   @Test
   void mapsUnexpectedExceptionWithoutExposingInternalDetails() {
     MockHttpServletRequest request = requestWithTraceId();
@@ -34,8 +35,7 @@ class GlobalExceptionHandlerTest {
 
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     assertEquals("INTERNAL_ERROR", response.getBody().error().code());
-    assertEquals(
-        "Não foi possível concluir a solicitação.", response.getBody().error().message());
+    assertEquals("Não foi possível concluir a solicitação.", response.getBody().error().message());
     assertFalse(response.getBody().error().message().contains("database password"));
   }
 

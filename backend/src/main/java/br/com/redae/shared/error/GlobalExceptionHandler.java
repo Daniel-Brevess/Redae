@@ -38,9 +38,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValid(
       MethodArgumentNotValidException exception, HttpServletRequest request) {
     List<ApiErrorDetail> details =
-        exception.getBindingResult().getFieldErrors().stream()
-            .map(this::toDetail)
-            .toList();
+        exception.getBindingResult().getFieldErrors().stream().map(this::toDetail).toList();
     return response(
         HttpStatus.BAD_REQUEST,
         "VALIDATION_ERROR",
@@ -135,8 +133,7 @@ public class GlobalExceptionHandler {
   }
 
   private ApiErrorDetail toDetail(FieldError error) {
-    String message =
-        Objects.requireNonNullElse(error.getDefaultMessage(), "Valor inválido.");
+    String message = Objects.requireNonNullElse(error.getDefaultMessage(), "Valor inválido.");
     return new ApiErrorDetail(error.getField(), message);
   }
 
