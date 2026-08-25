@@ -3,14 +3,14 @@ package br.com.redae;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(properties = {
-        "spring.autoconfigure.exclude="
-                + "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,"
-                + "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration",
-        "spring.flyway.enabled=false"
-})
+@SpringBootTest(
+    properties = {
+      "spring.autoconfigure.exclude="
+          + "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,"
+          + "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration",
+      "spring.flyway.enabled=false"
+    })
 class RedaeApplicationTests {
-    @Test
-    void contextLoads() {
-    }
+  @Test
+  void contextLoads() {}
 }
