@@ -151,7 +151,7 @@ mvn test
 mvn package
 ```
 
-Nesta etapa, o backend inicia sem credenciais externas e sem conexão obrigatória com banco. A configuração de exemplo para PostgreSQL, JWT e Resend está em [`backend/src/main/resources/application-example.yml`](backend/src/main/resources/application-example.yml). Nunca use secrets reais no repositório.
+O backend usa PostgreSQL e Flyway. As configurações devem ser fornecidas pelo ambiente local ou pela ferramenta de deploy; o repositório não contém arquivos de exemplo, senhas ou secrets. Nunca use secrets reais no repositório.
 
 ### Docker Compose
 
