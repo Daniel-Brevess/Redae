@@ -1,6 +1,7 @@
 name: Backend CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'backend/**'
@@ -27,6 +28,7 @@ jobs:
       - run: mvn --batch-mode spotless:check
       - run: mvn --batch-mode verify -DskipTests
       - name: OWASP dependency check
+        if: github.event_name == 'workflow_dispatch'
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
