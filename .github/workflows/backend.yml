@@ -20,4 +20,6 @@ jobs:
           java-version: '21'
           cache: maven
       - run: mvn --batch-mode test
-      - run: mvn --batch-mode package -DskipTests
+      - run: mvn --batch-mode spotless:check
+      - run: mvn --batch-mode verify -DskipTests
+      - run: mvn --batch-mode org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DskipTests

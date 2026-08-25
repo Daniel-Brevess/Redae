@@ -12,12 +12,30 @@ export function SiteHeader({ activeCard, onCardChange, onNavigate }: SiteHeaderP
 
   return (
     <header className="site-header">
-      <a className="logo" href="#top" aria-label="Redaê — início"><img src={logoUrl} alt="Redaê" /></a>
+      <a className="logo" href="#top" aria-label="Redaê — início">
+        <img src={logoUrl} alt="Redaê" />
+      </a>
       <nav className="site-nav" aria-label="Navegação principal">
-        <a className="nav-link" href="#como-funciona" onClick={onNavigate}>Como funciona</a>
-        <a className="nav-link" href="#sobre-nos" onClick={onNavigate}>Sobre nós</a>
-        <button className="nav-link nav-button auth-trigger" type="button" onClick={() => toggleCard('login')}>Login</button>
-        <button className="nav-link nav-link-cta nav-button auth-trigger" type="button" onClick={() => toggleCard('signup')}>Cadastre-se</button>
+        <a className="nav-link" href="#como-funciona" onClick={onNavigate}>
+          Como funciona
+        </a>
+        <a className="nav-link" href="#sobre-nos" onClick={onNavigate}>
+          Sobre nós
+        </a>
+        <button
+          className="nav-link nav-button auth-trigger"
+          type="button"
+          onClick={() => toggleCard('login')}
+        >
+          Login
+        </button>
+        <button
+          className="nav-link nav-link-cta nav-button auth-trigger"
+          type="button"
+          onClick={() => toggleCard('signup')}
+        >
+          Cadastre-se
+        </button>
       </nav>
     </header>
   )

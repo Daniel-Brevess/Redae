@@ -46,4 +46,7 @@ editadas; correções devem ser adicionadas em um novo arquivo versionado.
 ```bash
 mvn test
 mvn package
+mvn spotless:check
+mvn verify
+mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7
 ```
