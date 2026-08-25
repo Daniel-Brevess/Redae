@@ -3,9 +3,13 @@ import { FormField } from '../forms/FormField'
 import { FeedbackMessage } from '../ui/FeedbackMessage'
 
 export type AuthCardType = 'login' | 'signup'
-type AuthCardProps = { type: AuthCardType; onClose: () => void }
+type AuthCardProps = {
+  type: AuthCardType
+  onClose: () => void
+  onEnterPrototype: () => void
+}
 
-export function AuthCard({ type, onClose }: AuthCardProps) {
+export function AuthCard({ type, onClose, onEnterPrototype }: AuthCardProps) {
   const [submitted, setSubmitted] = useState(false)
   const cardRef = useRef<HTMLElement>(null)
   const isSignup = type === 'signup'
@@ -46,6 +50,11 @@ export function AuthCard({ type, onClose }: AuthCardProps) {
         <h2 id={`${type}-title`}>{isSignup ? 'Crie sua conta.' : 'Entre na sua conta.'}</h2>
         {submitted && (
           <FeedbackMessage tone="success">Formulário pronto para integração.</FeedbackMessage>
+        )}
+        {submitted && (
+          <button className="auth-prototype-link" type="button" onClick={onEnterPrototype}>
+            Abrir área de treino <span aria-hidden="true">→</span>
+          </button>
         )}
         <form
           className="auth-form"
