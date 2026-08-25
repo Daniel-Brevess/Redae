@@ -9,9 +9,7 @@ import { PrototypeExperience } from './components/prototype/PrototypeExperience'
 
 export function App() {
   const [activeCard, setActiveCard] = useState<AuthCardType | null>(null)
-  const [showPrototype, setShowPrototype] = useState(
-    () => window.location.hash === '#treino',
-  )
+  const [showPrototype, setShowPrototype] = useState(() => window.location.hash === '#treino')
   const closeCard = () => setActiveCard(null)
 
   useEffect(() => {
@@ -38,11 +36,7 @@ export function App() {
     <main>
       <SiteHeader activeCard={activeCard} onCardChange={setActiveCard} onNavigate={closeCard} />
       {activeCard && (
-        <AuthCard
-          type={activeCard}
-          onClose={closeCard}
-          onEnterPrototype={openPrototype}
-        />
+        <AuthCard type={activeCard} onClose={closeCard} onEnterPrototype={openPrototype} />
       )}
       <HeroSection />
       <HowItWorksSection />
