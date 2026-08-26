@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
 import logoUrl from '../../../assets/redae_logo.png'
 import type { PrototypeScreen } from '../../prototype/types'
+import type { User } from '../../api/authApi'
 
 type PrototypeShellProps = {
   activeScreen: PrototypeScreen
   onNavigate: (screen: PrototypeScreen) => void
   onExit: () => void
+  user: User | null
   children: ReactNode
 }
 
@@ -13,6 +15,7 @@ export function PrototypeShell({
   activeScreen,
   onNavigate,
   onExit,
+  user,
   children,
 }: PrototypeShellProps) {
   const navigation: { id: PrototypeScreen; label: string }[] = [
@@ -45,10 +48,10 @@ export function PrototypeShell({
             className={`prototype-profile${activeScreen === 'profile' ? ' is-active' : ''}`}
             type="button"
             onClick={() => onNavigate('profile')}
-            aria-label="Abrir perfil de Marina"
+            aria-label={`Abrir perfil de ${user?.name ?? 'usuário'}`}
           >
-            <span aria-hidden="true">MC</span>
-            <strong>Marina</strong>
+            <span aria-hidden="true">{user?.name?.slice(0, 2).toUpperCase() ?? 'US'}</span>
+            <strong>{user?.name ?? 'Usuário'}</strong>
           </button>
           <button className="prototype-exit" type="button" onClick={onExit}>
             Sair

@@ -163,11 +163,12 @@ components:
   schemas:
     RegisterRequest:
       type: object
-      required: [name, email, password]
+      required: [name, email, password, passwordConfirmation]
       properties:
         name: { type: string, minLength: 1, maxLength: 120 }
         email: { type: string, format: email }
         password: { type: string, minLength: 8, writeOnly: true }
+        passwordConfirmation: { type: string, minLength: 8, writeOnly: true }
     LoginRequest:
       type: object
       required: [email, password]

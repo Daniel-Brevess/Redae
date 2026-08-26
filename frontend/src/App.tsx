@@ -6,10 +6,12 @@ import { HowItWorksSection } from './components/landing/HowItWorksSection'
 import { SiteFooter } from './components/layout/SiteFooter'
 import { SiteHeader } from './components/layout/SiteHeader'
 import { PrototypeExperience } from './components/prototype/PrototypeExperience'
+import { AuthProvider, useAuth } from './auth/AuthContext'
 
-export function App() {
+function AppContent() {
   const [activeCard, setActiveCard] = useState<AuthCardType | null>(null)
   const [showPrototype, setShowPrototype] = useState(() => window.location.hash === '#treino')
+  const { user, loading, signOut } = useAuth()
   const closeCard = () => setActiveCard(null)
 
   useEffect(() => {
@@ -23,20 +25,32 @@ export function App() {
     setShowPrototype(true)
   }
 
-  const closePrototype = () => {
+  const handleAuthenticated = () => {
+    openPrototype()
+  }
+
+  const closePrototype = async () => {
+    await signOut().catch(() => undefined)
     window.location.hash = ''
     setShowPrototype(false)
   }
 
   if (showPrototype) {
-    return <PrototypeExperience onExit={closePrototype} />
+    return <PrototypeExperience onExit={closePrototype} user={user} />
   }
+
+  if (!loading && user) return <PrototypeExperience onExit={closePrototype} user={user} />
 
   return (
     <main>
       <SiteHeader activeCard={activeCard} onCardChange={setActiveCard} onNavigate={closeCard} />
       {activeCard && (
-        <AuthCard type={activeCard} onClose={closeCard} onEnterPrototype={openPrototype} />
+        <AuthCard
+          type={activeCard}
+          onClose={closeCard}
+          onEnterPrototype={openPrototype}
+          onAuthenticated={handleAuthenticated}
+        />
       )}
       <HeroSection />
       <HowItWorksSection />
@@ -44,4 +58,8 @@ export function App() {
       <SiteFooter />
     </main>
   )
+}
+
+export function App() {
+  return <AuthProvider><AppContent /></AuthProvider>
 }

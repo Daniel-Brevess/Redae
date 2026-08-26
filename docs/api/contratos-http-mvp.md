@@ -15,7 +15,7 @@
 
 | Método | Rota | Regra |
 |---|---|---|
-| POST | `/auth/register` | público; recebe `name`, `email`, `password`; concede o crédito gratuito uma única vez |
+| POST | `/auth/register` | público; recebe `name`, `email`, `password` e `passwordConfirmation`; normaliza o email e persiste somente o hash da senha |
 | POST | `/auth/login` | público; recebe `email`, `password`; retorna access token e define refresh token protegido |
 | POST | `/auth/refresh` | usa refresh token em cookie `HttpOnly`, `Secure`, `SameSite` |
 | POST | `/auth/logout` | revoga refresh token e limpa cookie |

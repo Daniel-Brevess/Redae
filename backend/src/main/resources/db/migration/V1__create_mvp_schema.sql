@@ -1,4 +1,4 @@
-+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE usuario (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -139,4 +139,3 @@ CREATE INDEX ix_nota_competencia_avaliacao ON nota_competencia (avaliacao_id);
 CREATE INDEX ix_feedback_nota_competencia ON feedback_item (nota_competencia_id);
 CREATE INDEX ix_compra_usuario_created_at ON compra_credito (usuario_id, created_at DESC);
 CREATE INDEX ix_transacao_usuario_created_at ON transacao_credito (usuario_id, created_at DESC);
-

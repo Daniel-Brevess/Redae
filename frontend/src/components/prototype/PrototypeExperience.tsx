@@ -2,10 +2,11 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { createMockEvaluation } from '../../prototype/mockEvaluation'
 import type { EvaluationResult, EvaluationStep, PrototypeScreen } from '../../prototype/types'
 import { PrototypeShell } from './PrototypeShell'
+import type { User } from '../../api/authApi'
 
-type PrototypeExperienceProps = { onExit: () => void }
+type PrototypeExperienceProps = { onExit: () => void; user?: User | null }
 
-export function PrototypeExperience({ onExit }: PrototypeExperienceProps) {
+export function PrototypeExperience({ onExit, user = null }: PrototypeExperienceProps) {
   const [screen, setScreen] = useState<PrototypeScreen>('home')
   const [step, setStep] = useState<EvaluationStep | null>(null)
   const [theme, setTheme] = useState('Os desafios da educação digital no Brasil')
@@ -51,9 +52,11 @@ export function PrototypeExperience({ onExit }: PrototypeExperienceProps) {
         setScreen(nextScreen)
       }}
       onExit={onExit}
+      user={user}
     >
       {screen === 'home' && (
         <HomeScreen
+          user={user}
           step={step}
           theme={theme}
           text={text}
@@ -69,12 +72,13 @@ export function PrototypeExperience({ onExit }: PrototypeExperienceProps) {
       )}
       {screen === 'history' && <HistoryScreen result={result} onStart={startEvaluation} />}
       {screen === 'credits' && <CreditsScreen />}
-      {screen === 'profile' && <ProfileScreen />}
+      {screen === 'profile' && <ProfileScreen user={user} />}
     </PrototypeShell>
   )
 }
 
 type HomeScreenProps = {
+  user: User | null
   step: EvaluationStep | null
   theme: string
   text: string
@@ -89,6 +93,7 @@ type HomeScreenProps = {
 }
 
 function HomeScreen({
+  user,
   step,
   theme,
   text,
@@ -120,13 +125,15 @@ function HomeScreen({
   if (step === 'processing') return <ProcessingStep onBack={onHome} />
   if (step === 'result' && result) return <ResultStep result={result} onHome={onHome} />
 
-  return <DashboardScreen result={result} onStart={onStart} />
+  return <DashboardScreen user={user} result={result} onStart={onStart} />
 }
 
 function DashboardScreen({
+  user,
   result,
   onStart,
 }: {
+  user: User | null
   result: EvaluationResult | null
   onStart: () => void
 }) {
@@ -135,12 +142,12 @@ function DashboardScreen({
       <section className="prototype-welcome">
         <div>
           <p className="prototype-eyebrow">terça-feira, 25 de agosto</p>
-          <h1>Olá, Marina.</h1>
+          <h1>Olá, {user?.name ?? 'estudante'}.</h1>
           <p className="prototype-lede">Vamos transformar uma ideia em um próximo passo?</p>
         </div>
-        <div className="credit-pill" aria-label="Saldo de 8 créditos">
+        <div className="credit-pill" aria-label="Saldo de créditos em breve">
           <span aria-hidden="true">✦</span>
-          <strong>8 créditos</strong>
+          <strong>Créditos em breve</strong>
         </div>
       </section>
       <section className="prototype-grid prototype-grid-main" aria-label="Resumo da sua jornada">
@@ -480,13 +487,21 @@ function CreditsScreen() {
     />
   )
 }
-function ProfileScreen() {
+function ProfileScreen({ user }: { user: User | null }) {
   return (
-    <InfoScreen
-      eyebrow="Sua conta"
-      title="Seu perfil, do seu jeito."
-      description="No produto completo, você poderá atualizar seus dados e preferências. Esta tela está reservada para a próxima fatia."
-    />
+    <div className="prototype-content">
+      <section className="simple-screen-heading">
+        <p className="prototype-eyebrow">Sua conta</p>
+        <h1>Seu perfil.</h1>
+        <p className="prototype-lede">Estes são os dados da sua conta autenticada.</p>
+      </section>
+      <div className="confirmation-card">
+        <span>Nome</span>
+        <strong>{user?.name ?? 'Não disponível'}</strong>
+        <span>Email</span>
+        <p>{user?.email ?? 'Não disponível'}</p>
+      </div>
+    </div>
   )
 }
 
