@@ -1,9 +1,11 @@
 package br.com.redae.auth.controller;
 
+import br.com.redae.auth.dto.EmailVerificationRequest;
 import br.com.redae.auth.dto.LoginRequest;
 import br.com.redae.auth.dto.RegisterRequest;
 import br.com.redae.auth.dto.UserResponse;
 import br.com.redae.auth.service.AuthService;
+import br.com.redae.auth.service.EmailVerificationService;
 import br.com.redae.identity.entity.User;
 import br.com.redae.shared.http.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,14 +29,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
   private static final String REFRESH_COOKIE = "redae_refresh_token";
   private final AuthService authService;
+  private final EmailVerificationService emailVerificationService;
   private final boolean secureCookie;
   private final String sameSite;
 
   public AuthController(
       AuthService authService,
+      EmailVerificationService emailVerificationService,
       @Value("${security.cookie.secure:false}") boolean secureCookie,
       @Value("${security.cookie.same-site:Lax}") String sameSite) {
     this.authService = authService;
+    this.emailVerificationService = emailVerificationService;
     this.secureCookie = secureCookie;
     this.sameSite = sameSite;
   }
@@ -76,6 +81,21 @@ public class AuthController {
   @GetMapping("/profile")
   public ResponseEntity<ApiResponse<UserResponse>> profile(
       @AuthenticationPrincipal User user, HttpServletRequest request) {
+    return ResponseEntity.ok(ApiResponse.of(UserResponse.from(user), traceId(request)));
+  }
+
+  @PostMapping("/auth/email-verification/send")
+  public ResponseEntity<Void> sendEmailVerification(@AuthenticationPrincipal User user) {
+    emailVerificationService.sendCode(user);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/auth/email-verification/confirm")
+  public ResponseEntity<ApiResponse<UserResponse>> confirmEmailVerification(
+      @AuthenticationPrincipal User user,
+      @Valid @RequestBody EmailVerificationRequest verificationRequest,
+      HttpServletRequest request) {
+    emailVerificationService.confirm(user, verificationRequest.code());
     return ResponseEntity.ok(ApiResponse.of(UserResponse.from(user), traceId(request)));
   }
 

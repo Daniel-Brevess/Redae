@@ -5,9 +5,12 @@ import {
   profile,
   refresh,
   register,
+  confirmEmailVerification,
+  sendEmailVerification,
   type AuthData,
   type RegisterInput,
   type User,
+  EMAIL_VERIFICATION_ENABLED,
 } from '../api/authApi'
 
 type AuthContextValue = {
@@ -17,6 +20,8 @@ type AuthContextValue = {
   signUp: (input: RegisterInput) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  resendEmailVerification: () => Promise<void>
+  verifyEmail: (code: string) => Promise<void>
 }
 const AuthContext = createContext<AuthContextValue | null>(null)
 
@@ -46,6 +51,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await register(input)
         const result = await login(input.email, input.password)
         await establishSession(result.data)
+        if (EMAIL_VERIFICATION_ENABLED) {
+          await sendEmailVerification(result.data.accessToken).catch(() => undefined)
+        }
       },
       async signIn(email, password) {
         const result = await login(email, password)
@@ -55,6 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await logout()
         setAccessToken(null)
         setUser(null)
+      },
+      async resendEmailVerification() {
+        if (!accessToken) throw new Error('Sessão não encontrada.')
+        await sendEmailVerification(accessToken)
+      },
+      async verifyEmail(code) {
+        if (!accessToken) throw new Error('Sessão não encontrada.')
+        const result = await confirmEmailVerification(accessToken, code)
+        setUser(result.data)
       },
     }),
     [accessToken, loading, user],
@@ -66,4 +83,8 @@ export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) throw new Error('useAuth deve ser usado dentro de AuthProvider')
   return context
+}
+
+export function useOptionalAuth() {
+  return useContext(AuthContext)
 }

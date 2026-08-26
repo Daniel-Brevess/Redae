@@ -5,6 +5,8 @@ WORKDIR /app
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
+ARG VITE_EMAIL_VERIFICATION_ENABLED=false
+ENV VITE_EMAIL_VERIFICATION_ENABLED=$VITE_EMAIL_VERIFICATION_ENABLED
 RUN npm run build
 
 FROM nginx:alpine

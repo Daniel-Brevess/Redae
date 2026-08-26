@@ -1,6 +1,14 @@
 import { request, type ApiEnvelope } from './http'
 
-export type User = { id: string; name: string; email: string; role: string }
+export const EMAIL_VERIFICATION_ENABLED = import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true'
+
+export type User = {
+  id: string
+  name: string
+  email: string
+  role: string
+  emailVerified: boolean
+}
 export type AuthData = { accessToken: string; expiresIn: number; user: User }
 export type RegisterInput = {
   name: string
@@ -30,4 +38,16 @@ export function logout() {
 
 export function profile(accessToken: string) {
   return request<ApiEnvelope<User>>('/profile', {}, accessToken)
+}
+
+export function sendEmailVerification(accessToken: string) {
+  return request<void>('/auth/email-verification/send', { method: 'POST' }, accessToken)
+}
+
+export function confirmEmailVerification(accessToken: string, code: string) {
+  return request<ApiEnvelope<User>>(
+    '/auth/email-verification/confirm',
+    { method: 'POST', body: JSON.stringify({ code }) },
+    accessToken,
+  )
 }

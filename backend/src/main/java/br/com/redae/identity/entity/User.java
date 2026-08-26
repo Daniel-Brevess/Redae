@@ -35,6 +35,9 @@ public class User {
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt;
 
+  @Column(name = "email_verificado_em")
+  private Instant emailVerifiedAt;
+
   public User(String name, String email, String passwordHash) {
     this.id = UUID.randomUUID();
     this.name = name;
@@ -63,6 +66,14 @@ public class User {
 
   public UserRole getRole() {
     return role;
+  }
+
+  public boolean isEmailVerified() {
+    return emailVerifiedAt != null;
+  }
+
+  public void verifyEmail() {
+    emailVerifiedAt = Instant.now();
   }
 
   @PrePersist

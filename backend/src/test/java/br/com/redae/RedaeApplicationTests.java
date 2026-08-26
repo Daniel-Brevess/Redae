@@ -1,5 +1,6 @@
 package br.com.redae;
 
+import br.com.redae.auth.repository.EmailVerificationTokenRepository;
 import br.com.redae.auth.repository.SessionRepository;
 import br.com.redae.identity.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 class RedaeApplicationTests {
   @MockBean UserRepository userRepository;
   @MockBean SessionRepository sessionRepository;
+  @MockBean EmailVerificationTokenRepository emailVerificationTokenRepository;
 
   @Test
   void contextLoads() {}

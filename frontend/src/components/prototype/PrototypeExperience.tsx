@@ -1,8 +1,9 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { createMockEvaluation } from '../../prototype/mockEvaluation'
 import type { EvaluationResult, EvaluationStep, PrototypeScreen } from '../../prototype/types'
 import { PrototypeShell } from './PrototypeShell'
-import type { User } from '../../api/authApi'
+import { EMAIL_VERIFICATION_ENABLED, type User } from '../../api/authApi'
+import { useAuth, useOptionalAuth } from '../../auth/AuthContext'
 
 type PrototypeExperienceProps = { onExit: () => void; user?: User | null }
 
@@ -12,6 +13,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [theme, setTheme] = useState('Os desafios da educação digital no Brasil')
   const [text, setText] = useState('')
   const [result, setResult] = useState<EvaluationResult | null>(null)
+  const auth = useOptionalAuth()
 
   useEffect(() => {
     if (step !== 'processing') return
@@ -54,6 +56,9 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
       onExit={onExit}
       user={user}
     >
+      {EMAIL_VERIFICATION_ENABLED && user && user.emailVerified === false && auth?.accessToken && (
+        <EmailVerificationBanner />
+      )}
       {screen === 'home' && (
         <HomeScreen
           user={user}
@@ -74,6 +79,78 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
       {screen === 'credits' && <CreditsScreen />}
       {screen === 'profile' && <ProfileScreen user={user} />}
     </PrototypeShell>
+  )
+}
+
+function EmailVerificationBanner() {
+  const { resendEmailVerification, verifyEmail } = useAuth()
+  const [code, setCode] = useState('')
+  const [message, setMessage] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  async function resend() {
+    setLoading(true)
+    setError(null)
+    try {
+      await resendEmailVerification()
+      setMessage('Novo código enviado. Confira seu e-mail.')
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error ? requestError.message : 'Não foi possível enviar o código.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function confirm(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setLoading(true)
+    setError(null)
+    try {
+      await verifyEmail(code)
+      setMessage('E-mail confirmado com sucesso.')
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error ? requestError.message : 'Código inválido ou expirado.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <aside className="email-verification-banner" aria-label="Confirmação de e-mail">
+      <div>
+        <strong>Confirme seu e-mail</strong>
+        <p>Enviamos um código para o seu e-mail. Confirme para manter sua conta protegida.</p>
+      </div>
+      <form onSubmit={confirm}>
+        <input
+          aria-label="Código de confirmação"
+          inputMode="numeric"
+          maxLength={6}
+          pattern="[0-9]{6}"
+          placeholder="000000"
+          value={code}
+          onChange={(event) => setCode(event.target.value.replace(/\D/g, ''))}
+          required
+        />
+        <button className="primary-button" type="submit" disabled={loading || code.length !== 6}>
+          Confirmar
+        </button>
+        <button className="text-button" type="button" onClick={resend} disabled={loading}>
+          Reenviar código
+        </button>
+      </form>
+      {message && <p className="email-verification-message">{message}</p>}
+      {error && (
+        <p className="field-hint field-hint-error" role="alert">
+          {error}
+        </p>
+      )}
+    </aside>
   )
 }
 
