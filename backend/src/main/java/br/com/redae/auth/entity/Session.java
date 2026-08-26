@@ -16,8 +16,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "sessao")
 public class Session {
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "usuario_id", nullable = false)
@@ -52,8 +51,13 @@ public class Session {
 
   protected Session() {}
 
-  public UUID getId() { return id; }
-  public User getUser() { return user; }
+  public UUID getId() {
+    return id;
+  }
+
+  public User getUser() {
+    return user;
+  }
 
   @PrePersist
   void onCreate() {

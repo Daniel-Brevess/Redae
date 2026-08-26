@@ -14,8 +14,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "usuario")
 public class User {
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   @Column(name = "nome", nullable = false, length = 160)
   private String name;
@@ -46,11 +45,25 @@ public class User {
 
   protected User() {}
 
-  public UUID getId() { return id; }
-  public String getName() { return name; }
-  public String getEmail() { return email; }
-  public String getPasswordHash() { return passwordHash; }
-  public UserRole getRole() { return role; }
+  public UUID getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public String getPasswordHash() {
+    return passwordHash;
+  }
+
+  public UserRole getRole() {
+    return role;
+  }
 
   @PrePersist
   void onCreate() {

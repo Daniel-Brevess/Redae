@@ -20,13 +20,23 @@ export function AuthCard({ type, onClose, onEnterPrototype, onAuthenticated }: A
   const { signIn, signUp } = useAuth()
 
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
     const handleOutsideClick = (event: MouseEvent) => {
-      if (cardRef.current && !cardRef.current.contains(event.target as Node) && !(event.target as Element).closest('.auth-trigger')) onClose()
+      if (
+        cardRef.current &&
+        !cardRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest('.auth-trigger')
+      )
+        onClose()
     }
     document.addEventListener('keydown', handleEscape)
     document.addEventListener('mousedown', handleOutsideClick)
-    return () => { document.removeEventListener('keydown', handleEscape); document.removeEventListener('mousedown', handleOutsideClick) }
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+      document.removeEventListener('mousedown', handleOutsideClick)
+    }
   }, [onClose])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -39,7 +49,12 @@ export function AuthCard({ type, onClose, onEnterPrototype, onAuthenticated }: A
       const email = String(data.get('email'))
       const password = String(data.get('password'))
       if (isSignup) {
-        await signUp({ name: String(data.get('name')), email, password, passwordConfirmation: String(data.get('passwordConfirmation')) })
+        await signUp({
+          name: String(data.get('name')),
+          email,
+          password,
+          passwordConfirmation: String(data.get('passwordConfirmation')),
+        })
       } else {
         await signIn(email, password)
       }
@@ -47,25 +62,81 @@ export function AuthCard({ type, onClose, onEnterPrototype, onAuthenticated }: A
       onAuthenticated(type)
       onClose()
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'Não foi possível concluir o acesso.')
-    } finally { setLoading(false) }
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : 'Não foi possível concluir o acesso.',
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <div className="auth-card-wrap">
-      <section className="auth-card" ref={cardRef} role="dialog" aria-modal="false" aria-labelledby={`${type}-title`}>
-        <button className="auth-close" type="button" aria-label="Fechar" onClick={onClose}>×</button>
+      <section
+        className="auth-card"
+        ref={cardRef}
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby={`${type}-title`}
+      >
+        <button className="auth-close" type="button" aria-label="Fechar" onClick={onClose}>
+          ×
+        </button>
         <p className="eyebrow">{isSignup ? 'Comece sua evolução' : 'Bem-vindo de volta'}</p>
         <h2 id={`${type}-title`}>{isSignup ? 'Crie sua conta.' : 'Entre na sua conta.'}</h2>
         {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
-        {submitted && <FeedbackMessage tone="success">Acesso realizado com sucesso.</FeedbackMessage>}
-        {submitted && <button className="auth-prototype-link" type="button" onClick={onEnterPrototype}>Abrir área de treino <span aria-hidden="true">→</span></button>}
+        {submitted && (
+          <FeedbackMessage tone="success">Acesso realizado com sucesso.</FeedbackMessage>
+        )}
+        {submitted && (
+          <button className="auth-prototype-link" type="button" onClick={onEnterPrototype}>
+            Abrir área de treino <span aria-hidden="true">→</span>
+          </button>
+        )}
         <form className="auth-form" onSubmit={handleSubmit}>
-          {isSignup && <FormField id="signup-name" label="Nome" name="name" type="text" autoComplete="name" required />}
-          <FormField id={`${type}-email`} label="Email" name="email" type="email" autoComplete="email" required />
-          <FormField id={`${type}-password`} label="Senha" name="password" type="password" autoComplete={isSignup ? 'new-password' : 'current-password'} minLength={isSignup ? 8 : undefined} required />
-          {isSignup && <FormField id="signup-password-confirmation" label="Confirmar senha" name="passwordConfirmation" type="password" autoComplete="new-password" minLength={8} required />}
-          <button className="auth-submit" type="submit" disabled={loading}>{loading ? 'Aguarde...' : isSignup ? 'Cadastrar' : 'Entrar'}</button>
+          {isSignup && (
+            <FormField
+              id="signup-name"
+              label="Nome"
+              name="name"
+              type="text"
+              autoComplete="name"
+              required
+            />
+          )}
+          <FormField
+            id={`${type}-email`}
+            label="Email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+          />
+          <FormField
+            id={`${type}-password`}
+            label="Senha"
+            name="password"
+            type="password"
+            autoComplete={isSignup ? 'new-password' : 'current-password'}
+            minLength={isSignup ? 8 : undefined}
+            required
+          />
+          {isSignup && (
+            <FormField
+              id="signup-password-confirmation"
+              label="Confirmar senha"
+              name="passwordConfirmation"
+              type="password"
+              autoComplete="new-password"
+              minLength={8}
+              required
+            />
+          )}
+          <button className="auth-submit" type="submit" disabled={loading}>
+            {loading ? 'Aguarde...' : isSignup ? 'Cadastrar' : 'Entrar'}
+          </button>
         </form>
       </section>
     </div>

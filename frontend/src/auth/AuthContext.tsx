@@ -1,5 +1,14 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { login, logout, profile, refresh, register, type AuthData, type RegisterInput, type User } from '../api/authApi'
+import {
+  login,
+  logout,
+  profile,
+  refresh,
+  register,
+  type AuthData,
+  type RegisterInput,
+  type User,
+} from '../api/authApi'
 
 type AuthContextValue = {
   user: User | null
@@ -23,27 +32,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    refresh().then(({ data }) => establishSession(data)).catch(() => undefined).finally(() => setLoading(false))
+    refresh()
+      .then(({ data }) => establishSession(data))
+      .catch(() => undefined)
+      .finally(() => setLoading(false))
   }, [])
-  const value = useMemo<AuthContextValue>(() => ({
-    user,
-    accessToken,
-    loading,
-    async signUp(input) {
-      await register(input)
-      const result = await login(input.email, input.password)
-      await establishSession(result.data)
-    },
-    async signIn(email, password) {
-      const result = await login(email, password)
-      await establishSession(result.data)
-    },
-    async signOut() {
-      await logout()
-      setAccessToken(null)
-      setUser(null)
-    },
-  }), [accessToken, loading, user])
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      accessToken,
+      loading,
+      async signUp(input) {
+        await register(input)
+        const result = await login(input.email, input.password)
+        await establishSession(result.data)
+      },
+      async signIn(email, password) {
+        const result = await login(email, password)
+        await establishSession(result.data)
+      },
+      async signOut() {
+        await logout()
+        setAccessToken(null)
+        setUser(null)
+      },
+    }),
+    [accessToken, loading, user],
+  )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

@@ -1,10 +1,10 @@
 package br.com.redae;
 
+import br.com.redae.auth.repository.SessionRepository;
+import br.com.redae.identity.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import br.com.redae.auth.repository.SessionRepository;
-import br.com.redae.identity.repository.UserRepository;
 
 @SpringBootTest(
     properties = {

@@ -4,6 +4,7 @@ import br.com.redae.auth.dto.LoginRequest;
 import br.com.redae.auth.dto.RegisterRequest;
 import br.com.redae.auth.dto.UserResponse;
 import br.com.redae.auth.service.AuthService;
+import br.com.redae.identity.entity.User;
 import br.com.redae.shared.http.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,12 +17,10 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import br.com.redae.identity.entity.User;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -50,7 +49,9 @@ public class AuthController {
 
   @PostMapping("/auth/login")
   public ResponseEntity<ApiResponse<br.com.redae.auth.dto.AuthResponse>> login(
-      @Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse response) {
+      @Valid @RequestBody LoginRequest request,
+      HttpServletRequest httpRequest,
+      HttpServletResponse response) {
     var result = authService.login(request);
     addRefreshCookie(response, result.refreshToken());
     return ResponseEntity.ok(ApiResponse.of(result.response(), traceId(httpRequest)));
@@ -58,8 +59,7 @@ public class AuthController {
 
   @PostMapping("/auth/refresh")
   public ResponseEntity<ApiResponse<br.com.redae.auth.dto.AuthResponse>> refresh(
-      HttpServletRequest request,
-      HttpServletResponse response) {
+      HttpServletRequest request, HttpServletResponse response) {
     String refreshToken = extractCookie(request);
     var result = authService.refresh(refreshToken);
     addRefreshCookie(response, result.refreshToken());
@@ -112,6 +112,7 @@ public class AuthController {
   }
 
   private String traceId(HttpServletRequest request) {
-    return (String) request.getAttribute(br.com.redae.shared.error.TraceIdFilter.TRACE_ID_ATTRIBUTE);
+    return (String)
+        request.getAttribute(br.com.redae.shared.error.TraceIdFilter.TRACE_ID_ATTRIBUTE);
   }
 }

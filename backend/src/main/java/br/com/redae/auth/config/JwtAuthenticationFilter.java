@@ -21,7 +21,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtService jwtService;
   private final ObjectProvider<UserRepository> userRepository;
 
-  public JwtAuthenticationFilter(JwtService jwtService, ObjectProvider<UserRepository> userRepository) {
+  public JwtAuthenticationFilter(
+      JwtService jwtService, ObjectProvider<UserRepository> userRepository) {
     this.jwtService = jwtService;
     this.userRepository = userRepository;
   }
@@ -36,7 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       if (jwtService.isValid(token)) {
         try {
           UserRepository repository = userRepository.getIfAvailable();
-          User user = repository == null ? null : repository.findById(jwtService.extractUserId(token)).orElse(null);
+          User user =
+              repository == null
+                  ? null
+                  : repository.findById(jwtService.extractUserId(token)).orElse(null);
           if (user != null) {
             var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
             var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);

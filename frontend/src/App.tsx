@@ -61,5 +61,9 @@ function AppContent() {
 }
 
 export function App() {
-  return <AuthProvider><AppContent /></AuthProvider>
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  )
 }

@@ -37,14 +37,18 @@ public class SessionService {
 
   public Optional<Session> findActive(String rawToken) {
     if (rawToken == null || rawToken.isBlank()) return Optional.empty();
-    return sessionRepository.findByRefreshTokenHash(hash(rawToken)).filter(s -> s.isActive(Instant.now()));
+    return sessionRepository
+        .findByRefreshTokenHash(hash(rawToken))
+        .filter(s -> s.isActive(Instant.now()));
   }
 
   public void revoke(String rawToken) {
-    findActive(rawToken).ifPresent(session -> {
-      session.revoke();
-      sessionRepository.save(session);
-    });
+    findActive(rawToken)
+        .ifPresent(
+            session -> {
+              session.revoke();
+              sessionRepository.save(session);
+            });
   }
 
   public String rotate(Session current) {
@@ -61,7 +65,8 @@ public class SessionService {
 
   private String hash(String value) {
     try {
-      byte[] digest = MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));
+      byte[] digest =
+          MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));
       return Base64.getEncoder().encodeToString(digest);
     } catch (NoSuchAlgorithmException exception) {
       throw new IllegalStateException("SHA-256 não está disponível", exception);
