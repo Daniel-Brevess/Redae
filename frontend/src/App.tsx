@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 import { AuthCard, type AuthCardType } from './components/auth/AuthCard'
 import { BenefitsSection } from './components/landing/BenefitsSection'
 import { HeroSection } from './components/landing/HeroSection'
@@ -8,38 +8,54 @@ import { SiteHeader } from './components/layout/SiteHeader'
 import { PrototypeExperience } from './components/prototype/PrototypeExperience'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 
+type AppPath = '/' | '/home'
+
+function getPath(): AppPath {
+  return window.location.pathname === '/home' ? '/home' : '/'
+}
+
+function subscribeToPath(onChange: () => void) {
+  window.addEventListener('popstate', onChange)
+  return () => window.removeEventListener('popstate', onChange)
+}
+
 function AppContent() {
   const [activeCard, setActiveCard] = useState<AuthCardType | null>(null)
-  const [showPrototype, setShowPrototype] = useState(() => window.location.hash === '#treino')
+  const path = useSyncExternalStore(subscribeToPath, getPath, () => '/')
+  useEffect(() => {
+    if (window.location.hash === '#treino') {
+      window.history.replaceState({}, '', '/home')
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    }
+  }, [])
   const { user, loading, signOut } = useAuth()
   const closeCard = () => setActiveCard(null)
 
-  useEffect(() => {
-    const handleHashChange = () => setShowPrototype(window.location.hash === '#treino')
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
+  const navigate = useCallback((nextPath: AppPath) => {
+    if (window.location.pathname !== nextPath || window.location.hash) {
+      window.history.pushState({}, '', nextPath)
+    }
+    window.dispatchEvent(new PopStateEvent('popstate'))
   }, [])
 
-  const openPrototype = () => {
-    window.location.hash = 'treino'
-    setShowPrototype(true)
-  }
-
-  const handleAuthenticated = () => {
-    openPrototype()
-  }
+  useEffect(() => {
+    if (loading) return
+    if (user && path === '/') {
+      navigate('/home')
+      return
+    }
+    if (!user && path === '/home') navigate('/')
+  }, [loading, navigate, path, user])
 
   const closePrototype = async () => {
     await signOut().catch(() => undefined)
-    window.location.hash = ''
-    setShowPrototype(false)
+    navigate('/')
   }
 
-  if (showPrototype) {
+  if (path === '/home') {
+    if (loading || !user) return null
     return <PrototypeExperience onExit={closePrototype} user={user} />
   }
-
-  if (!loading && user) return <PrototypeExperience onExit={closePrototype} user={user} />
 
   return (
     <main>
@@ -48,8 +64,8 @@ function AppContent() {
         <AuthCard
           type={activeCard}
           onClose={closeCard}
-          onEnterPrototype={openPrototype}
-          onAuthenticated={handleAuthenticated}
+          onEnterPrototype={() => navigate('/home')}
+          onAuthenticated={() => navigate('/home')}
         />
       )}
       <HeroSection />
