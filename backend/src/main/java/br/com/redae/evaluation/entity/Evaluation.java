@@ -89,6 +89,13 @@ public class Evaluation {
     return status;
   }
 
+  public void startProcessing() {
+    if (status != EvaluationStatus.PENDENTE) {
+      throw new IllegalStateException("Somente avaliações pendentes podem iniciar processamento.");
+    }
+    status = EvaluationStatus.PROCESSANDO;
+  }
+
   public Integer getFinalScore() {
     return finalScore;
   }

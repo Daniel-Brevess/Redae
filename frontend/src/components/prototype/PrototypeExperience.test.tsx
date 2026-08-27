@@ -14,7 +14,7 @@ describe('prototype main evaluation flow', () => {
             id: 'evaluation-1',
             theme: 'Os desafios da educação digital no Brasil',
             origin: 'DIGITADA',
-            status: 'PENDENTE',
+            status: 'PROCESSANDO',
             createdAt: '2026-08-27T12:00:00Z',
           },
           meta: {},

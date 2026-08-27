@@ -73,12 +73,13 @@ Substituir a avaliação simulada por um fluxo real de criação e processamento
 
 ### Entregas
 
-- [ ] Frontend envia tema, origem digitada e texto confirmado para o backend.
-- [ ] Backend valida o texto e o tema.
-- [ ] Backend cria a avaliação vinculada ao usuário autenticado.
-- [ ] Backend registra a origem como texto digitado.
-- [ ] Backend inicia o processamento da avaliação.
-- [ ] Sistema controla os estados pendente, processando, concluída e falhou.
+- [x] Frontend envia tema, origem digitada e texto confirmado para o backend.
+- [x] Backend valida o texto e o tema.
+- [x] Backend cria a avaliação vinculada ao usuário autenticado.
+- [x] Backend registra a origem como texto digitado.
+- [x] Backend inicia o processamento da avaliação.
+- [x] Sistema controla os estados pendente, processando, concluída e falhou.
+- [x] Usuário autenticado consegue consultar uma avaliação própria pelo identificador.
 - [ ] Frontend consulta ou recebe o estado do processamento.
 - [ ] Frontend exibe carregamento durante o processamento.
 - [ ] Frontend exibe uma mensagem compreensível em caso de falha.
