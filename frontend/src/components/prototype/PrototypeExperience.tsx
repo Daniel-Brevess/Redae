@@ -1,5 +1,5 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
-import { createMockEvaluation } from '../../prototype/mockEvaluation'
+import { useState, type FormEvent, type ReactNode } from 'react'
+import { createTypedEvaluation } from '../../api/evaluationApi'
 import type { EvaluationResult, EvaluationStep, PrototypeScreen } from '../../prototype/types'
 import { PrototypeShell } from './PrototypeShell'
 import { EMAIL_VERIFICATION_ENABLED, type User } from '../../api/authApi'
@@ -13,22 +13,20 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [theme, setTheme] = useState('Os desafios da educação digital no Brasil')
   const [text, setText] = useState('')
   const [result, setResult] = useState<EvaluationResult | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
   const auth = useOptionalAuth()
-
-  useEffect(() => {
-    if (step !== 'processing') return
-    const timer = window.setTimeout(() => setStep('result'), 1700)
-    return () => window.clearTimeout(timer)
-  }, [step])
 
   const startEvaluation = () => {
     setScreen('home')
     setStep('choice')
     setResult(null)
+    setSubmitError(null)
   }
 
   const openEditor = () => {
     setText('')
+    setSubmitError(null)
     setStep('editor')
   }
 
@@ -36,9 +34,17 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     if (theme.trim() && text.trim().length >= 80) setStep('confirmation')
   }
 
-  const submitEvaluation = () => {
-    setResult(createMockEvaluation(theme.trim(), text.trim()))
-    setStep('processing')
+  const submitEvaluation = async () => {
+    setSubmitting(true)
+    setSubmitError(null)
+    try {
+      await createTypedEvaluation(theme.trim(), text.trim(), auth?.accessToken ?? undefined)
+      setStep('processing')
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Não foi possível enviar a redação.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const goHome = () => {
@@ -72,6 +78,8 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
           onEditor={openEditor}
           onConfirmText={confirmText}
           onSubmit={submitEvaluation}
+          submitError={submitError}
+          submitting={submitting}
           onHome={goHome}
         />
       )}
@@ -165,7 +173,9 @@ type HomeScreenProps = {
   onTextChange: (text: string) => void
   onEditor: () => void
   onConfirmText: () => void
-  onSubmit: () => void
+  onSubmit: () => Promise<void>
+  submitError: string | null
+  submitting: boolean
   onHome: () => void
 }
 
@@ -181,6 +191,8 @@ function HomeScreen({
   onEditor,
   onConfirmText,
   onSubmit,
+  submitError,
+  submitting,
   onHome,
 }: HomeScreenProps) {
   if (step === 'choice') return <ChoiceStep onEditor={onEditor} onBack={onHome} />
@@ -197,7 +209,16 @@ function HomeScreen({
     )
   }
   if (step === 'confirmation') {
-    return <ConfirmationStep theme={theme} text={text} onSubmit={onSubmit} onBack={onEditor} />
+    return (
+      <ConfirmationStep
+        theme={theme}
+        text={text}
+        onSubmit={onSubmit}
+        onBack={onEditor}
+        error={submitError}
+        submitting={submitting}
+      />
+    )
   }
   if (step === 'processing') return <ProcessingStep onBack={onHome} />
   if (step === 'result' && result) return <ResultStep result={result} onHome={onHome} />
@@ -390,11 +411,15 @@ function ConfirmationStep({
   text,
   onSubmit,
   onBack,
+  error,
+  submitting,
 }: {
   theme: string
   text: string
-  onSubmit: () => void
+  onSubmit: () => Promise<void>
   onBack: () => void
+  error: string | null
+  submitting: boolean
 }) {
   return (
     <FlowFrame
@@ -411,10 +436,20 @@ function ConfirmationStep({
       </div>
       <div className="form-actions">
         <BackButton onClick={onBack} />
-        <button className="primary-button" type="button" onClick={onSubmit}>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={onSubmit}
+          disabled={submitting}
+        >
           Confirmar e avaliar <span aria-hidden="true">→</span>
         </button>
       </div>
+      {error && (
+        <p className="field-hint field-hint-error" role="alert">
+          {error}
+        </p>
+      )}
     </FlowFrame>
   )
 }

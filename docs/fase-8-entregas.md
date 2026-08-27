@@ -82,7 +82,7 @@ Substituir a avaliação simulada por um fluxo real de criação e processamento
 - [ ] Frontend consulta ou recebe o estado do processamento.
 - [ ] Frontend exibe carregamento durante o processamento.
 - [ ] Frontend exibe uma mensagem compreensível em caso de falha.
-- [ ] O fluxo não menciona nem exige créditos nesta fase.
+- [ ] O diagnóstico gratuito não menciona nem exige créditos nesta fase.
 
 ### Critério de conclusão
 
