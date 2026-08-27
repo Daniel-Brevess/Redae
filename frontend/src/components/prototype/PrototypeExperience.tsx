@@ -436,12 +436,7 @@ function ConfirmationStep({
       </div>
       <div className="form-actions">
         <BackButton onClick={onBack} />
-        <button
-          className="primary-button"
-          type="button"
-          onClick={onSubmit}
-          disabled={submitting}
-        >
+        <button className="primary-button" type="button" onClick={onSubmit} disabled={submitting}>
           Confirmar e avaliar <span aria-hidden="true">→</span>
         </button>
       </div>
