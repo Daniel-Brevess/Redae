@@ -20,7 +20,8 @@ public class EvaluationService {
   @Transactional
   public Evaluation createTypedEvaluation(User user, CreateEvaluationRequest request) {
     Evaluation evaluation =
-        evaluationRepository.save(new Evaluation(user, request.text().trim(), request.theme().trim()));
+        evaluationRepository.save(
+            new Evaluation(user, request.text().trim(), request.theme().trim()));
     evaluation.startProcessing();
     return evaluationRepository.save(evaluation);
   }
