@@ -37,3 +37,8 @@ resend:
   enabled: ${EMAIL_VERIFICATION_ENABLED:false}
   api-key: ${RESEND_API_KEY:}
   from-email: ${RESEND_FROM_EMAIL:}
+
+ai:
+  gemini:
+    api-key: ${GOOGLE_API_KEY:}
+    model: ${AI_MODEL:gemini-3.5-flash-lite}

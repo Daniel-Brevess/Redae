@@ -49,6 +49,7 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-}
       EMAIL_VERIFICATION_ENABLED: ${EMAIL_VERIFICATION_ENABLED:-false}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:?Defina GOOGLE_API_KEY no ambiente ou no arquivo .env}
 
 volumes:
   postgres_data:

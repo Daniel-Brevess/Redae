@@ -31,6 +31,24 @@ As variáveis necessárias para o Compose são `POSTGRES_DB`, `POSTGRES_USER` e
 `POSTGRES_PASSWORD`. O backend também recebe `DB_URL`, `DB_USERNAME` e
 `DB_PASSWORD` quando executado fora do Compose.
 
+Para usar a avaliaÃ§Ã£o com Gemini no Docker, defina `GOOGLE_API_KEY` no
+ambiente antes de iniciar o Compose. No PowerShell:
+
+```powershell
+$env:GOOGLE_API_KEY = "sua-chave-do-gemini"
+docker compose up --build
+```
+
+No Bash:
+
+```bash
+export GOOGLE_API_KEY="sua-chave-do-gemini"
+docker compose up --build
+```
+
+A chave Ã© enviada somente para o container do backend e nÃ£o deve ser
+colocada no cÃ³digo ou no frontend.
+
 Depois de configurar os valores no ambiente, execute:
 
 ```bash

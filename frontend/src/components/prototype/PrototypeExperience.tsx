@@ -1,5 +1,10 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
-import { createTypedEvaluation } from '../../api/evaluationApi'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import {
+  createTypedEvaluation,
+  getEvaluation,
+  listEvaluations,
+  type Evaluation,
+} from '../../api/evaluationApi'
 import type { EvaluationResult, EvaluationStep, PrototypeScreen } from '../../prototype/types'
 import { PrototypeShell } from './PrototypeShell'
 import { EMAIL_VERIFICATION_ENABLED, type User } from '../../api/authApi'
@@ -15,6 +20,9 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [result, setResult] = useState<EvaluationResult | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [evaluationId, setEvaluationId] = useState<string | null>(null)
+  const [history, setHistory] = useState<Evaluation[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
   const auth = useOptionalAuth()
 
   const startEvaluation = () => {
@@ -38,7 +46,12 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     setSubmitting(true)
     setSubmitError(null)
     try {
-      await createTypedEvaluation(theme.trim(), text.trim(), auth?.accessToken ?? undefined)
+      const response = await createTypedEvaluation(
+        theme.trim(),
+        text.trim(),
+        auth?.accessToken ?? undefined,
+      )
+      setEvaluationId(response.data.id)
       setStep('processing')
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Não foi possível enviar a redação.')
@@ -46,6 +59,60 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
       setSubmitting(false)
     }
   }
+
+  useEffect(() => {
+    if (!evaluationId || !auth?.accessToken || step !== 'processing') return
+    let active = true
+    const poll = async () => {
+      try {
+        const response = await getEvaluation(evaluationId, auth.accessToken ?? undefined)
+        if (!active) return
+        if (response.data.status === 'CONCLUIDA') {
+          setResult(toEvaluationResult(response.data))
+          setStep('result')
+        } else if (response.data.status === 'FALHOU') {
+          setSubmitError(
+            response.data.failureReason ??
+              'Não foi possível concluir a avaliação. Tente novamente.',
+          )
+          setStep('confirmation')
+        } else {
+          window.setTimeout(poll, 2000)
+        }
+      } catch {
+        if (active) {
+          setSubmitError('Não foi possível consultar o andamento da avaliação.')
+          setStep('confirmation')
+        }
+      }
+    }
+    void poll()
+    return () => {
+      active = false
+    }
+  }, [auth?.accessToken, evaluationId, step])
+
+  useEffect(() => {
+    if (screen !== 'history' || !auth?.accessToken) return
+    let active = true
+    const loadingTimer = window.setTimeout(() => {
+      if (active) setHistoryLoading(true)
+    }, 0)
+    listEvaluations(auth.accessToken)
+      .then((response) => {
+        if (active) setHistory(response.data)
+      })
+      .catch(() => {
+        if (active) setSubmitError('Não foi possível carregar o histórico.')
+      })
+      .finally(() => {
+        if (active) setHistoryLoading(false)
+      })
+    return () => {
+      active = false
+      window.clearTimeout(loadingTimer)
+    }
+  }, [auth?.accessToken, screen])
 
   const goHome = () => {
     setStep(null)
@@ -83,7 +150,19 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
           onHome={goHome}
         />
       )}
-      {screen === 'history' && <HistoryScreen result={result} onStart={startEvaluation} />}
+      {screen === 'history' && (
+        <HistoryScreen
+          evaluations={history}
+          loading={historyLoading}
+          onStart={startEvaluation}
+          onOpen={(evaluation) => {
+            setEvaluationId(evaluation.id)
+            if (evaluation.status === 'CONCLUIDA') setResult(toEvaluationResult(evaluation))
+            setStep(evaluation.status === 'CONCLUIDA' ? 'result' : 'processing')
+            setScreen('home')
+          }}
+        />
+      )}
       {screen === 'credits' && <CreditsScreen />}
       {screen === 'profile' && <ProfileScreen user={user} />}
     </PrototypeShell>
@@ -541,7 +620,9 @@ function ResultStep({ result, onHome }: { result: EvaluationResult; onHome: () =
   )
 }
 
-function HistoryScreen({
+// Kept temporarily while the prototype history layout is migrated to the API-backed version.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function LegacyHistoryScreen({
   result,
   onStart,
 }: {
@@ -583,6 +664,91 @@ function HistoryScreen({
       )}
     </div>
   )
+}
+
+function HistoryScreen({
+  evaluations,
+  loading,
+  onStart,
+  onOpen,
+}: {
+  evaluations: Evaluation[]
+  loading: boolean
+  onStart: () => void
+  onOpen: (evaluation: Evaluation) => void
+}) {
+  if (loading) {
+    return (
+      <div className="prototype-content">
+        <div className="prototype-empty prototype-empty-large" role="status">
+          <p>Carregando historico...</p>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="prototype-content">
+      <section className="simple-screen-heading">
+        <p className="prototype-eyebrow">Seu caminho</p>
+        <h1>Historico de avaliacoes.</h1>
+        <p className="prototype-lede">Acompanhe suas praticas e seus resultados.</p>
+      </section>
+      {evaluations.length > 0 ? (
+        <div className="history-list">
+          {evaluations.map((evaluation) => (
+            <article className="history-card" key={evaluation.id}>
+              <div className="history-score">
+                <strong>{evaluation.finalScore ?? '-'}</strong>
+                <span>{evaluation.finalScore === null ? 'em andamento' : '/ 1000'}</span>
+              </div>
+              <div>
+                <strong>{evaluation.theme}</strong>
+                <p>
+                  {new Date(evaluation.createdAt).toLocaleDateString('pt-BR')} ·{' '}
+                  {evaluation.status.toLowerCase()}
+                </p>
+              </div>
+              <button className="text-button" type="button" onClick={() => onOpen(evaluation)}>
+                Abrir avaliacao <span aria-hidden="true">-&gt;</span>
+              </button>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="prototype-empty prototype-empty-large">
+          <p>Seu historico comeca com uma pratica.</p>
+          <button className="primary-button" type="button" onClick={onStart}>
+            Fazer primeira avaliacao
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function toEvaluationResult(evaluation: Evaluation): EvaluationResult {
+  const titles: Record<string, string> = {
+    C1: 'Dominio da norma-padrao',
+    C2: 'Compreensao do tema',
+    C3: 'Selecao de argumentos',
+    C4: 'Coesao e coerencia',
+    C5: 'Proposta de intervencao',
+  }
+  return {
+    id: evaluation.id,
+    theme: evaluation.theme,
+    text: '',
+    finalScore: evaluation.finalScore ?? 0,
+    competencies: evaluation.competencies.map((competency) => ({
+      code: competency.code,
+      title: titles[competency.code] ?? competency.code,
+      score: competency.points,
+      summary: competency.summary,
+      detail: competency.feedbackItems
+        .map((feedback) => `${feedback.problem} ${feedback.howToImprove}`)
+        .join(' '),
+    })),
+  }
 }
 
 function CreditsScreen() {

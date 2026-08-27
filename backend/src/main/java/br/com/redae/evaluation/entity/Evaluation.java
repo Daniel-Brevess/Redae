@@ -1,6 +1,7 @@
 package br.com.redae.evaluation.entity;
 
 import br.com.redae.identity.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,10 +10,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -50,11 +55,17 @@ public class Evaluation {
   @Column(name = "gerada_em")
   private Instant generatedAt;
 
+  @Column(name = "erro_processamento", columnDefinition = "TEXT")
+  private String failureReason;
+
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
 
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt;
+
+  @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true)
+  private final Set<CompetencyScore> competencyScores = new LinkedHashSet<>();
 
   protected Evaluation() {}
 
@@ -98,6 +109,35 @@ public class Evaluation {
 
   public Integer getFinalScore() {
     return finalScore;
+  }
+
+  public List<CompetencyScore> getCompetencyScores() {
+    return List.copyOf(competencyScores);
+  }
+
+  public void addCompetencyScore(CompetencyScore competencyScore) {
+    competencyScores.add(competencyScore);
+  }
+
+  public void complete(int score, String model) {
+    if (status != EvaluationStatus.PROCESSANDO) {
+      throw new IllegalStateException("Somente avaliações em processamento podem ser concluídas.");
+    }
+    finalScore = score;
+    aiModel = model;
+    generatedAt = Instant.now();
+    status = EvaluationStatus.CONCLUIDA;
+  }
+
+  public void fail(String reason) {
+    if (status == EvaluationStatus.PROCESSANDO) {
+      failureReason = reason;
+      status = EvaluationStatus.FALHOU;
+    }
+  }
+
+  public String getFailureReason() {
+    return failureReason;
   }
 
   public Instant getCreatedAt() {

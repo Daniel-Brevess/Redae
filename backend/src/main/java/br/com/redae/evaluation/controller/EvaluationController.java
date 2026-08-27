@@ -7,6 +7,7 @@ import br.com.redae.identity.entity.User;
 import br.com.redae.shared.http.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,16 @@ public class EvaluationController {
     var evaluation = evaluationService.findOwnedEvaluation(user, evaluationId);
     return ResponseEntity.ok(
         ApiResponse.of(EvaluationResponse.from(evaluation), traceId(httpRequest)));
+  }
+
+  @GetMapping
+  public ResponseEntity<ApiResponse<List<EvaluationResponse>>> list(
+      @AuthenticationPrincipal User user, HttpServletRequest httpRequest) {
+    var evaluations =
+        evaluationService.findOwnedEvaluations(user).stream()
+            .map(EvaluationResponse::from)
+            .toList();
+    return ResponseEntity.ok(ApiResponse.of(evaluations, traceId(httpRequest)));
   }
 
   private String traceId(HttpServletRequest request) {
