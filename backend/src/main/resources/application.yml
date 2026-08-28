@@ -41,4 +41,4 @@ resend:
 ai:
   gemini:
     api-key: ${GOOGLE_API_KEY:}
-    model: ${AI_MODEL:gemini-3.5-flash-lite}
+    model: ${AI_MODEL:gemini-3.6-flash}

@@ -34,14 +34,12 @@ comparação seja conclusiva.
 - informa que o backend calcula a nota final;
 - exige JSON contendo exatamente C1, C2, C3, C4 e C5.
 
-O V1 é o prompt que produziu nota 800 na redação de referência. Ele será
-utilizado no código enquanto o V2 estiver sendo comparado experimentalmente.
+O V1 é o prompt que produziu nota 800 na redação de referência. Ele foi utilizado
+no código durante a primeira comparação.
 
 ## Prompt V2 — versão experimental
 
-**Origem:** alteração local aplicada em 2026-08-28 e posteriormente removida
-do código para repetir os testes com o V1. Não foi commitada como versão
-operacional.
+**Origem:** alteração aplicada para a nova rodada de testes em 2026-08-28.
 
 **Características adicionadas ao V1:**
 
@@ -94,7 +92,7 @@ prompt.
 
 ## Estado atual
 
-- O código voltou a utilizar o Prompt V1.
-- O Prompt V2 está documentado como experimento, mas não está ativo.
+- O código está utilizando o Prompt V2.
+- O modelo configurado para os testes é o Gemini 3.6 Flash.
 - Nenhum resultado da redação de nota 600 foi registrado ainda.
 - A calibração ainda não está concluída.

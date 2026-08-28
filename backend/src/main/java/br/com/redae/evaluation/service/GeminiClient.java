@@ -18,7 +18,7 @@ public class GeminiClient implements AIClient {
   public GeminiClient(
       ObjectMapper objectMapper,
       @Value("${ai.gemini.api-key:}") String apiKey,
-      @Value("${ai.gemini.model:gemini-3.5-flash-lite}") String model) {
+      @Value("${ai.gemini.model:gemini-3.6-flash}") String model) {
     this.objectMapper = objectMapper;
     this.apiKey = apiKey;
     this.model = model;
