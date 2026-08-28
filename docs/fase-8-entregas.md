@@ -213,3 +213,136 @@ Um usuário autenticado consegue realizar o diagnóstico gratuito, fazer novas a
 - Onboarding de objetivo e disponibilidade.
 - Plano de estudos avançado.
 - Recomendações personalizadas avançadas.
+
+## Pendências para concluir a Fase 8
+
+Esta seção registra o estado real após a implementação inicial do fluxo de
+avaliação com IA. Os itens abaixo ainda precisam ser implementados ou
+validados para que a fase seja considerada concluída.
+
+### 1. Calibração da avaliação por competência
+
+**Estado:** pendente de implementação.
+
+- [ ] Revisar o prompt com uma rubrica explícita para C1, C2, C3, C4 e C5.
+- [ ] Definir níveis de desempenho forte, intermediário e fraco por competência.
+- [ ] Exigir justificativa para cada desconto relevante.
+- [ ] Evitar que o mesmo problema seja penalizado em várias competências sem
+      impactos diferentes e comprováveis.
+- [ ] Criar redações de referência com notas esperadas por competência.
+- [ ] Criar testes de regressão para redações de referência.
+- [ ] Comparar a distribuição entre C1-C5, e não apenas a nota final.
+- [ ] Reavaliar a redação de referência que recebeu nota 600 quando a
+      expectativa era 980.
+
+O planejamento detalhado está registrado em
+`docs/decisions/0080-calibracao-da-avaliacao-por-competencia.md`.
+
+### 2. Regra do diagnóstico gratuito
+
+**Estado:** regra definida; controle de acesso pendente.
+
+- [ ] Identificar no backend se o usuário já consumiu o diagnóstico gratuito.
+- [ ] Permitir somente o primeiro diagnóstico sem crédito.
+- [ ] Bloquear novas avaliações sem saldo de crédito.
+- [ ] Exibir uma mensagem clara quando o usuário estiver bloqueado.
+- [ ] Manter o diagnóstico inicial sem exigir compra ou saldo.
+
+A compra e o pagamento de créditos continuam fora do escopo. Para esta fase,
+é suficiente que o backend utilize uma regra temporária ou um saldo simulado
+para proteger novas avaliações.
+
+### 3. Resultado resumido do diagnóstico
+
+**Estado:** resultado técnico disponível; separação de acesso pendente.
+
+- [ ] Definir quais campos pertencem ao resultado gratuito.
+- [ ] Exibir somente a nota e os erros breves permitidos no diagnóstico.
+- [ ] Ocultar feedback completo, exemplos e detalhes reservados.
+- [ ] Exibir uma síntese de pontos fortes.
+- [ ] Exibir uma orientação inicial de melhoria.
+- [ ] Informar que a nota é uma estimativa automática.
+- [ ] Exibir a chamada para comprar créditos e acessar a avaliação completa.
+- [ ] Exibir a mensagem final do diagnóstico conforme a decisão de produto.
+
+### 4. Avaliação completa de escrita
+
+**Estado:** processamento e exibição técnica implementados; regra de acesso
+pendente.
+
+- [ ] Liberar a avaliação completa somente quando houver crédito disponível.
+- [ ] Garantir que o diagnóstico inicial não consuma crédito.
+- [ ] Exibir as cinco competências com pontuação, resumo e feedback.
+- [ ] Exibir erros, trechos, explicações, dicas e exemplos.
+- [ ] Exibir limitações quando a IA não localizar uma evidência literal.
+- [ ] Validar que o resultado completo não mostre dados incompletos.
+
+### 5. Histórico de avaliações
+
+**Estado:** listagem e consulta por usuário implementadas; diferenciação de
+tipos pendente.
+
+- [ ] Identificar cada avaliação como diagnóstico gratuito ou avaliação completa.
+- [ ] Exibir essa identificação no histórico.
+- [ ] Exibir corretamente tema, data, nota e status.
+- [ ] Permitir abrir uma avaliação concluída pelo histórico.
+- [ ] Exibir o resultado resumido ou completo conforme o tipo da avaliação.
+- [ ] Exibir estados pendente, processando e falhou sem simular resultado.
+- [ ] Validar o histórico com múltiplas avaliações do mesmo usuário.
+- [ ] Validar que uma avaliação de outra conta não possa ser consultada.
+
+### 6. Progresso básico
+
+**Estado:** layout inicial existente; dados reais e regras de negócio
+pendentes.
+
+- [ ] Calcular a última nota concluída a partir da API.
+- [ ] Comparar a primeira avaliação com avaliações posteriores.
+- [ ] Calcular evolução por C1-C5.
+- [ ] Identificar competências recorrentes que precisam de atenção.
+- [ ] Identificar pontos fortes recorrentes.
+- [ ] Sugerir o próximo foco com base em dados suficientes.
+- [ ] Exibir estado vazio para usuários sem avaliação concluída.
+- [ ] Não apresentar evolução quando houver dados insuficientes.
+
+### 7. Validação ponta a ponta
+
+**Estado:** validação manual parcial; aceite final pendente.
+
+- [ ] Testar o diagnóstico gratuito em uma conta nova.
+- [ ] Confirmar que o segundo envio é bloqueado sem crédito.
+- [ ] Confirmar que o resultado gratuito não expõe dados completos.
+- [ ] Testar uma avaliação completa com crédito simulado.
+- [ ] Confirmar o processamento assíncrono até `CONCLUIDA`.
+- [ ] Confirmar o tratamento de `FALHOU` com causa compreensível.
+- [ ] Confirmar o histórico com diagnóstico e avaliação completa.
+- [ ] Confirmar o progresso com duas ou mais avaliações concluídas.
+- [ ] Testar atualização da página durante o processamento.
+- [ ] Testar acesso direto às rotas `/home` e ao resultado no Docker.
+- [ ] Testar uma resposta da IA com excerpt inválido sem interromper a avaliação.
+- [ ] Testar respostas inválidas da IA e confirmar que não geram nota falsa.
+
+### 8. Qualidade técnica antes do encerramento
+
+- [ ] Atualizar os checklists das etapas 8.1 a 8.8 conforme o comportamento
+      final implementado.
+- [ ] Atualizar os contratos HTTP e a documentação da API quando o resultado
+      resumido e o tipo da avaliação forem adicionados.
+- [ ] Adicionar testes backend para bloqueio, tipo de resultado e calibração.
+- [ ] Adicionar testes frontend para carregamento, falha, bloqueio e resultado
+      resumido.
+- [ ] Executar Spotless e testes backend.
+- [ ] Executar Prettier, lint, testes e build frontend.
+- [ ] Construir as imagens Docker e validar as migrações em um banco limpo.
+- [ ] Confirmar que nenhuma chave de API ou segredo foi versionado.
+
+## Ordem recomendada para finalizar
+
+1. Calibrar a IA usando a matriz C1-C5 e redações de referência.
+2. Implementar o tipo da avaliação e a regra do primeiro diagnóstico.
+3. Separar o resultado resumido do resultado completo no backend e frontend.
+4. Implementar o bloqueio temporário de novas avaliações sem crédito.
+5. Finalizar histórico e progresso com dados reais.
+6. Adicionar testes de regressão e executar a validação ponta a ponta.
+7. Atualizar os checklists e remover este documento temporário somente após o
+   aceite da Fase 8.
