@@ -23,6 +23,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [evaluationId, setEvaluationId] = useState<string | null>(null)
   const [history, setHistory] = useState<Evaluation[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
+  const [openingEvaluationId, setOpeningEvaluationId] = useState<string | null>(null)
   const auth = useOptionalAuth()
 
   const startEvaluation = () => {
@@ -119,6 +120,27 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     setScreen('home')
   }
 
+  const openHistoryEvaluation = async (evaluation: Evaluation) => {
+    if (!auth?.accessToken || openingEvaluationId) return
+    setOpeningEvaluationId(evaluation.id)
+    setSubmitError(null)
+    try {
+      const response = await getEvaluation(evaluation.id, auth.accessToken)
+      setEvaluationId(response.data.id)
+      if (response.data.status === 'CONCLUIDA') {
+        setResult(toEvaluationResult(response.data))
+        setStep('result')
+      } else {
+        setStep('processing')
+      }
+      setScreen('home')
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Não foi possível abrir a avaliação.')
+    } finally {
+      setOpeningEvaluationId(null)
+    }
+  }
+
   return (
     <PrototypeShell
       activeScreen={screen}
@@ -154,13 +176,9 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
         <HistoryScreen
           evaluations={history}
           loading={historyLoading}
+          openingEvaluationId={openingEvaluationId}
           onStart={startEvaluation}
-          onOpen={(evaluation) => {
-            setEvaluationId(evaluation.id)
-            if (evaluation.status === 'CONCLUIDA') setResult(toEvaluationResult(evaluation))
-            setStep(evaluation.status === 'CONCLUIDA' ? 'result' : 'processing')
-            setScreen('home')
-          }}
+          onOpen={openHistoryEvaluation}
         />
       )}
       {screen === 'credits' && <CreditsScreen />}
@@ -572,6 +590,10 @@ function ResultStep({ result, onHome }: { result: EvaluationResult; onHome: () =
         </div>
         <span className="status-badge status-badge-green">Texto digitado</span>
       </section>
+      <section className="essay-result">
+        <p className="prototype-eyebrow">Sua redação</p>
+        <p className="essay-result-text">{result.text}</p>
+      </section>
       <section className="competencies-section">
         <div className="prototype-section-heading">
           <div>
@@ -669,13 +691,15 @@ function LegacyHistoryScreen({
 function HistoryScreen({
   evaluations,
   loading,
+  openingEvaluationId,
   onStart,
   onOpen,
 }: {
   evaluations: Evaluation[]
   loading: boolean
+  openingEvaluationId: string | null
   onStart: () => void
-  onOpen: (evaluation: Evaluation) => void
+  onOpen: (evaluation: Evaluation) => void | Promise<void>
 }) {
   if (loading) {
     return (
@@ -708,8 +732,15 @@ function HistoryScreen({
                   {evaluation.status.toLowerCase()}
                 </p>
               </div>
-              <button className="text-button" type="button" onClick={() => onOpen(evaluation)}>
-                Abrir avaliacao <span aria-hidden="true">-&gt;</span>
+              <button
+                className="text-button"
+                type="button"
+                onClick={() => void onOpen(evaluation)}
+                disabled={openingEvaluationId !== null}
+                aria-busy={openingEvaluationId === evaluation.id}
+              >
+                {openingEvaluationId === evaluation.id ? 'Abrindo avaliacao...' : 'Abrir avaliacao'}{' '}
+                <span aria-hidden="true">-&gt;</span>
               </button>
             </article>
           ))}
@@ -737,7 +768,7 @@ function toEvaluationResult(evaluation: Evaluation): EvaluationResult {
   return {
     id: evaluation.id,
     theme: evaluation.theme,
-    text: '',
+    text: evaluation.text ?? '',
     finalScore: evaluation.finalScore ?? 0,
     competencies: evaluation.competencies.map((competency) => ({
       code: competency.code,
