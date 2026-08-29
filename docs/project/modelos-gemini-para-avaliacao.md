@@ -9,7 +9,7 @@ avaliados na próxima rodada de calibração da nota por competência.
 
 - Modelo em uso: `gemini-3.6-flash`.
 - Provedor: Google Gemini API, por meio do cliente de IA já integrado ao backend.
-- Prompt ativo: Prompt V2, registrado em
+- Prompt ativo: Prompt V3, registrado em
   [`calibracao-prompts-avaliacao.md`](./calibracao-prompts-avaliacao.md).
 - Formato de saída: JSON estruturado, validado pelo backend antes da persistência.
 - Competências avaliadas: C1, C2, C3, C4 e C5.

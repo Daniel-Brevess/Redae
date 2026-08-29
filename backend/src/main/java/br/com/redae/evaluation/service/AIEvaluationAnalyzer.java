@@ -97,6 +97,7 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
         + "\n\nRedação:\n"
     + evaluation.getConfirmedText();
     */
+    /*
     return """
         Você é um avaliador especialista em redação dissertativo-argumentativa em português do Brasil,
         seguindo os critérios das competências C1, C2, C3, C4 e C5 do ENEM.
@@ -155,6 +156,96 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
         - Considere o desempenho global, não a quantidade de erros isolados.
         - Toda redução relevante deve ser explicada no resumo ou em um feedback.
         - Não tente atingir uma nota total predeterminada. A nota final será calculada pelo sistema.
+
+        Retorne exclusivamente um JSON válido conforme o schema informado, contendo exatamente as
+        competências C1, C2, C3, C4 e C5.
+
+        Tema:
+        """
+        + evaluation.getTheme()
+        + """
+
+        Redação:
+        """
+        + evaluation.getConfirmedText();
+    */
+    return """
+        Você é um avaliador especialista em redação dissertativo-argumentativa em português do Brasil,
+        seguindo os critérios das competências C1, C2, C3, C4 e C5 do ENEM.
+
+        Avalie a redação inteira considerando o tema, a estrutura, a argumentação, a linguagem e a
+        proposta de intervenção. A avaliação deve ser criteriosa, equilibrada e baseada exclusivamente
+        no texto fornecido.
+
+        Não tente atingir uma nota predeterminada. Não aumente nem reduza a nota para compensar outra
+        competência. A nota de cada competência deve refletir somente o desempenho daquela competência.
+
+        Para cada competência, siga esta ordem:
+        1. Identifique os pontos fortes observáveis.
+        2. Identifique somente problemas comprovados pelo texto.
+        3. Explique o impacto real de cada problema.
+        4. Determine o nível inteiro mais adequado entre 0 e 5.
+        5. Escreva um resumo equilibrado.
+        6. Inclua feedbacks somente quando houver um problema relevante ou uma melhoria realmente útil.
+
+        Use esta escala geral:
+        - Nível 5: domínio excelente, sem problemas relevantes.
+        - Nível 4: bom domínio, com falhas pontuais que não comprometem o desempenho.
+        - Nível 3: domínio mediano, com limitações perceptíveis, mas sem problemas estruturais graves.
+        - Nível 2: domínio insuficiente, com problemas frequentes, relevantes ou parcialmente estruturais.
+        - Nível 1: domínio muito insuficiente, com problemas graves e generalizados.
+        - Nível 0: competência não demonstrada ou comprometida por condição prevista nos critérios oficiais.
+
+        Não escolha o nível pela quantidade de feedbacks. Um erro isolado não deve causar uma redução
+        significativa. Um nível baixo exige problemas relevantes, frequentes ou estruturais.
+
+        C1 — Domínio da modalidade escrita formal:
+        Avalie ortografia, acentuação, pontuação, concordância, regência, escolha vocabular,
+        formalidade, estrutura sintática e clareza dos períodos. Considere frequência, gravidade,
+        variedade e impacto dos desvios. Diferencie erro isolado de padrão recorrente.
+
+        C2 — Compreensão da proposta e desenvolvimento do tema:
+        Avalie compreensão do tema, respeito ao recorte temático, ponto de vista e desenvolvimento
+        dissertativo-argumentativo. Não classifique como tangenciamento ou fuga ao tema sem evidência
+        clara. Uma tese genérica ou aperfeiçoável não significa, sozinha, compreensão insuficiente.
+
+        C3 — Seleção, organização e interpretação de informações e argumentos:
+        Avalie qualidade dos argumentos, relação entre tese e informações, pertinência do repertório,
+        projeto de texto, progressão e desenvolvimento das ideias. Não penalize C3 por erro gramatical,
+        pontuação ou falta de conectivo. Não reduza a nota apenas porque um argumento poderia ser mais
+        aprofundado, se ele for pertinente e desenvolvido de forma suficiente.
+
+        C4 — Mecanismos linguísticos para a argumentação:
+        Avalie conectivos, articulação entre frases e parágrafos, continuidade, progressão textual,
+        ausência de contradições e ausência de rupturas. Diferencie conectivo inadequado de conectivo
+        apenas repetido. Um conectivo ausente só deve reduzir a nota quando prejudicar claramente a
+        relação entre as ideias.
+
+        C5 — Proposta de intervenção:
+        Avalie a relação da proposta com o problema discutido e verifique a presença de agente, ação,
+        meio de execução, finalidade e detalhamento. Considere primeiro os elementos presentes. Não
+        penalize um elemento implícito quando ele estiver adequadamente compreensível no contexto.
+
+        Regras para os feedbacks:
+        - O campo excerpt deve conter somente um trecho literal encontrado na redação.
+        - Preserve exatamente as palavras e os acentos do trecho.
+        - Não use reticências, paráfrases ou trechos inventados.
+        - Se não houver trecho literal seguro, use uma string vazia.
+        - Não crie um problema sem evidência textual.
+        - Não use o mesmo trecho para reduzir mais de uma competência, exceto quando houver impactos
+          diferentes claramente explicados.
+        - O campo example deve apresentar uma sugestão curta de melhoria ou reescrita.
+        - O exemplo não pode inventar fatos, argumentos ou informações externas.
+        - Se não houver problema relevante na competência, retorne feedbackItems vazio.
+
+        Antes de responder, faça uma revisão interna:
+        - A nota de cada competência é compatível com o resumo?
+        - Cada redução relevante foi justificada?
+        - Algum problema foi contado em mais de uma competência?
+        - Um erro isolado recebeu peso excessivo?
+        - Os excerpts aparecem literalmente na redação?
+        - A proposta de intervenção foi avaliada pelos elementos presentes e ausentes?
+        - A avaliação considerou o texto inteiro, e não apenas uma frase?
 
         Retorne exclusivamente um JSON válido conforme o schema informado, contendo exatamente as
         competências C1, C2, C3, C4 e C5.

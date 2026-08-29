@@ -53,7 +53,7 @@ public class EvaluationController {
       @AuthenticationPrincipal User user, HttpServletRequest httpRequest) {
     var evaluations =
         evaluationService.findOwnedEvaluations(user).stream()
-            .map(EvaluationResponse::from)
+            .map(EvaluationResponse::summaryFrom)
             .toList();
     return ResponseEntity.ok(ApiResponse.of(evaluations, traceId(httpRequest)));
   }

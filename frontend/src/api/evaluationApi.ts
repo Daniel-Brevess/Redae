@@ -26,6 +26,7 @@ export type EvaluationCompetency = {
 }
 
 export type Evaluation = CreatedEvaluation & {
+  text: string | null
   finalScore: number | null
   failureReason: string | null
   competencies: EvaluationCompetency[]

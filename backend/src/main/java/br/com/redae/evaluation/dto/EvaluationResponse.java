@@ -8,6 +8,7 @@ import java.util.UUID;
 public record EvaluationResponse(
     UUID id,
     String theme,
+    String text,
     String origin,
     String status,
     Integer finalScore,
@@ -29,6 +30,7 @@ public record EvaluationResponse(
     return new EvaluationResponse(
         evaluation.getId(),
         evaluation.getTheme(),
+        evaluation.getConfirmedText(),
         evaluation.getOrigin().name(),
         evaluation.getStatus().name(),
         evaluation.getFinalScore(),
@@ -54,5 +56,19 @@ public record EvaluationResponse(
                             .toList()))
             .toList(),
         evaluation.getCreatedAt());
+  }
+
+  public static EvaluationResponse summaryFrom(Evaluation evaluation) {
+    EvaluationResponse response = from(evaluation);
+    return new EvaluationResponse(
+        response.id(),
+        response.theme(),
+        null,
+        response.origin(),
+        response.status(),
+        response.finalScore(),
+        response.failureReason(),
+        response.competencies(),
+        response.createdAt());
   }
 }

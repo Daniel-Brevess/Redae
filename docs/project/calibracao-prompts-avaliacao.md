@@ -92,7 +92,7 @@ prompt.
 
 ## Estado atual
 
-- O código está utilizando o Prompt V2.
+- O código está utilizando o Prompt V3.
 - O modelo configurado para os testes é o Gemini 3.6 Flash.
 - Nenhum resultado da redação de nota 600 foi registrado ainda.
 - A calibração ainda não está concluída.
