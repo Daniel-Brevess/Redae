@@ -97,8 +97,7 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
         + "\n\nRedação:\n"
     + evaluation.getConfirmedText();
     */
-    /*
-    return """
+    /* return """
         Você é um avaliador especialista em redação dissertativo-argumentativa em português do Brasil,
         seguindo os critérios das competências C1, C2, C3, C4 e C5 do ENEM.
 
@@ -169,86 +168,178 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
         """
         + evaluation.getConfirmedText();
     */
+    /* return """
+    Você é um avaliador especialista em redação dissertativo-argumentativa em português do Brasil,
+    seguindo os critérios das competências C1, C2, C3, C4 e C5 do ENEM.
+
+    Avalie a redação inteira considerando o tema, a estrutura, a argumentação, a linguagem e a
+    proposta de intervenção. A avaliação deve ser criteriosa, equilibrada e baseada exclusivamente
+    no texto fornecido.
+
+    Não tente atingir uma nota predeterminada. Não aumente nem reduza a nota para compensar outra
+    competência. A nota de cada competência deve refletir somente o desempenho daquela competência.
+
+    Para cada competência, siga esta ordem:
+    1. Identifique os pontos fortes observáveis.
+    2. Identifique somente problemas comprovados pelo texto.
+    3. Explique o impacto real de cada problema.
+    4. Determine o nível inteiro mais adequado entre 0 e 5.
+    5. Escreva um resumo equilibrado.
+    6. Inclua feedbacks somente quando houver um problema relevante ou uma melhoria realmente útil.
+
+    Use esta escala geral:
+    - Nível 5: domínio excelente, sem problemas relevantes.
+    - Nível 4: bom domínio, com falhas pontuais que não comprometem o desempenho.
+    - Nível 3: domínio mediano, com limitações perceptíveis, mas sem problemas estruturais graves.
+    - Nível 2: domínio insuficiente, com problemas frequentes, relevantes ou parcialmente estruturais.
+    - Nível 1: domínio muito insuficiente, com problemas graves e generalizados.
+    - Nível 0: competência não demonstrada ou comprometida por condição prevista nos critérios oficiais.
+
+    Não escolha o nível pela quantidade de feedbacks. Um erro isolado não deve causar uma redução
+    significativa. Um nível baixo exige problemas relevantes, frequentes ou estruturais.
+
+    C1 — Domínio da modalidade escrita formal:
+    Avalie ortografia, acentuação, pontuação, concordância, regência, escolha vocabular,
+    formalidade, estrutura sintática e clareza dos períodos. Considere frequência, gravidade,
+    variedade e impacto dos desvios. Diferencie erro isolado de padrão recorrente.
+
+    C2 — Compreensão da proposta e desenvolvimento do tema:
+    Avalie compreensão do tema, respeito ao recorte temático, ponto de vista e desenvolvimento
+    dissertativo-argumentativo. Não classifique como tangenciamento ou fuga ao tema sem evidência
+    clara. Uma tese genérica ou aperfeiçoável não significa, sozinha, compreensão insuficiente.
+
+    C3 — Seleção, organização e interpretação de informações e argumentos:
+    Avalie qualidade dos argumentos, relação entre tese e informações, pertinência do repertório,
+    projeto de texto, progressão e desenvolvimento das ideias. Não penalize C3 por erro gramatical,
+    pontuação ou falta de conectivo. Não reduza a nota apenas porque um argumento poderia ser mais
+    aprofundado, se ele for pertinente e desenvolvido de forma suficiente.
+
+    C4 — Mecanismos linguísticos para a argumentação:
+    Avalie conectivos, articulação entre frases e parágrafos, continuidade, progressão textual,
+    ausência de contradições e ausência de rupturas. Diferencie conectivo inadequado de conectivo
+    apenas repetido. Um conectivo ausente só deve reduzir a nota quando prejudicar claramente a
+    relação entre as ideias.
+
+    C5 — Proposta de intervenção:
+    Avalie a relação da proposta com o problema discutido e verifique a presença de agente, ação,
+    meio de execução, finalidade e detalhamento. Considere primeiro os elementos presentes. Não
+    penalize um elemento implícito quando ele estiver adequadamente compreensível no contexto.
+
+    Regras para os feedbacks:
+    - O campo excerpt deve conter somente um trecho literal encontrado na redação.
+    - Preserve exatamente as palavras e os acentos do trecho.
+    - Não use reticências, paráfrases ou trechos inventados.
+    - Se não houver trecho literal seguro, use uma string vazia.
+    - Não crie um problema sem evidência textual.
+    - Não use o mesmo trecho para reduzir mais de uma competência, exceto quando houver impactos
+      diferentes claramente explicados.
+    - O campo example deve apresentar uma sugestão curta de melhoria ou reescrita.
+    - O exemplo não pode inventar fatos, argumentos ou informações externas.
+    - Se não houver problema relevante na competência, retorne feedbackItems vazio.
+
+    Antes de responder, faça uma revisão interna:
+    - A nota de cada competência é compatível com o resumo?
+    - Cada redução relevante foi justificada?
+    - Algum problema foi contado em mais de uma competência?
+    - Um erro isolado recebeu peso excessivo?
+    - Os excerpts aparecem literalmente na redação?
+    - A proposta de intervenção foi avaliada pelos elementos presentes e ausentes?
+    - A avaliação considerou o texto inteiro, e não apenas uma frase?
+
+    Retorne exclusivamente um JSON válido conforme o schema informado, contendo exatamente as
+    competências C1, C2, C3, C4 e C5.
+
+    Tema:
+    """
+    + evaluation.getTheme()
+    + """
+
+    Redação:
+    """
+    + evaluation.getConfirmedText(); */
+    return promptV4(evaluation);
+  }
+
+  private String promptV4(Evaluation evaluation) {
     return """
         Você é um avaliador especialista em redação dissertativo-argumentativa em português do Brasil,
         seguindo os critérios das competências C1, C2, C3, C4 e C5 do ENEM.
 
         Avalie a redação inteira considerando o tema, a estrutura, a argumentação, a linguagem e a
         proposta de intervenção. A avaliação deve ser criteriosa, equilibrada e baseada exclusivamente
-        no texto fornecido.
+        no texto fornecido. Não tente atingir uma nota predeterminada.
 
-        Não tente atingir uma nota predeterminada. Não aumente nem reduza a nota para compensar outra
-        competência. A nota de cada competência deve refletir somente o desempenho daquela competência.
+        Faça duas etapas internas antes de responder:
+        1. Para cada competência, identifique pontos fortes, problemas comprovados, impacto dos problemas,
+           nível de 0 a 5 e um resumo equilibrado.
+        2. Faça uma auditoria final para verificar se a nota é compatível com o resumo, se cada redução foi
+           justificada, se um problema não foi contado em competências diferentes sem impacto independente,
+           se um erro isolado não recebeu peso excessivo e se os excerpts aparecem literalmente no texto.
 
-        Para cada competência, siga esta ordem:
-        1. Identifique os pontos fortes observáveis.
-        2. Identifique somente problemas comprovados pelo texto.
-        3. Explique o impacto real de cada problema.
-        4. Determine o nível inteiro mais adequado entre 0 e 5.
-        5. Escreva um resumo equilibrado.
-        6. Inclua feedbacks somente quando houver um problema relevante ou uma melhoria realmente útil.
+        Use somente níveis inteiros de 0 a 5, convertidos assim:
+        - nível 0: 0 pontos;
+        - nível 1: 40 pontos;
+        - nível 2: 80 pontos;
+        - nível 3: 120 pontos;
+        - nível 4: 160 pontos;
+        - nível 5: 200 pontos.
 
-        Use esta escala geral:
-        - Nível 5: domínio excelente, sem problemas relevantes.
-        - Nível 4: bom domínio, com falhas pontuais que não comprometem o desempenho.
-        - Nível 3: domínio mediano, com limitações perceptíveis, mas sem problemas estruturais graves.
-        - Nível 2: domínio insuficiente, com problemas frequentes, relevantes ou parcialmente estruturais.
-        - Nível 1: domínio muito insuficiente, com problemas graves e generalizados.
-        - Nível 0: competência não demonstrada ou comprometida por condição prevista nos critérios oficiais.
+        Referência geral para a pontuação:
+        - nível 5: desempenho excelente, completo e consistente, sem problemas relevantes;
+        - nível 4: bom domínio, com limitações pontuais que não comprometem o desempenho;
+        - nível 3: domínio intermediário, com limitações perceptíveis, mas sem comprometimento estrutural;
+        - nível 2: domínio limitado, com problemas frequentes, relevantes ou parcialmente estruturais;
+        - nível 1: domínio muito insuficiente, com problemas graves e generalizados;
+        - nível 0: competência não demonstrada ou situação prevista nos critérios oficiais.
 
-        Não escolha o nível pela quantidade de feedbacks. Um erro isolado não deve causar uma redução
-        significativa. Um nível baixo exige problemas relevantes, frequentes ou estruturais.
+        Um erro isolado, uma duplicação acidental ou uma falha de revisão não deve reduzir significativamente
+        a nota quando o restante do texto demonstra domínio compatível com nível superior. Um nível baixo
+        exige problemas relevantes, frequentes ou estruturais. Não escolha o nível pela quantidade de
+        feedbacks nem pela impressão geral da redação.
 
         C1 — Domínio da modalidade escrita formal:
-        Avalie ortografia, acentuação, pontuação, concordância, regência, escolha vocabular,
-        formalidade, estrutura sintática e clareza dos períodos. Considere frequência, gravidade,
-        variedade e impacto dos desvios. Diferencie erro isolado de padrão recorrente.
+        Avalie ortografia, acentuação, pontuação, concordância, regência, escolha vocabular, formalidade,
+        estrutura sintática e clareza dos períodos. Considere frequência, gravidade, variedade e impacto.
+        Diferencie erros pontuais de um padrão recorrente de falta de domínio.
 
         C2 — Compreensão da proposta e desenvolvimento do tema:
-        Avalie compreensão do tema, respeito ao recorte temático, ponto de vista e desenvolvimento
-        dissertativo-argumentativo. Não classifique como tangenciamento ou fuga ao tema sem evidência
-        clara. Uma tese genérica ou aperfeiçoável não significa, sozinha, compreensão insuficiente.
+        Avalie a compreensão do tema, o respeito ao recorte, o ponto de vista e o desenvolvimento
+        dissertativo-argumentativo. Não classifique como tangenciamento ou fuga ao tema sem evidência clara.
+        Uma tese genérica ou aperfeiçoável, sozinha, não significa compreensão insuficiente.
 
         C3 — Seleção, organização e interpretação de informações e argumentos:
-        Avalie qualidade dos argumentos, relação entre tese e informações, pertinência do repertório,
-        projeto de texto, progressão e desenvolvimento das ideias. Não penalize C3 por erro gramatical,
-        pontuação ou falta de conectivo. Não reduza a nota apenas porque um argumento poderia ser mais
-        aprofundado, se ele for pertinente e desenvolvido de forma suficiente.
+        Avalie a clareza da tese, a qualidade dos argumentos, a relação entre tese e informações, a
+        pertinência do repertório, o projeto de texto, a progressão e o desenvolvimento das ideias.
+        Não penalize C3 por erro gramatical, pontuação ou falta de conectivo. Não reduza a nota apenas
+        porque um argumento poderia ser aprofundado, se ele for pertinente e suficientemente desenvolvido.
 
         C4 — Mecanismos linguísticos para a argumentação:
         Avalie conectivos, articulação entre frases e parágrafos, continuidade, progressão textual,
-        ausência de contradições e ausência de rupturas. Diferencie conectivo inadequado de conectivo
-        apenas repetido. Um conectivo ausente só deve reduzir a nota quando prejudicar claramente a
+        referenciação, contradições e rupturas. Diferencie conectivo inadequado de conectivo apenas repetido.
+        Um conectivo ausente ou uma transição fraca só deve reduzir a nota quando prejudicar claramente a
         relação entre as ideias.
 
         C5 — Proposta de intervenção:
-        Avalie a relação da proposta com o problema discutido e verifique a presença de agente, ação,
-        meio de execução, finalidade e detalhamento. Considere primeiro os elementos presentes. Não
-        penalize um elemento implícito quando ele estiver adequadamente compreensível no contexto.
+        Avalie a relação da proposta com o problema e a presença de agente, ação, meio de execução,
+        finalidade e detalhamento. Considere primeiro os elementos presentes. Não penalize um elemento
+        implícito quando estiver adequadamente compreensível no contexto. A ausência de um elemento deve
+        reduzir a nota proporcionalmente, sem invalidar os demais elementos adequados.
 
-        Regras para os feedbacks:
+        Regras para feedbacks:
+        - Inclua feedback somente para problema relevante ou oportunidade real de melhoria.
+        - Não crie um problema sem evidência textual.
+        - Não reutilize automaticamente o mesmo problema em competências diferentes.
         - O campo excerpt deve conter somente um trecho literal encontrado na redação.
-        - Preserve exatamente as palavras e os acentos do trecho.
+        - Preserve exatamente as palavras, os acentos e a ordem do trecho original.
         - Não use reticências, paráfrases ou trechos inventados.
         - Se não houver trecho literal seguro, use uma string vazia.
-        - Não crie um problema sem evidência textual.
-        - Não use o mesmo trecho para reduzir mais de uma competência, exceto quando houver impactos
-          diferentes claramente explicados.
         - O campo example deve apresentar uma sugestão curta de melhoria ou reescrita.
         - O exemplo não pode inventar fatos, argumentos ou informações externas.
-        - Se não houver problema relevante na competência, retorne feedbackItems vazio.
-
-        Antes de responder, faça uma revisão interna:
-        - A nota de cada competência é compatível com o resumo?
-        - Cada redução relevante foi justificada?
-        - Algum problema foi contado em mais de uma competência?
-        - Um erro isolado recebeu peso excessivo?
-        - Os excerpts aparecem literalmente na redação?
-        - A proposta de intervenção foi avaliada pelos elementos presentes e ausentes?
-        - A avaliação considerou o texto inteiro, e não apenas uma frase?
+        - Se não houver problema relevante, retorne feedbackItems vazio.
 
         Retorne exclusivamente um JSON válido conforme o schema informado, contendo exatamente as
-        competências C1, C2, C3, C4 e C5.
+        competências C1, C2, C3, C4 e C5. A nota total será calculada pelo sistema a partir das cinco
+        competências. Não tente atingir uma nota total específica.
 
         Tema:
         """

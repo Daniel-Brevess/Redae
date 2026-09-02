@@ -94,5 +94,9 @@ prompt.
 
 - O código está utilizando o Prompt V3.
 - O modelo configurado para os testes é o Gemini 3.6 Flash.
+- O texto completo e os resultados das três redações estão sendo reunidos em
+  [`base-calibracao-redacoes.md`](./base-calibracao-redacoes.md).
+- O Prompt V3 está registrado em
+  [`prompt-v3-avaliacao.md`](./prompt-v3-avaliacao.md).
 - Nenhum resultado da redação de nota 600 foi registrado ainda.
 - A calibração ainda não está concluída.
