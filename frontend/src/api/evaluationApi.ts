@@ -3,6 +3,7 @@ import { request, type ApiEnvelope } from './http'
 export type CreatedEvaluation = {
   id: string
   theme: string
+  type: 'DIAGNOSTICO' | 'COMPLETA'
   origin: 'DIGITADA'
   status: 'PENDENTE' | 'PROCESSANDO' | 'CONCLUIDA' | 'FALHOU'
   createdAt: string
@@ -22,6 +23,7 @@ export type EvaluationCompetency = {
   level: number
   points: number
   summary: string
+  highlights: string[]
   feedbackItems: EvaluationFeedback[]
 }
 

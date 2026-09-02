@@ -390,7 +390,11 @@ function DashboardScreen({
           </div>
           <div>
             <strong>{result.theme}</strong>
-            <p>Agora há pouco · Texto digitado</p>
+            <p>
+              Agora há pouco ·{' '}
+              {result.type === 'DIAGNOSTICO' ? 'Diagnóstico' : 'Avaliação completa'} · Texto
+              digitado
+            </p>
           </div>
           <button className="text-button" type="button" onClick={onStart}>
             Ver detalhes <span aria-hidden="true">→</span>
@@ -572,10 +576,16 @@ function ResultStep({ result, onHome }: { result: EvaluationResult; onHome: () =
       </button>
       <section className="result-hero">
         <div>
-          <p className="prototype-eyebrow">Avaliação concluída</p>
+          <p className="prototype-eyebrow">
+            {result.type === 'DIAGNOSTICO'
+              ? 'Diagnóstico concluído'
+              : 'Avaliação completa concluída'}
+          </p>
           <h1>Você já sabe por onde continuar.</h1>
           <p className="prototype-lede">
-            Seu diagnóstico chegou. Comece pelo resumo e abra cada competência no seu ritmo.
+            {result.type === 'DIAGNOSTICO'
+              ? 'Seu diagnóstico chegou. Veja os principais pontos e continue evoluindo.'
+              : 'Sua avaliação completa chegou. Veja os detalhes de cada competência.'}
           </p>
         </div>
         <div className="result-score">
@@ -588,7 +598,11 @@ function ResultStep({ result, onHome }: { result: EvaluationResult; onHome: () =
           <p className="prototype-eyebrow">Tema avaliado</p>
           <h2>{result.theme}</h2>
         </div>
-        <span className="status-badge status-badge-green">Texto digitado</span>
+        <span className="status-badge status-badge-green">
+          {result.type === 'DIAGNOSTICO'
+            ? 'Diagnóstico · Texto digitado'
+            : 'Completa · Texto digitado'}
+        </span>
       </section>
       <section className="essay-result">
         <p className="prototype-eyebrow">Sua redação</p>
@@ -597,7 +611,9 @@ function ResultStep({ result, onHome }: { result: EvaluationResult; onHome: () =
       <section className="competencies-section">
         <div className="prototype-section-heading">
           <div>
-            <p className="prototype-eyebrow">Seu diagnóstico</p>
+            <p className="prototype-eyebrow">
+              {result.type === 'DIAGNOSTICO' ? 'Seu diagnóstico' : 'Sua avaliação completa'}
+            </p>
             <h2>Olhe para cada competência.</h2>
           </div>
           <span className="competency-total">5 competências</span>
@@ -628,7 +644,12 @@ function ResultStep({ result, onHome }: { result: EvaluationResult; onHome: () =
               </button>
               {expanded === item.code && (
                 <div className="competency-detail">
-                  <p>{item.detail}</p>
+                  <p>{item.detail || 'Nenhum apontamento relevante foi identificado.'}</p>
+                  {result.type === 'DIAGNOSTICO' && (
+                    <p className="field-hint">
+                      Para receber todos os detalhes, faça uma avaliação completa.
+                    </p>
+                  )}
                   <a href="#next-step" onClick={(event) => event.preventDefault()}>
                     Ver como praticar essa competência <span aria-hidden="true">→</span>
                   </a>
@@ -729,6 +750,7 @@ function HistoryScreen({
                 <strong>{evaluation.theme}</strong>
                 <p>
                   {new Date(evaluation.createdAt).toLocaleDateString('pt-BR')} ·{' '}
+                  {evaluation.type === 'DIAGNOSTICO' ? 'diagnóstico' : 'avaliação completa'} ·{' '}
                   {evaluation.status.toLowerCase()}
                 </p>
               </div>
@@ -769,15 +791,19 @@ function toEvaluationResult(evaluation: Evaluation): EvaluationResult {
     id: evaluation.id,
     theme: evaluation.theme,
     text: evaluation.text ?? '',
+    type: evaluation.type,
     finalScore: evaluation.finalScore ?? 0,
     competencies: evaluation.competencies.map((competency) => ({
       code: competency.code,
       title: titles[competency.code] ?? competency.code,
       score: competency.points,
       summary: competency.summary,
-      detail: competency.feedbackItems
-        .map((feedback) => `${feedback.problem} ${feedback.howToImprove}`)
-        .join(' '),
+      detail:
+        competency.feedbackItems.length > 0
+          ? competency.feedbackItems
+              .map((feedback) => `${feedback.problem} ${feedback.howToImprove}`)
+              .join(' ')
+          : competency.highlights.join(' '),
     })),
   }
 }

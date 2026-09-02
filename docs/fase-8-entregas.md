@@ -203,6 +203,21 @@ Confirmar que o fluxo principal da Fase 8 funciona de ponta a ponta.
 
 Um usuário autenticado consegue realizar o diagnóstico gratuito, fazer novas avaliações escritas, consultar os resultados e visualizar seu progresso básico.
 
+## Estado da implementacao das etapas 1, 2 e 3
+
+**Status:** concluida tecnicamente; aceite manual ainda pendente.
+
+- Calibracao de prompt: mantida fora desta entrega; o Prompt V4 continua
+  experimental e sera validado manualmente.
+- Tipo da avaliacao: implementado com `DIAGNOSTICO` e `COMPLETA`.
+- Primeiro diagnostico: decidido pelo backend e limitado a um por usuario.
+- Resultado resumido: feedbacks completos nao sao expostos para diagnosticos;
+  destaques breves ficam disponiveis.
+- Resultado completo: feedbacks, evidencias, dicas e exemplos ficam disponiveis
+  somente para avaliacoes `COMPLETA`.
+- Creditos reais: ainda nao implementados. A propriedade
+  `EVALUATION_REQUIRE_CREDIT_FOR_COMPLETE` controla temporariamente o bloqueio.
+
 ## Fora do escopo desta fase
 
 - Compra de créditos.

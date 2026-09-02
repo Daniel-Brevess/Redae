@@ -43,6 +43,7 @@ export function createMockEvaluation(theme: string, text: string): EvaluationRes
     id: 'evaluation-prototype-001',
     theme,
     text,
+    type: 'DIAGNOSTICO',
     finalScore: feedback.reduce((total, item) => total + item.score, 0),
     competencies: feedback,
   }

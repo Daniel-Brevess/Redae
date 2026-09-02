@@ -13,6 +13,7 @@ describe('prototype main evaluation flow', () => {
           data: {
             id: 'evaluation-1',
             theme: 'Os desafios da educação digital no Brasil',
+            type: 'DIAGNOSTICO',
             origin: 'DIGITADA',
             status: 'PROCESSANDO',
             createdAt: '2026-08-27T12:00:00Z',

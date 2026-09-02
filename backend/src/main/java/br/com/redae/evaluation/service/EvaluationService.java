@@ -2,6 +2,7 @@ package br.com.redae.evaluation.service;
 
 import br.com.redae.evaluation.dto.CreateEvaluationRequest;
 import br.com.redae.evaluation.entity.Evaluation;
+import br.com.redae.evaluation.entity.EvaluationType;
 import br.com.redae.evaluation.repository.EvaluationRepository;
 import br.com.redae.identity.entity.User;
 import br.com.redae.shared.error.ResourceNotFoundException;
@@ -16,6 +17,10 @@ public class EvaluationService {
   private final EvaluationRepository evaluationRepository;
   private final ApplicationEventPublisher eventPublisher;
 
+  @org.springframework.beans.factory.annotation.Value(
+      "${evaluation.require-credit-for-complete:false}")
+  private boolean requireCreditForComplete;
+
   public EvaluationService(
       EvaluationRepository evaluationRepository, ApplicationEventPublisher eventPublisher) {
     this.evaluationRepository = evaluationRepository;
@@ -24,13 +29,24 @@ public class EvaluationService {
 
   @Transactional
   public Evaluation createTypedEvaluation(User user, CreateEvaluationRequest request) {
+    EvaluationType type = resolveType(user);
     Evaluation evaluation =
         evaluationRepository.save(
-            new Evaluation(user, request.text().trim(), request.theme().trim()));
+            new Evaluation(user, request.text().trim(), request.theme().trim(), type));
     evaluation.startProcessing();
     Evaluation savedEvaluation = evaluationRepository.save(evaluation);
     eventPublisher.publishEvent(new EvaluationCreatedEvent(savedEvaluation.getId()));
     return savedEvaluation;
+  }
+
+  private EvaluationType resolveType(User user) {
+    if (!evaluationRepository.existsByUserIdAndType(user.getId(), EvaluationType.DIAGNOSTICO)) {
+      return EvaluationType.DIAGNOSTICO;
+    }
+    if (requireCreditForComplete) {
+      throw new EvaluationAccessException();
+    }
+    return EvaluationType.COMPLETA;
   }
 
   @Transactional(readOnly = true)

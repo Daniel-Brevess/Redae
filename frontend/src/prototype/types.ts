@@ -13,6 +13,7 @@ export type EvaluationResult = {
   id: string
   theme: string
   text: string
+  type: 'DIAGNOSTICO' | 'COMPLETA'
   finalScore: number
   competencies: CompetencyFeedback[]
 }

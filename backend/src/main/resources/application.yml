@@ -42,3 +42,6 @@ ai:
   gemini:
     api-key: ${GOOGLE_API_KEY:}
     model: ${AI_MODEL:gemini-3.6-flash}
+
+evaluation:
+  require-credit-for-complete: ${EVALUATION_REQUIRE_CREDIT_FOR_COMPLETE:false}

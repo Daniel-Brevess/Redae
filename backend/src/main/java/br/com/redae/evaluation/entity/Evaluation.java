@@ -40,6 +40,10 @@ public class Evaluation {
   private EvaluationOrigin origin;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "tipo", nullable = false, length = 20)
+  private EvaluationType type;
+
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
   private EvaluationStatus status;
 
@@ -70,11 +74,16 @@ public class Evaluation {
   protected Evaluation() {}
 
   public Evaluation(User user, String confirmedText, String theme) {
+    this(user, confirmedText, theme, EvaluationType.DIAGNOSTICO);
+  }
+
+  public Evaluation(User user, String confirmedText, String theme, EvaluationType type) {
     this.id = UUID.randomUUID();
     this.user = user;
     this.confirmedText = confirmedText;
     this.theme = theme;
     this.origin = EvaluationOrigin.DIGITADA;
+    this.type = type;
     this.status = EvaluationStatus.PENDENTE;
     this.version = "v1";
     this.aiModel = "pending";
@@ -94,6 +103,10 @@ public class Evaluation {
 
   public EvaluationOrigin getOrigin() {
     return origin;
+  }
+
+  public EvaluationType getType() {
+    return type;
   }
 
   public EvaluationStatus getStatus() {
