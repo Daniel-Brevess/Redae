@@ -1,6 +1,7 @@
 package br.com.redae.evaluation.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import br.com.redae.ai.client.AIClient;
@@ -48,6 +49,34 @@ class AIEvaluationAnalyzerTest {
     assertEquals(
         "A evidência retornada pela IA não foi localizada na redação.",
         analysis.competencies().get(0).feedbackItems().get(0).limitation());
+  }
+
+  @Test
+  void rejectsResponseWithoutAllCompetencies() {
+    Evaluation evaluation = evaluation();
+    when(aiClient.generateStructured(
+            org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
+        .thenReturn(
+            validResponse()
+                .replace(
+                    ",{\"code\":\"C5\",\"level\":4,\"summary\":\"Resumo\",\"feedbackItems\":[]}",
+                    ""));
+
+    AIEvaluationAnalyzer analyzer = new AIEvaluationAnalyzer(aiClient, new ObjectMapper());
+
+    assertThrows(IllegalStateException.class, () -> analyzer.analyze(evaluation));
+  }
+
+  @Test
+  void rejectsResponseWithDuplicateCompetencyCode() {
+    Evaluation evaluation = evaluation();
+    when(aiClient.generateStructured(
+            org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
+        .thenReturn(validResponse().replace("\"code\":\"C5\"", "\"code\":\"C4\""));
+
+    AIEvaluationAnalyzer analyzer = new AIEvaluationAnalyzer(aiClient, new ObjectMapper());
+
+    assertThrows(IllegalStateException.class, () -> analyzer.analyze(evaluation));
   }
 
   private Evaluation evaluation() {

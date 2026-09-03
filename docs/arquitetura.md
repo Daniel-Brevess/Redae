@@ -55,7 +55,7 @@ Imagens são temporárias. O backend recebe o upload, inicia a transcrição, pe
 
 ## IA e processamento
 
-O módulo `evaluation` chama `AIClient`. O módulo `ai/client` contém o contrato e os adaptadores. O cliente atual é o Gemini, mas a troca de provedor deve exigir apenas um novo adaptador e configuração.
+O módulo `evaluation` chama `AIClient`. O módulo `ai/client` contém o contrato e os adaptadores. O cliente padrão é o OpenAI GPT-4o Mini, e o Gemini permanece disponível por configuração; `AI_PROVIDER` define qual implementação é registrada.
 
 A resposta da IA é validada antes da persistência. Nota fora da escala, competência ausente, feedback inválido ou evidência não encontrada impedem a conclusão. Falhas técnicas podem ser retentadas; resposta inválida não produz nota falsa.
 

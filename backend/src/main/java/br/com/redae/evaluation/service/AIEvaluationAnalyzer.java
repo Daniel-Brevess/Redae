@@ -7,10 +7,13 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
+  private static final Logger LOGGER = LoggerFactory.getLogger(AIEvaluationAnalyzer.class);
   private static final String SCHEMA =
       "{\"type\":\"OBJECT\",\"properties\":{\"competencies\":{\"type\":\"ARRAY\",\"items\":{\"type\":\"OBJECT\",\"properties\":{\"code\":{\"type\":\"STRING\",\"enum\":[\"C1\",\"C2\",\"C3\",\"C4\",\"C5\"]},\"level\":{\"type\":\"INTEGER\"},\"summary\":{\"type\":\"STRING\"},\"feedbackItems\":{\"type\":\"ARRAY\",\"items\":{\"type\":\"OBJECT\",\"properties\":{\"excerpt\":{\"type\":\"STRING\"},\"problem\":{\"type\":\"STRING\"},\"explanation\":{\"type\":\"STRING\"},\"howToImprove\":{\"type\":\"STRING\"},\"example\":{\"type\":\"STRING\"}},\"required\":[\"excerpt\",\"problem\",\"explanation\",\"howToImprove\",\"example\"]}}},\"required\":[\"code\",\"level\",\"summary\",\"feedbackItems\"]}}},\"required\":[\"competencies\"]}";
 
@@ -27,6 +30,7 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
     try {
       String response = aiClient.generateStructured(prompt(evaluation), SCHEMA);
       EvaluationAnalysis analysis = objectMapper.readValue(response, EvaluationAnalysis.class);
+      logResponseStructure(analysis);
       return validateAndNormalize(analysis, evaluation.getConfirmedText());
     } catch (Exception exception) {
       throw new IllegalStateException("A resposta da IA não passou pela validação.", exception);
@@ -258,10 +262,10 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
     Redação:
     """
     + evaluation.getConfirmedText(); */
-    return promptV4(evaluation);
+    return promptV5(evaluation);
   }
 
-  private String promptV4(Evaluation evaluation) {
+  private String promptV5(Evaluation evaluation) {
     return """
         Você é um avaliador especialista em redação dissertativo-argumentativa em português do Brasil,
         seguindo os critérios das competências C1, C2, C3, C4 e C5 do ENEM.
@@ -326,8 +330,21 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
         implícito quando estiver adequadamente compreensível no contexto. A ausência de um elemento deve
         reduzir a nota proporcionalmente, sem invalidar os demais elementos adequados.
 
+        As notas devem refletir o desempenho global de cada competencia. Falhas pontuais nao devem
+        derrubar uma competencia quando o restante do texto demonstra dominio de nivel superior.
+
+        Em C3, nao exija obrigatoriamente dados estatisticos, citacoes ou conceitos academicos quando
+        os argumentos forem pertinentes, coerentes e suficientemente desenvolvidos. Em C4, diferencie
+        uma transicao apenas aperfeicoavel de uma falha que prejudica claramente a compreensao. Em C5,
+        avalie proporcionalmente a ausencia de um elemento e nao reduza excessivamente a nota quando
+        os demais elementos da proposta estiverem presentes e relacionados ao problema.
+
         Regras para feedbacks:
         - Inclua feedback somente para problema relevante ou oportunidade real de melhoria.
+        - Todo feedbackItem deve conter problem, explanation, howToImprove e example preenchidos.
+        - Nunca retorne feedbackItem como marcador, placeholder ou com algum desses campos vazio.
+        - Se não houver problema relevante ou oportunidade real de melhoria, retorne feedbackItems como
+          uma lista vazia.
         - Não crie um problema sem evidência textual.
         - Não reutilize automaticamente o mesmo problema em competências diferentes.
         - O campo excerpt deve conter somente um trecho literal encontrado na redação.
@@ -337,6 +354,11 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
         - O campo example deve apresentar uma sugestão curta de melhoria ou reescrita.
         - O exemplo não pode inventar fatos, argumentos ou informações externas.
         - Se não houver problema relevante, retorne feedbackItems vazio.
+
+        Antes de responder, verifique internamente se as cinco competencias foram avaliadas de forma
+        independente, se cada reducao relevante esta justificada, se nenhum erro isolado recebeu peso
+        excessivo, se os excerpts aparecem literalmente e se todo feedbackItem possui seus campos
+        preenchidos. Competencias sem problema relevante devem possuir feedbackItems vazio.
 
         Retorne exclusivamente um JSON válido conforme o schema informado, contendo exatamente as
         competências C1, C2, C3, C4 e C5. A nota total será calculada pelo sistema a partir das cinco
@@ -404,6 +426,22 @@ public class AIEvaluationAnalyzer implements EvaluationAnalyzer {
               competency.code(), competency.level(), competency.summary(), feedbackItems));
     }
     return new EvaluationAnalysis(competencies);
+  }
+
+  private void logResponseStructure(EvaluationAnalysis analysis) {
+    if (analysis == null || analysis.competencies() == null) {
+      LOGGER.warn("Resposta da IA sem a lista de competências.");
+      return;
+    }
+
+    ArrayList<String> codes = new ArrayList<>();
+    for (EvaluationAnalysis.CompetencyAnalysis competency : analysis.competencies()) {
+      codes.add(competency == null ? null : competency.code());
+    }
+    LOGGER.info(
+        "Estrutura da resposta da IA: quantidade={}, códigos={}",
+        analysis.competencies().size(),
+        codes);
   }
 
   private void validateFeedback(EvaluationAnalysis.FeedbackAnalysis feedback, String path) {

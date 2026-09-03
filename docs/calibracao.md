@@ -69,3 +69,7 @@ Os resultados mostram que a nota total sozinha é insuficiente. A análise deve 
 ## Estado
 
 O conjunto contém referências alta, média e baixa. A calibração permanece aberta; novos testes devem ser adicionados à tabela sem apagar resultados anteriores e sem alterar os textos originais.
+
+O próximo provedor a ser testado é o OpenAI GPT-4o Mini. Os resultados históricos
+do Gemini permanecem na tabela para comparação; novos testes devem registrar o
+provedor e o modelo usados.

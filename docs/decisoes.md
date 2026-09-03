@@ -44,7 +44,7 @@ Este arquivo é a referência rápida das decisões vigentes. As decisões antig
 ## IA e calibração
 
 - A aplicação usa `AIClient` para desacoplar o provedor.
-- O Gemini é o provedor atual de teste.
+- O OpenAI GPT-4o Mini é o provedor padrão de teste; o Gemini permanece disponível por configuração (`AI_PROVIDER=gemini`).
 - O prompt deve avaliar C1–C5 de forma independente, exigir evidências literais e explicar descontos relevantes.
 - A calibração usa redações de referência com notas oficiais e compara coerência entre competências, não apenas proximidade da nota total.
 - A futura troca de provedor será feita por novo adaptador, mantendo o contrato.
