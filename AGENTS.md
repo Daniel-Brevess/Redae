@@ -165,4 +165,3 @@ Uma tarefa só está pronta quando:
 - a documentação necessária foi atualizada;
 - o diff foi revisado;
 - o relatório informa claramente o que foi feito e o que não foi possível validar.
-
