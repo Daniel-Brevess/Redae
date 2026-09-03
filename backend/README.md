@@ -15,9 +15,9 @@ src/main/java/br/com/redae/
 └── shared/       # componentes transversais
 ```
 
-As camadas são `controller`, `service`, `repository`, `dto`, `entity` e `config`.
-Os pacotes estão preparados nesta fase; endpoints e regras de negócio serão
-implementados nas próximas fatias verticais.
+As camadas são `controller`, `service`, `repository`, `dto`, `entity` e `config`,
+quando aplicáveis. Os módulos já contêm autenticação, perfil, avaliações,
+persistência e integração com o cliente de IA.
 
 ## Banco local
 
@@ -29,7 +29,7 @@ As variáveis necessárias para o Compose são `POSTGRES_DB`, `POSTGRES_USER` e
 `POSTGRES_PASSWORD`. O backend também recebe `DB_URL`, `DB_USERNAME` e
 `DB_PASSWORD` quando executado fora do Compose.
 
-Para usar a avaliaÃ§Ã£o com Gemini no Docker, defina `GOOGLE_API_KEY` no
+Para usar a avaliação com Gemini no Docker, defina `GOOGLE_API_KEY` no
 ambiente antes de iniciar o Compose. No PowerShell:
 
 ```powershell
@@ -44,7 +44,7 @@ export GOOGLE_API_KEY="sua-chave-do-gemini"
 docker compose up --build
 ```
 
-A chave Ã© enviada somente para o container do backend e nÃ£o deve ser
+A chave é enviada somente para o container do backend e não deve ser
 colocada no cÃ³digo ou no frontend.
 
 Depois de configurar os valores no ambiente, execute:

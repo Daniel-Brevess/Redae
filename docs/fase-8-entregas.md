@@ -251,7 +251,7 @@ validados para que a fase seja considerada concluída.
       expectativa era 980.
 
 O planejamento detalhado está registrado em
-`docs/decisions/0080-calibracao-da-avaliacao-por-competencia.md`.
+`docs/decisoes.md`, na seção de IA e calibração.
 
 ### 2. Regra do diagnóstico gratuito
 

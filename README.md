@@ -37,18 +37,17 @@ A conferência da transcrição acontece antes da análise, permitindo que o est
 
 ## MVP
 
-O escopo inicial ainda está em validação e as funcionalidades abaixo são planejadas, não implementadas:
+O MVP está sendo construído por fatias verticais. O estado atual é:
 
 | Funcionalidade | Status |
 |---|---|
-| Entrada por texto | Planejado |
-| Foto pela câmera | Planejado |
-| Foto da galeria | Planejado |
-| OCR/Transcrição | Planejado |
-| Conferência da transcrição | Planejado |
-| Análise da redação | Planejado |
-| Diagnóstico | Planejado |
-| Histórico de evolução | A validar |
+| Cadastro, login e sessão | Implementado |
+| Entrada por texto | Implementado |
+| Persistência da redação e histórico | Implementado |
+| Análise C1–C5 e nota estimada | Implementado |
+| Diagnóstico separado da avaliação completa | Em evolução |
+| Créditos e avaliação completa | Em desenvolvimento |
+| Foto, OCR e conferência da transcrição | Planejado |
 
 Chat livre, gamificação, comunidade e ranking não fazem parte do MVP inicial.
 
@@ -115,7 +114,7 @@ Resend está reservado para uma etapa futura de confirmação de e-mail, recuper
 └── docker-compose.yml      # Ambiente local combinado
 ```
 
-O backend ainda não possui controllers, services, repositories, entities, DTOs ou endpoints de negócio. O projeto começa como um monólito modular em Spring Boot; microservices não fazem parte do MVP.
+O backend possui controllers, services, repositories, entities, DTOs e endpoints de autenticação, perfil e avaliação. O projeto usa um monólito modular em Spring Boot; microservices não fazem parte do MVP.
 
 ## Como executar localmente
 
@@ -186,16 +185,18 @@ O Compose usa credenciais fixas e isoladas exclusivamente para o banco local. El
 
 ## Status atual
 
-O projeto está na etapa de fundação técnica. Atualmente possui:
+O projeto possui:
 
-- landing page pública inicial;
-- base React, TypeScript, Vite e Tailwind CSS;
-- aplicação Spring Boot mínima;
-- dependências preparadas para persistência, segurança, JWT, PostgreSQL e OpenAPI;
-- configuração inicial de Docker e CI;
-- documentação e regras para agentes de IA.
+- landing page e área autenticada em React;
+- cadastro, login, refresh, logout e proteção por JWT;
+- persistência PostgreSQL com migrations Flyway;
+- envio de redação digitada e consulta do histórico;
+- avaliação automática por IA nas competências C1–C5;
+- nota calculada pelo backend e feedback persistido;
+- separação de diagnóstico e avaliação completa em evolução;
+- Docker Compose, CI e documentação consolidada.
 
-Ainda não existem autenticação funcional, persistência, OCR, análise de redação, diagnóstico ou outras funcionalidades de negócio.
+Entrada por imagem/OCR, compra de créditos em produção e refinamentos da avaliação completa continuam no roadmap.
 
 ## Roadmap
 
@@ -210,9 +211,9 @@ O roadmap não representa funcionalidades já disponíveis e poderá ser ajustad
 ## Documentação complementar
 
 - [Documentação do projeto](docs/README.md)
-- [Visão e stack](docs/project/overview.md)
-- [Estrutura do repositório](docs/architecture/repository.md)
-- [Decisão sobre monólito modular](docs/decisions/0001-monolito-modular.md)
+- [Visão do produto](docs/produto.md)
+- [Arquitetura](docs/arquitetura.md)
+- [Decisões do projeto](docs/decisoes.md)
 - [Regras oficiais para agentes](agents/PROJECT_RULES.md)
 
 ## Contribuição
