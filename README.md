@@ -214,7 +214,8 @@ O roadmap não representa funcionalidades já disponíveis e poderá ser ajustad
 - [Visão do produto](docs/produto.md)
 - [Arquitetura](docs/arquitetura.md)
 - [Decisões do projeto](docs/decisoes.md)
-- [Regras oficiais para agentes](agents/PROJECT_RULES.md)
+- [Guia para agentes](AGENTS.md)
+- [Regras detalhadas para agentes](agents/PROJECT_RULES.md)
 
 ## Contribuição
 
