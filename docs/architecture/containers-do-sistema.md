@@ -9,9 +9,9 @@ flowchart LR
 
     subgraph backend[Backend Spring Boot - Render]
         api[API HTTP\nControllers e DTOs]
-        modules[Módulos de negócio\nidentity / auth / essays / evaluation / history / support]
-        processing[Processador assíncrono\nOCR e avaliação]
-        aiport[Interface de IA]
+        modules[Módulos de negócio\nuser / auth / evaluation / shared]
+        processing[Processamento da avaliação\ndentro de evaluation]
+        aiport[Módulo ai\nAIClient e provedores]
         repos[Repositories]
     end
 
@@ -36,8 +36,8 @@ flowchart LR
 - **Frontend:** experiência, validações de interface, editor, polling e apresentação dos estados.
 - **API HTTP:** autenticação da requisição, validação de entrada, mapeamento de respostas e erros públicos.
 - **Módulos de negócio:** casos de uso e regras do domínio de cada contexto.
-- **Processador assíncrono:** execução, retentativa, limite de concorrência e atualização de estados de OCR/avaliação.
-- **Interface de IA:** abstração do provedor e dos modelos utilizados.
+- **Processamento da avaliação:** execução, retentativa, limite de concorrência e atualização de estados da avaliação, mantidos no módulo `evaluation`.
+- **Módulo `ai`:** abstração do provedor e adaptadores dos modelos utilizados.
 - **Repositories:** persistência acessada somente pelo próprio módulo responsável.
 - **PostgreSQL:** fonte oficial dos dados persistentes.
 - **Armazenamento temporário:** imagens durante o OCR e conferência, com exclusão automática.

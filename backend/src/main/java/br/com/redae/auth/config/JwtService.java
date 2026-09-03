@@ -1,6 +1,6 @@
 package br.com.redae.auth.config;
 
-import br.com.redae.identity.entity.User;
+import br.com.redae.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

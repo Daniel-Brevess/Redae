@@ -2,7 +2,7 @@ package br.com.redae.auth.service;
 
 import br.com.redae.auth.entity.Session;
 import br.com.redae.auth.repository.SessionRepository;
-import br.com.redae.identity.entity.User;
+import br.com.redae.user.entity.User;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -1,7 +1,7 @@
 package br.com.redae.auth.config;
 
-import br.com.redae.identity.entity.User;
-import br.com.redae.identity.repository.UserRepository;
+import br.com.redae.user.entity.User;
+import br.com.redae.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,6 +1,6 @@
 package br.com.redae.auth.dto;
 
-import br.com.redae.identity.entity.User;
+import br.com.redae.user.entity.User;
 import java.util.UUID;
 
 public record UserResponse(UUID id, String name, String email, String role, boolean emailVerified) {

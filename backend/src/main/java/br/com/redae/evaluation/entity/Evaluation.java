@@ -1,6 +1,6 @@
 package br.com.redae.evaluation.entity;
 
-import br.com.redae.identity.entity.User;
+import br.com.redae.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -3,8 +3,9 @@ package br.com.redae.evaluation.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import br.com.redae.ai.client.AIClient;
 import br.com.redae.evaluation.entity.Evaluation;
-import br.com.redae.identity.entity.User;
+import br.com.redae.user.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

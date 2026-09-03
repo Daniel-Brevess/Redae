@@ -11,7 +11,9 @@
 
 ## Resumo da solução
 
-O Redaê usa um frontend React, TypeScript, Vite e Tailwind CSS, consumindo um backend Spring Boot em monólito modular. O backend possui os módulos `identity`, `auth`, `essays`, `processing`, `evaluation`, `history` e `support`, organizados internamente em camadas de controller, service, repository, DTO, entity e config.
+O Redaê usa um frontend React, TypeScript, Vite e Tailwind CSS, consumindo um backend Spring Boot em monólito modular. O backend possui os módulos `user`, `auth`, `evaluation`, `ai` e `shared`, organizados internamente em camadas de controller, service, repository, DTO, entity e config quando aplicável.
+
+O módulo `user` concentra a identidade e os perfis. O módulo `evaluation` concentra o ciclo de avaliação e seu processamento. O módulo `ai` contém a abstração `AIClient` e os adaptadores dos provedores, mantendo a avaliação dependente da interface em vez de um provedor específico. O módulo `shared` reúne componentes transversais.
 
 O PostgreSQL é a fonte oficial dos dados persistentes. O Gemini é o provedor inicial de IA para transcrição e avaliação. Imagens são temporárias, OCR e avaliação são assíncronos, e o frontend acompanha o processamento por polling.
 

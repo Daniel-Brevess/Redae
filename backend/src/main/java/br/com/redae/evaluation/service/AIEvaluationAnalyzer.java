@@ -1,5 +1,6 @@
 package br.com.redae.evaluation.service;
 
+import br.com.redae.ai.client.AIClient;
 import br.com.redae.evaluation.entity.Evaluation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.Normalizer;

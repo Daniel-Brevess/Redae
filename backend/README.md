@@ -8,13 +8,11 @@ Cada módulo de domínio possui camadas próprias:
 
 ```text
 src/main/java/br/com/redae/
-├── identity/     # estudantes, administradores e perfis
+├── user/         # identidade, estudantes, administradores e perfis
 ├── auth/         # autenticação, sessões e autorização
-├── essays/       # redações e ciclo de vida
-├── processing/   # processamento técnico temporário
-├── evaluation/   # notas e feedback
-├── history/      # histórico e progresso
-└── support/      # suporte ao estudante
+├── evaluation/   # redações, processamento, notas e feedback
+├── ai/           # abstração e adaptadores dos provedores de IA
+└── shared/       # componentes transversais
 ```
 
 As camadas são `controller`, `service`, `repository`, `dto`, `entity` e `config`.

@@ -7,7 +7,7 @@ import br.com.redae.evaluation.entity.CompetencyScore;
 import br.com.redae.evaluation.entity.Evaluation;
 import br.com.redae.evaluation.entity.EvaluationType;
 import br.com.redae.evaluation.entity.FeedbackItem;
-import br.com.redae.identity.entity.User;
+import br.com.redae.user.entity.User;
 import org.junit.jupiter.api.Test;
 
 class EvaluationResponseTest {
