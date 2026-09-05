@@ -10,6 +10,7 @@ backend/src/main/java/br/com/redae/
 ├── auth/       # autenticação, sessões e autorização
 ├── evaluation/ # redação, processamento, notas e feedback
 ├── ai/         # contrato AIClient e adaptadores de provedores
+├── gateway/    # pagamentos, webhooks e créditos
 └── shared/     # componentes transversais
 ```
 
@@ -22,6 +23,7 @@ Cada módulo usa camadas internas quando necessárias: `controller`, `service`, 
 - **User:** entidade do usuário, perfil e papéis.
 - **Evaluation:** ciclo de vida da redação, regras de diagnóstico, processamento, nota e feedback.
 - **AI:** abstração `AIClient` e clientes específicos de provedores, como Gemini. A avaliação depende da interface, não do provedor.
+- **Gateway:** integração com provedores de pagamento, recebimento de webhooks, compras e transações de créditos. O módulo será organizado em `controller`, `service`, `client`, `dto`, `entity` e `repository`.
 - **Shared:** erros públicos, trace ID, respostas comuns e componentes transversais.
 - **PostgreSQL:** usuários, redações confirmadas, avaliações, resultados, créditos e compras.
 

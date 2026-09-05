@@ -25,11 +25,11 @@ protecao contra envio duplicado e retry explicito em falhas.
 
 ## 2. Diagnóstico gratuito de uso único
 
-- [ ] Identificar no backend se o usuário já utilizou o diagnóstico.
-- [ ] Permitir somente o primeiro diagnóstico gratuitamente.
+- [x] Identificar no backend se o usuário já utilizou o diagnóstico.
+- [x] Permitir somente o primeiro diagnóstico gratuitamente.
 - [ ] Bloquear novos envios sem crédito.
-- [ ] Usar saldo ou regra simulada enquanto créditos reais não forem implementados.
-- [ ] Manter o diagnóstico inicial sem exigir compra ou saldo.
+- [x] Usar saldo ou regra simulada enquanto créditos reais não forem implementados.
+- [x] Manter o diagnóstico inicial sem exigir compra ou saldo.
 
 ## 3. Resultado resumido do diagnóstico
 
