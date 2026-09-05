@@ -43,12 +43,16 @@ Estados: `PENDENTE`, `PROCESSANDO`, `CONCLUIDA` e `FALHOU`. O resultado concluí
 |---|---|---|
 | GET | `/credit-balance` | saldo derivado do ledger |
 | GET | `/credit-offers` | ofertas ativas |
-| POST | `/purchases` | inicia compra livre ou por oferta |
+| POST | `/purchases` | inicia compra personalizada informando somente a quantidade de créditos |
 | GET | `/purchases/{purchaseId}` | consulta compra autorizada |
 | POST | `/webhooks/mercadopago` | confirma pagamento de forma autenticada e idempotente |
 | POST | `/admin/credit-adjustments` | ajuste exclusivo de administrador |
 
 Somente pagamento aprovado credita o usuário. Estornos e ajustes geram transações auditáveis.
+
+Na compra personalizada, o corpo da requisição contém apenas a quantidade de
+créditos desejada. O backend busca o preço vigente e calcula o valor total; o
+frontend não pode definir o preço.
 
 ## Upload e limites
 

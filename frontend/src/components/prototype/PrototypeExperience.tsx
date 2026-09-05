@@ -893,14 +893,80 @@ function toEvaluationResult(evaluation: Evaluation): EvaluationResult {
 }
 
 function CreditsScreen() {
-  return (
+  return <CustomCreditsScreen /> /*
     <InfoScreen
       eyebrow="Seu saldo"
       title="Créditos para continuar praticando."
       description="No produto completo, esta área mostrará seu saldo, ofertas e histórico de compras. A compra de créditos fica para uma próxima etapa."
     />
+  ) */
+}
+function CustomCreditsScreen() {
+  const [creditAmount, setCreditAmount] = useState('')
+  const [message, setMessage] = useState<string | null>(null)
+
+  const submitPurchase = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setMessage('A compra será conectada ao pagamento na próxima etapa.')
+  }
+
+  return (
+    <div className="prototype-content credits-content">
+      <section className="simple-screen-heading">
+        <p className="prototype-eyebrow">Seu saldo</p>
+        <h1>Créditos para continuar praticando.</h1>
+        <p className="prototype-lede">
+          Escolha quantos créditos você quer comprar e continue evoluindo com avaliações completas.
+        </p>
+      </section>
+      <form className="credit-purchase-card" onSubmit={submitPurchase}>
+        <div>
+          <span className="prototype-icon prototype-icon-green" aria-hidden="true">
+            +
+          </span>
+          <p className="prototype-eyebrow">Compra personalizada</p>
+          <h2>Quantos créditos você precisa?</h2>
+          <p className="credit-purchase-description">
+            Informe a quantidade desejada. O valor será calculado pelo sistema na confirmação da
+            compra.
+          </p>
+        </div>
+        <div className="credit-purchase-field">
+          <label htmlFor="credit-amount">Quantidade de créditos</label>
+          <input
+            id="credit-amount"
+            type="number"
+            min="1"
+            max="1000"
+            step="1"
+            inputMode="numeric"
+            placeholder="Ex.: 10"
+            value={creditAmount}
+            onChange={(event) => {
+              setCreditAmount(event.target.value)
+              setMessage(null)
+            }}
+            required
+          />
+          <span>Escolha entre 1 e 1.000 créditos.</span>
+        </div>
+        <div className="credit-purchase-summary">
+          <span>Valor da compra</span>
+          <strong>A calcular</strong>
+        </div>
+        <button className="primary-button" type="submit">
+          Comprar créditos <span aria-hidden="true">→</span>
+        </button>
+        {message && (
+          <p className="credit-purchase-message" role="status">
+            {message}
+          </p>
+        )}
+      </form>
+    </div>
   )
 }
+
 function ProfileScreen({ user }: { user: User | null }) {
   return (
     <div className="prototype-content">
@@ -919,7 +985,7 @@ function ProfileScreen({ user }: { user: User | null }) {
   )
 }
 
-function InfoScreen({
+export function InfoScreen({
   eyebrow,
   title,
   description,
