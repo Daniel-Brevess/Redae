@@ -1,8 +1,7 @@
 package br.com.redae.gateway.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import java.math.BigDecimal;
 
-public record CreatePaymentRequest(
-    @NotNull @Positive Integer creditAmount, @NotNull @Positive BigDecimal amount) {}
+public record CreatePaymentRequest(@NotNull @Min(1) @Max(1000) Integer creditAmount) {}
