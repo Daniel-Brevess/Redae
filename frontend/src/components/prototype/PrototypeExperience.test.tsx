@@ -1,10 +1,13 @@
-import { render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PrototypeExperience } from './PrototypeExperience'
 
 describe('prototype main evaluation flow', () => {
-  afterEach(() => vi.unstubAllGlobals())
+  afterEach(() => {
+    cleanup()
+    vi.unstubAllGlobals()
+  })
 
   it('sends a confirmed typed essay to the evaluations API', async () => {
     const fetchMock = vi.fn().mockResolvedValue(
@@ -51,5 +54,47 @@ describe('prototype main evaluation flow', () => {
         }),
       }),
     )
+  })
+
+  it('offers a retry after the submission fails', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('Falha temporaria'))
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            data: {
+              id: 'evaluation-2',
+              theme: 'Tema de teste',
+              type: 'DIAGNOSTICO',
+              origin: 'DIGITADA',
+              status: 'PROCESSANDO',
+              createdAt: '2026-08-27T12:00:00Z',
+            },
+            meta: {},
+            traceId: 'test-trace',
+          }),
+          { status: 201, headers: { 'Content-Type': 'application/json' } },
+        ),
+      )
+    vi.stubGlobal('fetch', fetchMock)
+
+    const user = userEvent.setup()
+    render(<PrototypeExperience onExit={() => undefined} />)
+
+    await user.click(screen.getByRole('button', { name: /Come/ }))
+    await user.click(screen.getByRole('button', { name: /Escrever/ }))
+    await user.type(
+      screen.getByLabelText(/Sua/),
+      'A educaÃ§Ã£o transforma oportunidades quando oferece ferramentas para que cada pessoa participe das decisÃµes da sociedade.',
+    )
+    await user.click(screen.getByRole('button', { name: /Revisar/ }))
+    await user.click(screen.getByRole('button', { name: /Confirmar/ }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Falha temporaria')
+    await user.click(screen.getByRole('button', { name: /Tentar novamente/ }))
+
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(await screen.findByRole('status')).toBeInTheDocument()
   })
 })

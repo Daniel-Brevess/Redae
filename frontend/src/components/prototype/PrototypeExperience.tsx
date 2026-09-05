@@ -12,6 +12,10 @@ import { useAuth, useOptionalAuth } from '../../auth/AuthContext'
 
 type PrototypeExperienceProps = { onExit: () => void; user?: User | null }
 
+const EVALUATION_POLL_INTERVAL_MS = 2000
+const EVALUATION_PROCESSING_TIMEOUT_MS = 120000
+type ProcessingStatus = 'PENDENTE' | 'PROCESSANDO'
+
 export function PrototypeExperience({ onExit, user = null }: PrototypeExperienceProps) {
   const [screen, setScreen] = useState<PrototypeScreen>('home')
   const [step, setStep] = useState<EvaluationStep | null>(null)
@@ -21,6 +25,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [evaluationId, setEvaluationId] = useState<string | null>(null)
+  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>('PROCESSANDO')
   const [history, setHistory] = useState<Evaluation[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [openingEvaluationId, setOpeningEvaluationId] = useState<string | null>(null)
@@ -44,6 +49,8 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   }
 
   const submitEvaluation = async () => {
+    if (submitting || step === 'processing') return
+
     setSubmitting(true)
     setSubmitError(null)
     try {
@@ -53,6 +60,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
         auth?.accessToken ?? undefined,
       )
       setEvaluationId(response.data.id)
+      setProcessingStatus(response.data.status === 'PENDENTE' ? 'PENDENTE' : 'PROCESSANDO')
       setStep('processing')
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Não foi possível enviar a redação.')
@@ -61,9 +69,16 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     }
   }
 
+  const retryEvaluation = async () => {
+    setSubmitError(null)
+    await submitEvaluation()
+  }
+
   useEffect(() => {
     if (!evaluationId || !auth?.accessToken || step !== 'processing') return
     let active = true
+    let timeoutId: number | null = null
+    const deadline = Date.now() + EVALUATION_PROCESSING_TIMEOUT_MS
     const poll = async () => {
       try {
         const response = await getEvaluation(evaluationId, auth.accessToken ?? undefined)
@@ -78,7 +93,15 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
           )
           setStep('confirmation')
         } else {
-          window.setTimeout(poll, 2000)
+          setProcessingStatus(response.data.status)
+          if (Date.now() >= deadline) {
+            setSubmitError(
+              'A avaliação está demorando mais que o esperado. Tente novamente em instantes.',
+            )
+            setStep('confirmation')
+            return
+          }
+          timeoutId = window.setTimeout(() => void poll(), EVALUATION_POLL_INTERVAL_MS)
         }
       } catch {
         if (active) {
@@ -90,6 +113,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     void poll()
     return () => {
       active = false
+      if (timeoutId !== null) window.clearTimeout(timeoutId)
     }
   }, [auth?.accessToken, evaluationId, step])
 
@@ -127,6 +151,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     try {
       const response = await getEvaluation(evaluation.id, auth.accessToken)
       setEvaluationId(response.data.id)
+      setProcessingStatus(response.data.status === 'PENDENTE' ? 'PENDENTE' : 'PROCESSANDO')
       if (response.data.status === 'CONCLUIDA') {
         setResult(toEvaluationResult(response.data))
         setStep('result')
@@ -169,6 +194,8 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
           onSubmit={submitEvaluation}
           submitError={submitError}
           submitting={submitting}
+          processingStatus={processingStatus}
+          onRetry={retryEvaluation}
           onHome={goHome}
         />
       )}
@@ -273,6 +300,8 @@ type HomeScreenProps = {
   onSubmit: () => Promise<void>
   submitError: string | null
   submitting: boolean
+  processingStatus: ProcessingStatus
+  onRetry: () => Promise<void>
   onHome: () => void
 }
 
@@ -290,6 +319,8 @@ function HomeScreen({
   onSubmit,
   submitError,
   submitting,
+  processingStatus,
+  onRetry,
   onHome,
 }: HomeScreenProps) {
   if (step === 'choice') return <ChoiceStep onEditor={onEditor} onBack={onHome} />
@@ -314,10 +345,13 @@ function HomeScreen({
         onBack={onEditor}
         error={submitError}
         submitting={submitting}
+        onRetry={onRetry}
       />
     )
   }
-  if (step === 'processing') return <ProcessingStep onBack={onHome} />
+  if (step === 'processing') {
+    return <ProcessingStep status={processingStatus} onBack={onHome} />
+  }
   if (step === 'result' && result) return <ResultStep result={result} onHome={onHome} />
 
   return <DashboardScreen user={user} result={result} onStart={onStart} />
@@ -514,6 +548,7 @@ function ConfirmationStep({
   onBack,
   error,
   submitting,
+  onRetry,
 }: {
   theme: string
   text: string
@@ -521,6 +556,7 @@ function ConfirmationStep({
   onBack: () => void
   error: string | null
   submitting: boolean
+  onRetry: () => Promise<void>
 }) {
   return (
     <FlowFrame
@@ -537,7 +573,13 @@ function ConfirmationStep({
       </div>
       <div className="form-actions">
         <BackButton onClick={onBack} />
-        <button className="primary-button" type="button" onClick={onSubmit} disabled={submitting}>
+        <button
+          className="primary-button"
+          type="button"
+          aria-label={error ? 'Tentar novamente' : 'Confirmar e avaliar'}
+          onClick={error ? onRetry : onSubmit}
+          disabled={submitting}
+        >
           Confirmar e avaliar <span aria-hidden="true">→</span>
         </button>
       </div>
@@ -550,7 +592,9 @@ function ConfirmationStep({
   )
 }
 
-function ProcessingStep({ onBack }: { onBack: () => void }) {
+function ProcessingStep({ status, onBack }: { status: ProcessingStatus; onBack: () => void }) {
+  const processingMessage =
+    status === 'PENDENTE' ? '\u0041guardando in\u00edcio da an\u00e1lise' : 'Analisando seu texto'
   return (
     <FlowFrame
       eyebrow="Avaliação em andamento"
@@ -560,7 +604,7 @@ function ProcessingStep({ onBack }: { onBack: () => void }) {
     >
       <div className="processing-card" role="status" aria-live="polite">
         <span className="processing-spinner" aria-hidden="true" />
-        <strong>Analisando seu texto</strong>
+        <strong>{processingMessage}</strong>
         <p>Organizando seu diagnóstico por competência.</p>
       </div>
     </FlowFrame>
