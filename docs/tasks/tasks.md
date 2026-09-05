@@ -17,11 +17,11 @@ protecao contra envio duplicado e retry explicito em falhas.
 
 ## 1. Estados do processamento
 
-- [ ] Exibir carregamento enquanto a IA processa a avaliação.
-- [ ] Consultar o status da avaliação no frontend.
-- [ ] Atualizar a tela até a avaliação ser concluída ou falhar.
-- [ ] Exibir mensagem clara em caso de falha.
-- [ ] Evitar que o usuário interprete o processamento como travado.
+- [x] Exibir carregamento enquanto a IA processa a avaliação.
+- [x] Consultar o status da avaliação no frontend.
+- [x] Atualizar a tela até a avaliação ser concluída ou falhar.
+- [x] Exibir mensagem clara em caso de falha.
+- [x] Evitar que o usuário interprete o processamento como travado.
 
 ## 2. Diagnóstico gratuito de uso único
 
@@ -33,35 +33,35 @@ protecao contra envio duplicado e retry explicito em falhas.
 
 ## 3. Resultado resumido do diagnóstico
 
-- [ ] Exibir a nota geral.
-- [ ] Exibir poucos apontamentos resumidos.
+- [x] Exibir a nota geral.
+- [x] Exibir poucos apontamentos resumidos.
 - [ ] Exibir pontos fortes.
 - [ ] Exibir uma orientação inicial de melhoria.
-- [ ] Ocultar exemplos, evidências e feedbacks completos.
+- [x] Ocultar exemplos, evidências e feedbacks completos na interface.
 - [ ] Exibir chamada para compra de créditos.
 - [ ] Informar que a nota é automática e estimada.
 
 ## 4. Avaliação completa
 
-- [ ] Permitir iniciar uma avaliação completa.
+- [x] Permitir iniciar uma avaliação completa.
 - [ ] Validar a disponibilidade de crédito.
-- [ ] Processar a redação pelas competências C1, C2, C3, C4 e C5.
-- [ ] Exibir a nota de cada competência.
-- [ ] Exibir a nota geral.
-- [ ] Exibir erros, trechos, explicações, dicas e exemplos.
-- [ ] Garantir que o resultado completo não seja exibido para um diagnóstico.
-- [ ] Garantir que respostas inválidas da IA não sejam persistidas como concluídas.
+- [x] Processar a redação pelas competências C1, C2, C3, C4 e C5.
+- [x] Exibir a nota de cada competência.
+- [x] Exibir a nota geral.
+- [x] Exibir erros, trechos, explicações, dicas e exemplos.
+- [x] Garantir que o resultado completo não seja exibido para um diagnóstico.
+- [x] Garantir que respostas inválidas da IA não sejam persistidas como concluídas.
 
 ## 5. Histórico de avaliações
 
-- [ ] Listar as avaliações do usuário autenticado.
-- [ ] Exibir tema, data, nota, status e tipo.
-- [ ] Diferenciar `DIAGNOSTICO` e `COMPLETA`.
-- [ ] Permitir abrir uma avaliação pelo histórico.
-- [ ] Exibir a redação salva.
-- [ ] Exibir o resultado correspondente ao tipo da avaliação.
+- [x] Listar as avaliações do usuário autenticado.
+- [x] Exibir tema, data, nota, status e tipo.
+- [x] Diferenciar `DIAGNOSTICO` e `COMPLETA`.
+- [x] Permitir abrir uma avaliação pelo histórico.
+- [x] Exibir a redação salva.
+- [x] Exibir o resultado correspondente ao tipo da avaliação.
 - [ ] Tratar avaliações pendentes, processando e falhas.
-- [ ] Garantir que o usuário não acesse avaliações de outra conta.
+- [x] Garantir que o usuário não acesse avaliações de outra conta.
 
 ## 6. Progresso básico
 
@@ -95,7 +95,7 @@ protecao contra envio duplicado e retry explicito em falhas.
 - [ ] Atualizar os contratos HTTP e a documentação da API.
 - [ ] Adicionar testes frontend de carregamento, erro, bloqueio e resultados.
 - [ ] Adicionar testes backend para tipo, acesso e regra de diagnóstico.
-- [ ] Executar testes, lint, typecheck, build e verificações de formatação.
+- [x] Executar testes, lint, typecheck, build e verificações de formatação.
 - [ ] Construir as imagens Docker.
 - [ ] Validar as migrações em um banco limpo.
 - [ ] Confirmar que nenhum segredo foi versionado.

@@ -7,6 +7,7 @@ const feedback: EvaluationResult['competencies'] = [
     score: 160,
     summary: 'Seu texto mantém boa clareza e estrutura sintática.',
     detail: 'Revise períodos longos e observe a pontuação nas frases com mais de uma ideia.',
+    feedbackItems: [],
   },
   {
     code: 'C2',
@@ -14,6 +15,7 @@ const feedback: EvaluationResult['competencies'] = [
     score: 180,
     summary: 'Você desenvolveu o tema sem fugir da proposta.',
     detail: 'Continue conectando cada argumento ao recorte central do tema para ganhar precisão.',
+    feedbackItems: [],
   },
   {
     code: 'C3',
@@ -21,6 +23,7 @@ const feedback: EvaluationResult['competencies'] = [
     score: 160,
     summary: 'Os argumentos são relevantes e sustentam seu ponto de vista.',
     detail: 'Inclua dados, repertórios ou exemplos mais específicos para fortalecer a autoria.',
+    feedbackItems: [],
   },
   {
     code: 'C4',
@@ -28,6 +31,7 @@ const feedback: EvaluationResult['competencies'] = [
     score: 180,
     summary: 'As ideias avançam com uma sequência fácil de acompanhar.',
     detail: 'Varie os conectivos entre parágrafos para deixar as relações ainda mais explícitas.',
+    feedbackItems: [],
   },
   {
     code: 'C5',
@@ -35,6 +39,7 @@ const feedback: EvaluationResult['competencies'] = [
     score: 160,
     summary: 'Sua proposta apresenta ação e objetivo bem definidos.',
     detail: 'Detalhe melhor o modo de execução para tornar a intervenção mais concreta.',
+    feedbackItems: [],
   },
 ]
 

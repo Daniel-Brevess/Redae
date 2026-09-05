@@ -56,6 +56,15 @@ describe('prototype main evaluation flow', () => {
     )
   })
 
+  it('opens the complete evaluation flow from the header', async () => {
+    const user = userEvent.setup()
+    render(<PrototypeExperience onExit={() => undefined} />)
+
+    await user.click(screen.getByRole('button', { name: 'Avaliação completa' }))
+
+    expect(screen.getByRole('heading', { name: /Como você quer começar/ })).toBeInTheDocument()
+  })
+
   it('offers a retry after the submission fails', async () => {
     const fetchMock = vi
       .fn()

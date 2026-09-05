@@ -173,6 +173,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
         setStep(null)
         setScreen(nextScreen)
       }}
+      onStartComplete={() => startEvaluation()}
       onExit={onExit}
       user={user}
     >
@@ -688,7 +689,38 @@ function ResultStep({ result, onHome }: { result: EvaluationResult; onHome: () =
               </button>
               {expanded === item.code && (
                 <div className="competency-detail">
-                  <p>{item.detail || 'Nenhum apontamento relevante foi identificado.'}</p>
+                  {result.type === 'COMPLETA' && item.feedbackItems.length > 0 ? (
+                    <div className="feedback-list">
+                      {item.feedbackItems.map((feedback, index) => (
+                        <article className="feedback-item" key={`${item.code}-${index}`}>
+                          <p>
+                            <strong>Problema:</strong> {feedback.problem}
+                          </p>
+                          {feedback.excerpt && (
+                            <p>
+                              <strong>Trecho:</strong> “{feedback.excerpt}”
+                            </p>
+                          )}
+                          <p>
+                            <strong>Explicação:</strong> {feedback.explanation}
+                          </p>
+                          <p>
+                            <strong>Como melhorar:</strong> {feedback.howToImprove}
+                          </p>
+                          <p>
+                            <strong>Exemplo:</strong> {feedback.example}
+                          </p>
+                          {feedback.limitation && (
+                            <p>
+                              <strong>Observação:</strong> {feedback.limitation}
+                            </p>
+                          )}
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>{item.detail || 'Nenhum apontamento relevante foi identificado.'}</p>
+                  )}
                   {result.type === 'DIAGNOSTICO' && (
                     <p className="field-hint">
                       Para receber todos os detalhes, faça uma avaliação completa.
@@ -842,11 +874,20 @@ function toEvaluationResult(evaluation: Evaluation): EvaluationResult {
       title: titles[competency.code] ?? competency.code,
       score: competency.points,
       summary: competency.summary,
+      feedbackItems:
+        evaluation.type === 'COMPLETA'
+          ? competency.feedbackItems.map((feedback) => ({
+              excerpt: feedback.excerpt,
+              problem: feedback.problem,
+              explanation: feedback.explanation,
+              howToImprove: feedback.howToImprove,
+              example: feedback.example,
+              limitation: feedback.limitation,
+            }))
+          : [],
       detail:
         competency.feedbackItems.length > 0
-          ? competency.feedbackItems
-              .map((feedback) => `${feedback.problem} ${feedback.howToImprove}`)
-              .join(' ')
+          ? competency.feedbackItems.map((feedback) => feedback.problem).join(' ')
           : competency.highlights.join(' '),
     })),
   }

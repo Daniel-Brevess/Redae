@@ -7,6 +7,16 @@ export type CompetencyFeedback = {
   score: number
   summary: string
   detail: string
+  feedbackItems: CompetencyFeedbackItem[]
+}
+
+export type CompetencyFeedbackItem = {
+  excerpt: string | null
+  problem: string
+  explanation: string
+  howToImprove: string
+  example: string
+  limitation: string | null
 }
 
 export type EvaluationResult = {
