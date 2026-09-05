@@ -6,7 +6,6 @@ import type { User } from '../../api/authApi'
 type PrototypeShellProps = {
   activeScreen: PrototypeScreen
   onNavigate: (screen: PrototypeScreen) => void
-  onStartComplete: () => void
   onExit: () => void
   user: User | null
   children: ReactNode
@@ -15,7 +14,6 @@ type PrototypeShellProps = {
 export function PrototypeShell({
   activeScreen,
   onNavigate,
-  onStartComplete,
   onExit,
   user,
   children,
@@ -44,13 +42,6 @@ export function PrototypeShell({
               {item.label}
             </button>
           ))}
-          <button
-            className="prototype-nav-link prototype-nav-link-complete"
-            type="button"
-            onClick={onStartComplete}
-          >
-            Avaliação completa
-          </button>
         </nav>
         <div className="prototype-user-actions">
           <button

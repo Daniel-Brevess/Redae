@@ -173,7 +173,6 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
         setStep(null)
         setScreen(nextScreen)
       }}
-      onStartComplete={() => startEvaluation()}
       onExit={onExit}
       user={user}
     >
