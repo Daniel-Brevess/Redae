@@ -63,7 +63,10 @@ A resposta da IA é validada antes da persistência. Nota fora da escala, compet
 
 ## Persistência
 
-Entidades principais: `User`, `Evaluation`, `CompetencyScore`, `FeedbackItem`, `CreditPurchase`, `CreditOffer`, `CreditPrice` e `CreditTransaction`.
+Entidades principais: `User`, `Evaluation`, `CompetencyScore`, `FeedbackItem` e
+`PaymentTransaction`. As entidades de oferta, preço e ledger de créditos serão
+adicionadas ao módulo `gateway` conforme as regras de compra e consumo forem
+implementadas.
 
 - uma avaliação pertence a um usuário;
 - uma avaliação possui notas C1–C5;

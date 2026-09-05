@@ -45,7 +45,7 @@ Estados: `PENDENTE`, `PROCESSANDO`, `CONCLUIDA` e `FALHOU`. O resultado concluí
 | GET | `/credit-offers` | ofertas ativas |
 | POST | `/purchases` | inicia compra livre ou por oferta |
 | GET | `/purchases/{purchaseId}` | consulta compra autorizada |
-| POST | `/webhooks/abacatepay` | confirma pagamento de forma autenticada e idempotente |
+| POST | `/webhooks/mercadopago` | confirma pagamento de forma autenticada e idempotente |
 | POST | `/admin/credit-adjustments` | ajuste exclusivo de administrador |
 
 Somente pagamento aprovado credita o usuário. Estornos e ajustes geram transações auditáveis.
