@@ -110,6 +110,16 @@ public class PaymentTransaction {
     return createdAt;
   }
 
+  public void markPending(String externalReference) {
+    this.externalReference = externalReference;
+    this.status = PaymentTransactionStatus.PENDENTE;
+  }
+
+  public void markPaid() {
+    this.status = PaymentTransactionStatus.PAGA;
+    this.paidAt = Instant.now();
+  }
+
   @PrePersist
   void onCreate() {
     Instant now = Instant.now();

@@ -136,6 +136,13 @@ transação local, o provedor cria o pagamento, o usuário paga via Pix e o
 webhook dispara a confirmação. A diferença fica na integração específica com
 o Mercado Pago, nos status retornados e na validação da notificação.
 
+Para desenvolvimento local, `PAYMENT_PROVIDER=fake` seleciona o
+`FakePaymentGatewayClient`. Ele gera uma referência fictícia e aprova a
+transação imediatamente, sem checkout ou chamada externa. Esse modo serve
+apenas para validar o fluxo da API e não substitui o webhook nem a integração
+real. O ledger de créditos ainda será implementado antes da concessão efetiva
+de saldo ao usuário.
+
 Referências oficiais:
 
 - [SDKs oficiais e dependência Maven do Mercado Pago](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/configure-development-enviroment);

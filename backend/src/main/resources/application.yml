@@ -49,3 +49,6 @@ ai:
 
 evaluation:
   require-credit-for-complete: ${EVALUATION_REQUIRE_CREDIT_FOR_COMPLETE:false}
+
+payment:
+  provider: ${PAYMENT_PROVIDER:fake}

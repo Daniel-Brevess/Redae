@@ -4,6 +4,7 @@ import br.com.redae.ai.client.AIClient;
 import br.com.redae.auth.repository.EmailVerificationTokenRepository;
 import br.com.redae.auth.repository.SessionRepository;
 import br.com.redae.evaluation.repository.EvaluationRepository;
+import br.com.redae.gateway.repository.PaymentTransactionRepository;
 import br.com.redae.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ class RedaeApplicationTests {
   @MockBean SessionRepository sessionRepository;
   @MockBean EmailVerificationTokenRepository emailVerificationTokenRepository;
   @MockBean EvaluationRepository evaluationRepository;
+  @MockBean PaymentTransactionRepository paymentTransactionRepository;
   @MockBean AIClient aiClient;
 
   @Test
