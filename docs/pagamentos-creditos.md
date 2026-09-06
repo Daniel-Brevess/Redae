@@ -3,7 +3,7 @@
 ## Objetivo
 
 Permitir que o usuário compre um crédito individual ou um pacote de créditos
-por PIX e receba os créditos após a confirmação do pagamento pelo Mercado Pago.
+por PIX e receba os créditos após a confirmação do pagamento pela Stripe.
 
 ## Fluxo principal
 
@@ -14,7 +14,7 @@ Frontend solicita a criação da cobrança
         ↓
 Backend cria a transação local como PENDENTE
         ↓
-Backend solicita a cobrança PIX ao Mercado Pago
+Backend solicita a cobrança PIX à Stripe
         ↓
 Backend salva o identificador externo da cobrança
         ↓
@@ -24,7 +24,7 @@ Frontend exibe os dados do PIX
         ↓
 Usuário realiza o pagamento
         ↓
-Mercado Pago envia um webhook
+Stripe envia um webhook
         ↓
 Backend valida e normaliza o webhook
         ↓
@@ -50,48 +50,48 @@ gateway.
 
 - validar o pacote escolhido;
 - criar e persistir a transação;
-- solicitar a cobrança ao Mercado Pago;
+- solicitar a cobrança à Stripe;
 - armazenar o identificador externo;
 - receber e validar o webhook;
 - atualizar o status da transação;
 - adicionar os créditos somente após confirmação válida;
 - impedir o processamento duplicado do mesmo webhook.
 
-### MercadoPagoClient
+### StripeClient
 
-O cliente do Mercado Pago ficará atrás da interface `PaymentGatewayProvider` e
+O cliente da Stripe ficará atrás da interface `PaymentGatewayProvider` e
 será responsável por:
 
 - criar pagamentos PIX usando o SDK Java oficial;
 - retornar os dados necessários para o checkout;
 - validar a autenticidade dos webhooks;
-- consultar o pagamento no Mercado Pago a partir do identificador recebido;
+- consultar o pagamento na Stripe a partir do identificador recebido;
 - converter os status do provedor para o estado interno da transação.
 
 O controller do webhook receberá a requisição HTTP e delegará o processamento ao
 cliente e ao service. As regras de negócio não ficarão no controller.
 
-## SDK Java e configuração do Mercado Pago
+## SDK Java e configuração da Stripe
 
-Para a implementação Java, será utilizada a biblioteca oficial do Mercado Pago
+Para a implementação Java, será utilizada a biblioteca oficial da Stripe
 como dependência Maven. A documentação oficial apresenta esta referência:
 
 ```xml
 <dependency>
-  <groupId>com.mercadopago</groupId>
+  <groupId>com.stripe</groupId>
   <artifactId>sdk-java</artifactId>
   <version>2.1.7</version>
 </dependency>
 ```
 
 Durante a implementação, a versão será confirmada na documentação oficial e
-fixada no `pom.xml`. O `MercadoPagoClient` deverá configurar o SDK com o token
+fixada no `pom.xml`. O `StripeClient` deverá configurar o SDK com a chave
 de acesso por variável de ambiente. O token nunca será salvo no banco, enviado
 ao frontend ou versionado.
 
-Também será necessário configurar no painel do Mercado Pago as notificações
+Também será necessário configurar no painel da Stripe as notificações
 HTTPS para o endpoint de webhook da aplicação. O Pix exige que as chaves Pix
-estejam cadastradas na conta do Mercado Pago.
+estejam cadastradas na conta da Stripe.
 
 ## Estados da transação
 
@@ -118,7 +118,7 @@ webhook recebido mais de uma vez não pode gerar créditos novamente.
 
 ## Segurança
 
-- o token de acesso do Mercado Pago ficará somente no backend;
+- a chave secreta da Stripe ficará somente no backend;
 - webhooks deverão ser validados antes de alterar a transação;
 - o retorno do usuário ao frontend não será considerado confirmação de pagamento;
 - transações deverão ser associadas ao usuário autenticado;
@@ -128,13 +128,13 @@ webhook recebido mais de uma vez não pode gerar créditos novamente.
 ## Estado atual
 
 O módulo `gateway` possui somente a estrutura inicial de pacotes. A entidade,
-o repository, o service, o `MercadoPagoClient`, os endpoints e as migrations
+o repository, o service, o `StripeClient`, os endpoints e as migrations
 ainda serão implementados por partes.
 
 O fluxo segue a mesma separação planejada anteriormente: a aplicação cria a
 transação local, o provedor cria o pagamento, o usuário paga via Pix e o
 webhook dispara a confirmação. A diferença fica na integração específica com
-o Mercado Pago, nos status retornados e na validação da notificação.
+a Stripe, nos status retornados e na validação da notificação.
 
 Para desenvolvimento local, `PAYMENT_PROVIDER=fake` seleciona o
 `FakePaymentGatewayClient`. Ele gera uma referência fictícia e aprova a
@@ -145,6 +145,6 @@ de saldo ao usuário.
 
 Referências oficiais:
 
-- [SDKs oficiais e dependência Maven do Mercado Pago](https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-preferences/configure-development-enviroment);
-- [Integração de pagamentos Pix](https://www.mercadopago.com.br/developers/pt/docs/checkout-api-orders/payment-integration/pix);
-- [Configuração de notificações Webhooks](https://www.mercadopago.com.br/developers/pt/docs/checkout-api-orders/notifications).
+- [SDK Java oficial da Stripe](https://github.com/stripe/stripe-java);
+- [Integração de pagamentos Pix](https://docs.stripe.com/payments/pix);
+- [Validação de assinatura de Webhooks](https://docs.stripe.com/webhooks/signature).

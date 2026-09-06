@@ -7,7 +7,7 @@ import java.util.UUID;
 public class FakePaymentGatewayClient implements PaymentGatewayProvider {
   @Override
   public PaymentCreationResult createPixPayment(PaymentTransaction transaction) {
-    return new PaymentCreationResult("fake-" + UUID.randomUUID(), null, null, true);
+    return new PaymentCreationResult("fake-" + UUID.randomUUID(), null, null, null, true);
   }
 
   @Override

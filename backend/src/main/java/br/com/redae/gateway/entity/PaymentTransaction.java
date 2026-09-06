@@ -71,7 +71,7 @@ public class PaymentTransaction {
     this.amount = amount;
     this.currency = "BRL";
     this.status = PaymentTransactionStatus.CRIADA;
-    this.provider = PaymentProvider.MERCADO_PAGO;
+    this.provider = PaymentProvider.STRIPE;
   }
 
   public UUID getId() {
@@ -118,6 +118,10 @@ public class PaymentTransaction {
   public void markPaid() {
     this.status = PaymentTransactionStatus.PAGA;
     this.paidAt = Instant.now();
+  }
+
+  public void markFailed() {
+    this.status = PaymentTransactionStatus.FALHOU;
   }
 
   @PrePersist

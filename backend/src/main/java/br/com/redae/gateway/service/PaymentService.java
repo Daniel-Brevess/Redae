@@ -8,6 +8,7 @@ import br.com.redae.gateway.dto.PaymentTransactionResponse;
 import br.com.redae.gateway.entity.CreditTransaction;
 import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.entity.PaymentTransaction;
+import br.com.redae.gateway.entity.PaymentTransactionStatus;
 import br.com.redae.gateway.repository.CreditPriceRepository;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
 import br.com.redae.gateway.repository.PaymentTransactionRepository;
@@ -60,7 +61,7 @@ public class PaymentService {
           new CreditTransaction(user, transaction, transaction.getTotalCredits()));
     }
 
-    return PaymentResponse.from(paymentTransactionRepository.save(transaction));
+    return PaymentResponse.from(paymentTransactionRepository.save(transaction), payment);
   }
 
   @Transactional(readOnly = true)
@@ -76,5 +77,35 @@ public class PaymentService {
         creditTransactionRepository.sumQuantityByUserIdAndType(
             user.getId(), CreditTransactionType.COMPRA);
     return new CreditBalanceResponse(credits);
+  }
+
+  @Transactional
+  public void confirmPayment(String externalReference) {
+    PaymentTransaction transaction = findByExternalReference(externalReference);
+    if (transaction.getStatus() == PaymentTransactionStatus.PAGA) {
+      return;
+    }
+    transaction.markPaid();
+    if (!creditTransactionRepository.existsByPaymentTransactionId(transaction.getId())) {
+      creditTransactionRepository.save(
+          new CreditTransaction(transaction.getUser(), transaction, transaction.getTotalCredits()));
+    }
+    paymentTransactionRepository.save(transaction);
+  }
+
+  @Transactional
+  public void failPayment(String externalReference) {
+    PaymentTransaction transaction = findByExternalReference(externalReference);
+    if (transaction.getStatus() != PaymentTransactionStatus.PAGA) {
+      transaction.markFailed();
+      paymentTransactionRepository.save(transaction);
+    }
+  }
+
+  private PaymentTransaction findByExternalReference(String externalReference) {
+    return paymentTransactionRepository
+        .findByExternalReference(externalReference)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("A transação de pagamento não foi encontrada."));
   }
 }

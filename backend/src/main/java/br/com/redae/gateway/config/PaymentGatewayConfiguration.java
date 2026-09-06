@@ -1,8 +1,8 @@
 package br.com.redae.gateway.config;
 
 import br.com.redae.gateway.client.FakePaymentGatewayClient;
-import br.com.redae.gateway.client.MercadoPagoClient;
 import br.com.redae.gateway.client.PaymentGatewayProvider;
+import br.com.redae.gateway.client.StripeClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +11,10 @@ import org.springframework.context.annotation.Configuration;
 public class PaymentGatewayConfiguration {
   @Bean
   PaymentGatewayProvider paymentGatewayProvider(
-      @Value("${payment.provider:fake}") String provider) {
-    if ("mercadopago".equalsIgnoreCase(provider)) {
-      return new MercadoPagoClient();
+      @Value("${payment.provider:fake}") String provider,
+      @Value("${payment.stripe.secret-key:}") String stripeSecretKey) {
+    if ("stripe".equalsIgnoreCase(provider)) {
+      return new StripeClient(stripeSecretKey);
     }
     if ("fake".equalsIgnoreCase(provider)) {
       return new FakePaymentGatewayClient();

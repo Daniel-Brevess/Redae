@@ -43,7 +43,7 @@ class PaymentServiceTest {
     when(paymentTransactionRepository.save(any(PaymentTransaction.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
     when(paymentGatewayProvider.createPixPayment(any(PaymentTransaction.class)))
-        .thenReturn(new PaymentCreationResult("fake-reference", null, null, true));
+        .thenReturn(new PaymentCreationResult("fake-reference", null, null, null, true));
 
     var response = paymentService.create(user, request);
 
