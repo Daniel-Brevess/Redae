@@ -22,6 +22,7 @@ export function PrototypeShell({
     { id: 'home', label: 'Início' },
     { id: 'history', label: 'Histórico' },
     { id: 'credits', label: 'Créditos' },
+    { id: 'transactions', label: 'Transações' },
   ]
 
   return (

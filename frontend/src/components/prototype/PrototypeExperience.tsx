@@ -209,6 +209,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
         />
       )}
       {screen === 'credits' && <CreditsScreen />}
+      {screen === 'transactions' && <TransactionsScreen onNavigate={setScreen} />}
       {screen === 'profile' && <ProfileScreen user={user} />}
     </PrototypeShell>
   )
@@ -963,6 +964,28 @@ function CustomCreditsScreen() {
           </p>
         )}
       </form>
+    </div>
+  )
+}
+
+function TransactionsScreen({ onNavigate }: { onNavigate: (screen: PrototypeScreen) => void }) {
+  return (
+    <div className="prototype-content transactions-content">
+      <section className="simple-screen-heading">
+        <p className="prototype-eyebrow">Financeiro</p>
+        <h1>Suas transações.</h1>
+        <p className="prototype-lede">
+          Consulte o histórico de compras de créditos realizadas na sua conta.
+        </p>
+      </section>
+      <div className="prototype-empty prototype-empty-large">
+        <span aria-hidden="true">$</span>
+        <h2>Nenhuma transação encontrada.</h2>
+        <p>Suas compras de créditos aparecerão aqui assim que uma transação for concluída.</p>
+        <button className="primary-button" type="button" onClick={() => onNavigate('credits')}>
+          Comprar créditos <span aria-hidden="true">→</span>
+        </button>
+      </div>
     </div>
   )
 }

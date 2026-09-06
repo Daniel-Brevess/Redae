@@ -1,4 +1,4 @@
-export type PrototypeScreen = 'home' | 'history' | 'credits' | 'profile'
+export type PrototypeScreen = 'home' | 'history' | 'credits' | 'transactions' | 'profile'
 export type EvaluationStep = 'choice' | 'editor' | 'confirmation' | 'processing' | 'result'
 
 export type CompetencyFeedback = {
