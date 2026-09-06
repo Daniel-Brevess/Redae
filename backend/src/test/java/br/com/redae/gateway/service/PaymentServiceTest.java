@@ -18,7 +18,6 @@ import br.com.redae.gateway.repository.PaymentTransactionRepository;
 import br.com.redae.user.entity.User;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
