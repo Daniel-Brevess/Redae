@@ -44,6 +44,7 @@ Estados: `PENDENTE`, `PROCESSANDO`, `CONCLUIDA` e `FALHOU`. O resultado concluí
 | GET | `/credit-balance` | saldo derivado do ledger |
 | GET | `/credit-offers` | ofertas ativas |
 | POST | `/purchases` | inicia compra personalizada informando somente a quantidade de créditos |
+| GET | `/purchases` | lista as transações do usuário autenticado |
 | GET | `/purchases/{purchaseId}` | consulta compra autorizada |
 | POST | `/webhooks/mercadopago` | confirma pagamento de forma autenticada e idempotente |
 | POST | `/admin/credit-adjustments` | ajuste exclusivo de administrador |

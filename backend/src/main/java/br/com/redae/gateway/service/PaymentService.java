@@ -2,8 +2,11 @@ package br.com.redae.gateway.service;
 
 import br.com.redae.gateway.client.PaymentGatewayProvider;
 import br.com.redae.gateway.dto.CreatePaymentRequest;
+import br.com.redae.gateway.dto.CreditBalanceResponse;
 import br.com.redae.gateway.dto.PaymentResponse;
+import br.com.redae.gateway.dto.PaymentTransactionResponse;
 import br.com.redae.gateway.entity.CreditTransaction;
+import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.entity.PaymentTransaction;
 import br.com.redae.gateway.repository.CreditPriceRepository;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
@@ -12,6 +15,7 @@ import br.com.redae.shared.error.ResourceNotFoundException;
 import br.com.redae.user.entity.User;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +61,20 @@ public class PaymentService {
     }
 
     return PaymentResponse.from(paymentTransactionRepository.save(transaction));
+  }
+
+  @Transactional(readOnly = true)
+  public List<PaymentTransactionResponse> listTransactions(User user) {
+    return paymentTransactionRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId()).stream()
+        .map(PaymentTransactionResponse::from)
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public CreditBalanceResponse getCreditBalance(User user) {
+    long credits =
+        creditTransactionRepository.sumQuantityByUserIdAndType(
+            user.getId(), CreditTransactionType.COMPRA);
+    return new CreditBalanceResponse(credits);
   }
 }
