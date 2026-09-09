@@ -15,20 +15,37 @@ Escolha da origem
   → avaliação existente
 ```
 
-## Escopo inicial do frontend
+## Escopo implementado
+
+### Backend e integracao
+
+- `POST /api/v1/essay-transcriptions` recebe o campo multipart `image`.
+- A rota exige autenticacao e aceita JPG ou PNG de ate 8 MB.
+- O backend envia a imagem ao provedor multimodal e retorna o texto transcrito.
+- A imagem nao e persistida; a confirmacao usa `POST /api/v1/evaluations` com origem `IMAGEM`.
 
 - oferecer ações para câmera, galeria e arquivo do computador;
 - aceitar somente imagens;
 - mostrar uma prévia local da imagem selecionada;
 - manter a imagem apenas em memória no navegador;
-- não chamar a API de transcrição antes da implementação do backend;
-- não simular uma transcrição ou uma avaliação.
+- enviar a imagem para `POST /api/v1/essay-transcriptions`;
+- revisar e editar a transcrição localmente;
+- confirmar o texto usando `POST /api/v1/evaluations` com origem `IMAGEM`;
+- não persistir a imagem nem o texto antes da confirmação.
 
-## Implementação posterior do backend
+## Implementação do backend
+
+Implementado com `POST /api/v1/essay-transcriptions`. A rota autenticada
+aceita o campo multipart `image`, somente JPG ou PNG de até 8 MB, e retorna
+`{ data: { text }, meta, traceId }`. A imagem não é persistida.
+
+O modelo da transcrição pode ser configurado separadamente com
+`AI_TRANSCRIPTION_MODEL` e, por padrão, é `gpt-4o`. O modelo da avaliação
+continua sendo definido por `AI_MODEL`.
 
 O backend deverá receber a imagem por uma rota autenticada de upload, validar formato e tamanho, encaminhá-la ao cliente multimodal de IA e devolver o texto transcrito. A imagem não deverá ser persistida no banco ou em armazenamento permanente.
 
-Depois da revisão, a avaliação deverá usar o endpoint existente, com uma origem própria para redação fotografada, caso essa distinção seja mantida no domínio.
+Depois da revisão, a avaliação usa o endpoint existente com a origem `IMAGEM`.
 
 ## Decisões pendentes
 

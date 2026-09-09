@@ -4,7 +4,7 @@ export type ApiEnvelope<T> = { data: T; meta: Record<string, unknown>; traceId: 
 
 export async function request<T>(path: string, options: RequestInit = {}, accessToken?: string) {
   const headers = new Headers(options.headers)
-  headers.set('Content-Type', 'application/json')
+  if (!(options.body instanceof FormData)) headers.set('Content-Type', 'application/json')
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,

@@ -2,6 +2,8 @@ package br.com.redae.ai.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -76,11 +78,18 @@ public class OpenAIClient implements AIClient {
   private final ObjectMapper objectMapper;
   private final String apiKey;
   private final String model;
+  private final String transcriptionModel;
 
   public OpenAIClient(ObjectMapper objectMapper, String apiKey, String model) {
+    this(objectMapper, apiKey, model, model);
+  }
+
+  public OpenAIClient(
+      ObjectMapper objectMapper, String apiKey, String model, String transcriptionModel) {
     this.objectMapper = objectMapper;
     this.apiKey = apiKey;
     this.model = model;
+    this.transcriptionModel = transcriptionModel;
     this.restClient = RestClient.builder().baseUrl("https://api.openai.com").build();
   }
 
@@ -124,6 +133,52 @@ public class OpenAIClient implements AIClient {
       return content.asText();
     } catch (Exception exception) {
       throw new IllegalStateException("Não foi possível obter a avaliação da IA.", exception);
+    }
+  }
+
+  @Override
+  public String transcribeImage(byte[] image, String contentType, String prompt) {
+    if (apiKey.isBlank()) {
+      throw new IllegalStateException("A variÃ¡vel OPENAI_API_KEY nÃ£o estÃ¡ configurada.");
+    }
+    try {
+      JsonNode response =
+          restClient
+              .post()
+              .uri("/v1/chat/completions")
+              .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+              .contentType(MediaType.APPLICATION_JSON)
+              .body(
+                  Map.of(
+                      "model",
+                      transcriptionModel,
+                      "messages",
+                      List.of(
+                          Map.of(
+                              "role",
+                              "user",
+                              "content",
+                              List.of(
+                                  Map.of("type", "text", "text", prompt),
+                                  Map.of(
+                                      "type",
+                                      "image_url",
+                                      "image_url",
+                                      Map.of(
+                                          "url",
+                                          "data:"
+                                              + contentType
+                                              + ";base64,"
+                                              + Base64.getEncoder().encodeToString(image))))))))
+              .retrieve()
+              .body(JsonNode.class);
+      JsonNode content = response.path("choices").path(0).path("message").path("content");
+      if (!content.isTextual() || content.asText().isBlank()) {
+        throw new IllegalStateException("A OpenAI nÃ£o retornou uma transcriÃ§Ã£o.");
+      }
+      return content.asText().trim();
+    } catch (Exception exception) {
+      throw new IllegalStateException("NÃ£o foi possÃ­vel transcrever a imagem.", exception);
     }
   }
 

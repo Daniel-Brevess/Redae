@@ -1,8 +1,9 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import {
-  createTypedEvaluation,
+  createEvaluation,
   getEvaluation,
   listEvaluations,
+  transcribeEssayImage,
   type Evaluation,
 } from '../../api/evaluationApi'
 import {
@@ -41,6 +42,9 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
   const [imageFileName, setImageFileName] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [transcribingImage, setTranscribingImage] = useState(false)
+  const [imageEditing, setImageEditing] = useState(false)
   const auth = useOptionalAuth()
 
   useEffect(() => {
@@ -91,6 +95,10 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     setStep('choice')
     setResult(null)
     setSubmitError(null)
+    setText('')
+    setImageFile(null)
+    setImageFileName(null)
+    setImageEditing(false)
   }
 
   const openEditor = () => {
@@ -104,7 +112,20 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
     setImagePreviewUrl(URL.createObjectURL(file))
     setImageFileName(file.name)
+    setImageFile(file)
+    setText('')
+    setImageEditing(false)
     setStep('image')
+    setTranscribingImage(true)
+    setSubmitError(null)
+    transcribeEssayImage(file, auth?.accessToken ?? undefined)
+      .then((response) => setText(response.data.text))
+      .catch((error) =>
+        setSubmitError(
+          error instanceof Error ? error.message : 'NÃ£o foi possÃ­vel transcrever a imagem.',
+        ),
+      )
+      .finally(() => setTranscribingImage(false))
   }
 
   const confirmText = () => {
@@ -117,7 +138,8 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     setSubmitting(true)
     setSubmitError(null)
     try {
-      const response = await createTypedEvaluation(
+      const response = await createEvaluation(
+        imageFile ? 'IMAGEM' : 'DIGITADA',
         theme.trim(),
         text.trim(),
         auth?.accessToken ?? undefined,
@@ -256,8 +278,14 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
           result={result}
           onStart={startEvaluation}
           onImageSelected={selectImage}
+          imageFile={imageFile}
+          imageEditing={imageEditing}
+          transcribingImage={transcribingImage}
           imagePreviewUrl={imagePreviewUrl}
           imageFileName={imageFileName}
+          onImageTextChange={setText}
+          onImageEdit={() => setImageEditing(true)}
+          onImageSave={() => setImageEditing(false)}
           onThemeChange={setTheme}
           onTextChange={setText}
           onEditor={openEditor}
@@ -373,8 +401,14 @@ type HomeScreenProps = {
   result: EvaluationResult | null
   onStart: () => void
   onImageSelected: (file: File) => void
+  imageFile: File | null
+  imageEditing: boolean
+  transcribingImage: boolean
   imagePreviewUrl: string | null
   imageFileName: string | null
+  onImageTextChange: (text: string) => void
+  onImageEdit: () => void
+  onImageSave: () => void
   onThemeChange: (theme: string) => void
   onTextChange: (text: string) => void
   onEditor: () => void
@@ -395,8 +429,14 @@ function HomeScreen({
   result,
   onStart,
   onImageSelected,
+  imageFile,
+  imageEditing,
+  transcribingImage,
   imagePreviewUrl,
   imageFileName,
+  onImageTextChange,
+  onImageEdit,
+  onImageSave,
   onThemeChange,
   onTextChange,
   onEditor,
@@ -412,7 +452,24 @@ function HomeScreen({
     return <ChoiceStep onEditor={onEditor} onImageSelected={onImageSelected} onBack={onHome} />
   }
   if (step === 'image' && imagePreviewUrl && imageFileName) {
-    return <ImageStep fileName={imageFileName} previewUrl={imagePreviewUrl} onBack={onHome} />
+    return (
+      <ImageStep
+        fileName={imageFileName}
+        previewUrl={imagePreviewUrl}
+        text={text}
+        theme={theme}
+        editing={imageEditing}
+        transcribing={transcribingImage}
+        error={submitError}
+        hasFile={Boolean(imageFile)}
+        onThemeChange={onThemeChange}
+        onTextChange={onImageTextChange}
+        onEdit={onImageEdit}
+        onSave={onImageSave}
+        onConfirm={onConfirmText}
+        onBack={onHome}
+      />
+    )
   }
   if (step === 'editor') {
     return (
@@ -611,26 +668,112 @@ function ImageSourceInput({
 function ImageStep({
   fileName,
   previewUrl,
+  text,
+  theme,
+  editing,
+  transcribing,
+  error,
+  hasFile,
+  onThemeChange,
+  onTextChange,
+  onEdit,
+  onSave,
+  onConfirm,
   onBack,
 }: {
   fileName: string
   previewUrl: string
+  text: string
+  theme: string
+  editing: boolean
+  transcribing: boolean
+  error: string | null
+  hasFile: boolean
+  onThemeChange: (value: string) => void
+  onTextChange: (value: string) => void
+  onEdit: () => void
+  onSave: () => void
+  onConfirm: () => void
   onBack: () => void
 }) {
+  const isValid = theme.trim().length > 0 && text.trim().length >= 80
+
   return (
     <FlowFrame
       eyebrow="Nova avaliação"
       title="Confira sua redação."
-      description="A imagem foi selecionada e ficará pronta para a transcrição quando o backend estiver integrado."
+      description="Revise a transcrição antes de confirmar a avaliação."
       onBack={onBack}
     >
       <div className="image-preview-card">
         <img src={previewUrl} alt={`Prévia da redação ${fileName}`} />
         <div>
           <strong>{fileName}</strong>
-          <p>A transcrição e a edição do texto serão liberadas na próxima etapa.</p>
+          <p>
+            {transcribing
+              ? 'Transcrevendo a imagem...'
+              : 'Confira se o texto foi identificado corretamente.'}
+          </p>
         </div>
       </div>
+      {error && (
+        <p className="field-hint field-hint-error" role="alert">
+          {error}
+        </p>
+      )}
+      {!transcribing && hasFile && (
+        <form
+          className="prototype-form"
+          onSubmit={(event) => {
+            event.preventDefault()
+            if (editing) onSave()
+            else if (isValid) onConfirm()
+          }}
+        >
+          <label htmlFor="image-evaluation-theme">Tema da redação</label>
+          <input
+            id="image-evaluation-theme"
+            value={theme}
+            onChange={(event) => onThemeChange(event.target.value)}
+          />
+          <div className="field-heading">
+            <label htmlFor="image-evaluation-text">Texto transcrito</label>
+            <span>{text.length} caracteres</span>
+          </div>
+          {editing ? (
+            <textarea
+              id="image-evaluation-text"
+              value={text}
+              onChange={(event) => onTextChange(event.target.value)}
+              rows={12}
+            />
+          ) : (
+            <p className="confirmation-card image-transcription-text">
+              {text || 'Nenhum texto transcrito.'}
+            </p>
+          )}
+          {text.length > 0 && text.trim().length < 80 && (
+            <p className="field-hint field-hint-error" role="alert">
+              Escreva pelo menos 80 caracteres para continuar.
+            </p>
+          )}
+          <div className="form-actions">
+            <BackButton onClick={onBack} />
+            <button
+              className="primary-button"
+              type="submit"
+              disabled={editing ? !text.trim() : !isValid}
+            >
+              {editing ? 'Salvar texto' : 'Confirmar texto'} <span aria-hidden="true">→</span>
+            </button>
+            {!editing && (
+              <button className="text-button" type="button" onClick={onEdit}>
+                Editar texto
+              </button>
+            )}
+          </div>
+        </form>
+      )}
       <button className="back-button" type="button" onClick={onBack}>
         Escolher outra imagem
       </button>

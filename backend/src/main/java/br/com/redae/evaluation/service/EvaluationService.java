@@ -2,6 +2,7 @@ package br.com.redae.evaluation.service;
 
 import br.com.redae.evaluation.dto.CreateEvaluationRequest;
 import br.com.redae.evaluation.entity.Evaluation;
+import br.com.redae.evaluation.entity.EvaluationOrigin;
 import br.com.redae.evaluation.entity.EvaluationType;
 import br.com.redae.evaluation.repository.EvaluationRepository;
 import br.com.redae.shared.error.ResourceNotFoundException;
@@ -32,7 +33,12 @@ public class EvaluationService {
     EvaluationType type = resolveType(user);
     Evaluation evaluation =
         evaluationRepository.save(
-            new Evaluation(user, request.text().trim(), request.theme().trim(), type));
+            new Evaluation(
+                user,
+                request.text().trim(),
+                request.theme().trim(),
+                type,
+                EvaluationOrigin.valueOf(request.origin())));
     evaluation.startProcessing();
     Evaluation savedEvaluation = evaluationRepository.save(evaluation);
     eventPublisher.publishEvent(new EvaluationCreatedEvent(savedEvaluation.getId()));

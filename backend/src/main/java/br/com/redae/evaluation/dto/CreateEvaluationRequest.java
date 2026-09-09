@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 public record CreateEvaluationRequest(
     @NotBlank(message = "A origem é obrigatória.")
-        @Pattern(regexp = "DIGITADA", message = "A origem deve ser DIGITADA.")
+        @Pattern(regexp = "DIGITADA|IMAGEM", message = "A origem deve ser DIGITADA ou IMAGEM.")
         String origin,
     @NotBlank(message = "O tema é obrigatório.")
         @Size(max = 500, message = "O tema deve ter no máximo 500 caracteres.")

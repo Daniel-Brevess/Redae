@@ -2,6 +2,7 @@ package br.com.redae.ai.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Base64;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -57,6 +58,52 @@ public class GeminiClient implements AIClient {
       return text.asText();
     } catch (Exception exception) {
       throw new IllegalStateException("Não foi possível obter a avaliação da IA.", exception);
+    }
+  }
+
+  @Override
+  public String transcribeImage(byte[] image, String contentType, String prompt) {
+    if (apiKey.isBlank()) {
+      throw new IllegalStateException("A variÃ¡vel GOOGLE_API_KEY nÃ£o estÃ¡ configurada.");
+    }
+    try {
+      JsonNode response =
+          restClient
+              .post()
+              .uri(
+                  uriBuilder ->
+                      uriBuilder
+                          .path("/v1beta/models/{model}:generateContent")
+                          .queryParam("key", apiKey)
+                          .build(model))
+              .contentType(MediaType.APPLICATION_JSON)
+              .body(
+                  Map.of(
+                      "contents",
+                      new Object[] {
+                        Map.of(
+                            "parts",
+                            new Object[] {
+                              Map.of("text", prompt),
+                              Map.of(
+                                  "inlineData",
+                                  Map.of(
+                                      "mimeType",
+                                      contentType,
+                                      "data",
+                                      Base64.getEncoder().encodeToString(image)))
+                            })
+                      }))
+              .retrieve()
+              .body(JsonNode.class);
+      JsonNode text =
+          response.path("candidates").path(0).path("content").path("parts").path(0).path("text");
+      if (!text.isTextual() || text.asText().isBlank()) {
+        throw new IllegalStateException("O Gemini nÃ£o retornou uma transcriÃ§Ã£o.");
+      }
+      return text.asText().trim();
+    } catch (Exception exception) {
+      throw new IllegalStateException("NÃ£o foi possÃ­vel transcrever a imagem.", exception);
     }
   }
 

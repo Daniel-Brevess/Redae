@@ -4,7 +4,7 @@ export type CreatedEvaluation = {
   id: string
   theme: string
   type: 'DIAGNOSTICO' | 'COMPLETA'
-  origin: 'DIGITADA'
+  origin: 'DIGITADA' | 'IMAGEM'
   status: 'PENDENTE' | 'PROCESSANDO' | 'CONCLUIDA' | 'FALHOU'
   createdAt: string
 }
@@ -35,12 +35,31 @@ export type Evaluation = CreatedEvaluation & {
 }
 
 export function createTypedEvaluation(theme: string, text: string, accessToken?: string) {
+  return createEvaluation('DIGITADA', theme, text, accessToken)
+}
+
+export function createEvaluation(
+  origin: 'DIGITADA' | 'IMAGEM',
+  theme: string,
+  text: string,
+  accessToken?: string,
+) {
   return request<ApiEnvelope<CreatedEvaluation>>(
     '/evaluations',
     {
       method: 'POST',
-      body: JSON.stringify({ origin: 'DIGITADA', theme, text }),
+      body: JSON.stringify({ origin, theme, text }),
     },
+    accessToken,
+  )
+}
+
+export function transcribeEssayImage(file: File, accessToken?: string) {
+  const body = new FormData()
+  body.append('image', file)
+  return request<ApiEnvelope<{ text: string }>>(
+    '/essay-transcriptions',
+    { method: 'POST', body },
     accessToken,
   )
 }

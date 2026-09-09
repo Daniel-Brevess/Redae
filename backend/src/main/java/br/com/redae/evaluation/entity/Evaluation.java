@@ -78,11 +78,16 @@ public class Evaluation {
   }
 
   public Evaluation(User user, String confirmedText, String theme, EvaluationType type) {
+    this(user, confirmedText, theme, type, EvaluationOrigin.DIGITADA);
+  }
+
+  public Evaluation(
+      User user, String confirmedText, String theme, EvaluationType type, EvaluationOrigin origin) {
     this.id = UUID.randomUUID();
     this.user = user;
     this.confirmedText = confirmedText;
     this.theme = theme;
-    this.origin = EvaluationOrigin.DIGITADA;
+    this.origin = origin;
     this.type = type;
     this.status = EvaluationStatus.PENDENTE;
     this.version = "v1";

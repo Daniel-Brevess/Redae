@@ -31,9 +31,7 @@ Senhas nunca são retornadas ou armazenadas em texto puro. Falhas de login usam 
 | POST | `/evaluations` | cria avaliação de texto confirmado |
 | GET | `/evaluations` | lista avaliações do usuário com paginação |
 | GET | `/evaluations/{evaluationId}` | consulta avaliação do proprietário ou administrador |
-| POST | `/evaluation-inputs/images` | upload temporário para transcrição |
-| GET | `/evaluation-inputs/{inputId}` | consulta estado da transcrição |
-| POST | `/evaluation-inputs/{inputId}/confirm` | confirma texto e cria avaliação |
+| POST | `/essay-transcriptions` | recebe uma imagem autenticada e retorna o texto transcrito; a imagem não é persistida |
 
 Estados: `PENDENTE`, `PROCESSANDO`, `CONCLUIDA` e `FALHOU`. O resultado concluído contém nota final, C1–C5 e feedback conforme o tipo da avaliação.
 

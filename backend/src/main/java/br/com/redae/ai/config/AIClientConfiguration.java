@@ -24,7 +24,8 @@ public class AIClientConfiguration {
   OpenAIClient openAIClient(
       ObjectMapper objectMapper,
       @Value("${ai.openai.api-key:}") String apiKey,
-      @Value("${ai.openai.model:gpt-4o-mini}") String model) {
-    return new OpenAIClient(objectMapper, apiKey, model);
+      @Value("${ai.openai.model:gpt-4o-mini}") String model,
+      @Value("${ai.openai.transcription-model:gpt-4o}") String transcriptionModel) {
+    return new OpenAIClient(objectMapper, apiKey, model, transcriptionModel);
   }
 }
