@@ -27,8 +27,8 @@ protecao contra envio duplicado e retry explicito em falhas.
 
 - [x] Identificar no backend se o usuário já utilizou o diagnóstico.
 - [x] Permitir somente o primeiro diagnóstico gratuitamente.
-- [ ] Bloquear novos envios sem crédito.
-- [x] Usar saldo ou regra simulada enquanto créditos reais não forem implementados.
+- [x] Bloquear novos envios sem crédito.
+- [x] Usar o saldo real do ledger de créditos.
 - [x] Manter o diagnóstico inicial sem exigir compra ou saldo.
 
 ## 3. Resultado resumido do diagnóstico
@@ -44,7 +44,9 @@ protecao contra envio duplicado e retry explicito em falhas.
 ## 4. Avaliação completa
 
 - [x] Permitir iniciar uma avaliação completa.
-- [ ] Validar a disponibilidade de crédito.
+- [x] Validar a disponibilidade de crédito.
+- [x] Consumir um crédito por avaliação completa.
+- [x] Estornar o crédito quando o processamento da avaliação completa falhar.
 - [x] Processar a redação pelas competências C1, C2, C3, C4 e C5.
 - [x] Exibir a nota de cada competência.
 - [x] Exibir a nota geral.

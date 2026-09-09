@@ -6,7 +6,6 @@ import br.com.redae.gateway.dto.CreditBalanceResponse;
 import br.com.redae.gateway.dto.PaymentResponse;
 import br.com.redae.gateway.dto.PaymentTransactionResponse;
 import br.com.redae.gateway.entity.CreditTransaction;
-import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.entity.PaymentTransaction;
 import br.com.redae.gateway.entity.PaymentTransactionStatus;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
@@ -62,9 +61,7 @@ public class PaymentService {
 
   @Transactional(readOnly = true)
   public CreditBalanceResponse getCreditBalance(User user) {
-    long credits =
-        creditTransactionRepository.sumQuantityByUserIdAndType(
-            user.getId(), CreditTransactionType.COMPRA);
+    long credits = creditTransactionRepository.sumBalanceByUserId(user.getId());
     return new CreditBalanceResponse(credits);
   }
 

@@ -26,7 +26,8 @@ Este arquivo é a referência rápida das decisões vigentes. As decisões antig
 ## Créditos e pagamentos
 
 - O saldo é derivado de um ledger de transações.
-- Consumo ocorre após a confirmação da avaliação.
+- O primeiro diagnóstico é gratuito; cada avaliação completa consome um crédito
+  no início do processamento e recebe estorno automático se falhar.
 - Compras e consumo são idempotentes.
 - O backend é a fonte dos preços e ofertas.
 - Pagamentos são confirmados por webhook autenticado.

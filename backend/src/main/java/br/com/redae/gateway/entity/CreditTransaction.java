@@ -1,5 +1,6 @@
 package br.com.redae.gateway.entity;
 
+import br.com.redae.evaluation.entity.Evaluation;
 import br.com.redae.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,9 +25,13 @@ public class CreditTransaction {
   @JoinColumn(name = "usuario_id", nullable = false)
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "payment_transaction_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "payment_transaction_id")
   private PaymentTransaction paymentTransaction;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "avaliacao_id")
+  private Evaluation evaluation;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "tipo", nullable = false, length = 20)
@@ -49,6 +54,31 @@ public class CreditTransaction {
     this.paymentTransaction = paymentTransaction;
     this.type = CreditTransactionType.COMPRA;
     this.quantity = quantity;
+  }
+
+  public CreditTransaction(
+      User user, Evaluation evaluation, CreditTransactionType type, int quantity) {
+    this.id = UUID.randomUUID();
+    this.user = user;
+    this.evaluation = evaluation;
+    this.type = type;
+    this.quantity = quantity;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public CreditTransactionType getType() {
+    return type;
+  }
+
+  public Evaluation getEvaluation() {
+    return evaluation;
+  }
+
+  public int getQuantity() {
+    return quantity;
   }
 
   @PrePersist

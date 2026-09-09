@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import br.com.redae.gateway.client.PaymentGatewayProvider;
 import br.com.redae.gateway.dto.CreatePaymentRequest;
 import br.com.redae.gateway.dto.PaymentCreationResult;
-import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.entity.PaymentTransaction;
 import br.com.redae.gateway.entity.PaymentTransactionStatus;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
@@ -67,14 +66,11 @@ class PaymentServiceTest {
   @Test
   void returnsCreditBalanceFromCreditLedger() {
     User user = new User("Student", "student@example.com", "hash");
-    when(creditTransactionRepository.sumQuantityByUserIdAndType(
-            user.getId(), CreditTransactionType.COMPRA))
-        .thenReturn(7L);
+    when(creditTransactionRepository.sumBalanceByUserId(user.getId())).thenReturn(7L);
 
     var response = paymentService.getCreditBalance(user);
 
     assertEquals(7L, response.credits());
-    verify(creditTransactionRepository)
-        .sumQuantityByUserIdAndType(user.getId(), CreditTransactionType.COMPRA);
+    verify(creditTransactionRepository).sumBalanceByUserId(user.getId());
   }
 }

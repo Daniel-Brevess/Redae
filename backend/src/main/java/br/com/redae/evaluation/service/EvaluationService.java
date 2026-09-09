@@ -5,6 +5,7 @@ import br.com.redae.evaluation.entity.Evaluation;
 import br.com.redae.evaluation.entity.EvaluationOrigin;
 import br.com.redae.evaluation.entity.EvaluationType;
 import br.com.redae.evaluation.repository.EvaluationRepository;
+import br.com.redae.gateway.service.CreditService;
 import br.com.redae.shared.error.ResourceNotFoundException;
 import br.com.redae.user.entity.User;
 import java.util.List;
@@ -17,15 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class EvaluationService {
   private final EvaluationRepository evaluationRepository;
   private final ApplicationEventPublisher eventPublisher;
-
-  @org.springframework.beans.factory.annotation.Value(
-      "${evaluation.require-credit-for-complete:false}")
-  private boolean requireCreditForComplete;
+  private final CreditService creditService;
 
   public EvaluationService(
-      EvaluationRepository evaluationRepository, ApplicationEventPublisher eventPublisher) {
+      EvaluationRepository evaluationRepository,
+      ApplicationEventPublisher eventPublisher,
+      CreditService creditService) {
     this.evaluationRepository = evaluationRepository;
     this.eventPublisher = eventPublisher;
+    this.creditService = creditService;
   }
 
   @Transactional
@@ -39,6 +40,9 @@ public class EvaluationService {
                 request.theme().trim(),
                 type,
                 EvaluationOrigin.valueOf(request.origin())));
+    if (type == EvaluationType.COMPLETA) {
+      creditService.consumeEvaluationCredit(user, evaluation);
+    }
     evaluation.startProcessing();
     Evaluation savedEvaluation = evaluationRepository.save(evaluation);
     eventPublisher.publishEvent(new EvaluationCreatedEvent(savedEvaluation.getId()));
@@ -48,9 +52,6 @@ public class EvaluationService {
   private EvaluationType resolveType(User user) {
     if (!evaluationRepository.existsByUserIdAndType(user.getId(), EvaluationType.DIAGNOSTICO)) {
       return EvaluationType.DIAGNOSTICO;
-    }
-    if (requireCreditForComplete) {
-      throw new EvaluationAccessException();
     }
     return EvaluationType.COMPLETA;
   }

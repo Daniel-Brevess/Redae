@@ -3,8 +3,10 @@ package br.com.redae.evaluation.service;
 import br.com.redae.evaluation.entity.CompetencyScore;
 import br.com.redae.evaluation.entity.Evaluation;
 import br.com.redae.evaluation.entity.EvaluationStatus;
+import br.com.redae.evaluation.entity.EvaluationType;
 import br.com.redae.evaluation.entity.FeedbackItem;
 import br.com.redae.evaluation.repository.EvaluationRepository;
+import br.com.redae.gateway.service.CreditService;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +18,15 @@ public class EvaluationProcessingService {
   private static final Logger log = LoggerFactory.getLogger(EvaluationProcessingService.class);
   private final EvaluationRepository evaluationRepository;
   private final EvaluationAnalyzer evaluationAnalyzer;
+  private final CreditService creditService;
 
   public EvaluationProcessingService(
-      EvaluationRepository evaluationRepository, EvaluationAnalyzer evaluationAnalyzer) {
+      EvaluationRepository evaluationRepository,
+      EvaluationAnalyzer evaluationAnalyzer,
+      CreditService creditService) {
     this.evaluationRepository = evaluationRepository;
     this.evaluationAnalyzer = evaluationAnalyzer;
+    this.creditService = creditService;
   }
 
   @Transactional
@@ -60,6 +66,9 @@ public class EvaluationProcessingService {
       log.error("Falha ao processar avaliação {}", evaluationId, exception);
       evaluation.fail(cause.getMessage());
       evaluationRepository.save(evaluation);
+      if (evaluation.getType() == EvaluationType.COMPLETA) {
+        creditService.refundEvaluationCredit(evaluation.getId());
+      }
     }
   }
 }

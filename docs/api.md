@@ -7,7 +7,8 @@
 - O usuário é obtido do `sub` do token; não se aceita `userId` para representar o proprietário.
 - Sucesso: `{ data, meta, traceId }`.
 - Erro: `{ error: { code, message, details }, traceId }`.
-- `401` indica autenticação ausente ou inválida; `403`, falta de permissão.
+- `401` indica autenticação ausente ou inválida; `403`, falta de permissão; `402`,
+  crédito insuficiente para uma avaliação completa.
 - Operações sensíveis usam `Idempotency-Key`.
 - O contrato OpenAPI está em [`api.openapi.yaml`](api.openapi.yaml).
 
@@ -47,7 +48,9 @@ Estados: `PENDENTE`, `PROCESSANDO`, `CONCLUIDA` e `FALHOU`. O resultado concluí
 | POST | `/webhooks/stripe` | confirma pagamento por webhook assinado e idempotente |
 | POST | `/admin/credit-adjustments` | ajuste exclusivo de administrador |
 
-Somente pagamento aprovado credita o usuário. Estornos e ajustes geram transações auditáveis.
+Somente pagamento aprovado credita o usuário. Avaliações completas consomem um
+crédito e uma falha no processamento gera um estorno auditável. Estornos de
+pagamento e ajustes também geram transações auditáveis.
 
 Na compra personalizada, o corpo da requisição contém apenas a quantidade de
 créditos desejada. O backend aplica o preço fixo de R$ 3,00 por crédito e calcula

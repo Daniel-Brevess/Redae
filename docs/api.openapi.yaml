@@ -76,6 +76,7 @@ paths:
             schema: { $ref: '#/components/schemas/EvaluationRequest' }
       responses:
         '201': { $ref: '#/components/responses/Success' }
+        '402': { $ref: '#/components/responses/Error' }
         '409': { $ref: '#/components/responses/Error' }
   /evaluations/{evaluationId}:
     get:

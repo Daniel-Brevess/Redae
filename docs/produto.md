@@ -33,6 +33,10 @@ O primeiro envio do usuário é um diagnóstico. O diagnóstico pode apresentar 
 
 O tipo da avaliação é definido pelo backend e persistido. O frontend não pode escolher livremente o tipo para obter novos diagnósticos gratuitos.
 
+O primeiro envio é um diagnóstico gratuito. Depois dele, cada nova avaliação é
+completa e exige um crédito disponível. O backend reserva um crédito no início
+da avaliação; se o processamento falhar, o crédito é estornado automaticamente.
+
 ## Fluxo do estudante
 
 1. O estudante entra ou cria uma conta.

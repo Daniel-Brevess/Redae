@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class EvaluationAccessException extends ApiException {
   public EvaluationAccessException() {
     super(
-        HttpStatus.FORBIDDEN,
+        HttpStatus.PAYMENT_REQUIRED,
         "CREDIT_REQUIRED",
         "Você já realizou o diagnóstico gratuito. Adquira créditos para fazer uma avaliação completa.");
   }

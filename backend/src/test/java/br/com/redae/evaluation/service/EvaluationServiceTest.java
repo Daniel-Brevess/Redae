@@ -3,6 +3,7 @@ package br.com.redae.evaluation.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,7 @@ import br.com.redae.evaluation.entity.Evaluation;
 import br.com.redae.evaluation.entity.EvaluationStatus;
 import br.com.redae.evaluation.entity.EvaluationType;
 import br.com.redae.evaluation.repository.EvaluationRepository;
+import br.com.redae.gateway.service.CreditService;
 import br.com.redae.shared.error.ResourceNotFoundException;
 import br.com.redae.user.entity.User;
 import java.util.Optional;
@@ -22,12 +24,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class EvaluationServiceTest {
   @Mock private EvaluationRepository evaluationRepository;
   @Mock private ApplicationEventPublisher eventPublisher;
+  @Mock private CreditService creditService;
 
   @InjectMocks private EvaluationService evaluationService;
 
@@ -45,6 +47,8 @@ class EvaluationServiceTest {
     assertEquals("Tema", evaluation.getTheme());
     assertEquals("a".repeat(80), evaluation.getConfirmedText());
     verify(evaluationRepository, times(2)).save(any(Evaluation.class));
+    verify(creditService, org.mockito.Mockito.never())
+        .consumeEvaluationCredit(any(User.class), any(Evaluation.class));
   }
 
   @Test
@@ -53,7 +57,11 @@ class EvaluationServiceTest {
     var request = new CreateEvaluationRequest("DIGITADA", "Tema", "a".repeat(80));
     when(evaluationRepository.existsByUserIdAndType(user.getId(), EvaluationType.DIAGNOSTICO))
         .thenReturn(true);
-    ReflectionTestUtils.setField(evaluationService, "requireCreditForComplete", true);
+    when(evaluationRepository.save(any(Evaluation.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+    doThrow(new EvaluationAccessException())
+        .when(creditService)
+        .consumeEvaluationCredit(any(User.class), any(Evaluation.class));
 
     assertThrows(
         EvaluationAccessException.class,
@@ -61,7 +69,7 @@ class EvaluationServiceTest {
   }
 
   @Test
-  void createsCompleteEvaluationWhenCreditCheckIsDisabledForDevelopment() {
+  void createsCompleteEvaluationAndConsumesOneCredit() {
     User user = new User("Student", "student@example.com", "hash");
     var request = new CreateEvaluationRequest("DIGITADA", "Tema", "a".repeat(80));
     when(evaluationRepository.existsByUserIdAndType(user.getId(), EvaluationType.DIAGNOSTICO))
@@ -72,6 +80,7 @@ class EvaluationServiceTest {
     Evaluation evaluation = evaluationService.createTypedEvaluation(user, request);
 
     assertEquals(EvaluationType.COMPLETA, evaluation.getType());
+    verify(creditService).consumeEvaluationCredit(user, evaluation);
   }
 
   @Test
