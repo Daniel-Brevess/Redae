@@ -5,7 +5,12 @@ import {
   listEvaluations,
   type Evaluation,
 } from '../../api/evaluationApi'
-import { createPurchase, getCreditBalance } from '../../api/paymentApi'
+import {
+  createPurchase,
+  getCreditBalance,
+  listTransactions,
+  type PaymentTransaction,
+} from '../../api/paymentApi'
 import type { EvaluationResult, EvaluationStep, PrototypeScreen } from '../../prototype/types'
 import { PrototypeShell } from './PrototypeShell'
 import { EMAIL_VERIFICATION_ENABLED, type User } from '../../api/authApi'
@@ -31,6 +36,9 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [historyLoading, setHistoryLoading] = useState(false)
   const [openingEvaluationId, setOpeningEvaluationId] = useState<string | null>(null)
   const [creditBalance, setCreditBalance] = useState<number | null>(null)
+  const [transactions, setTransactions] = useState<PaymentTransaction[]>([])
+  const [transactionsLoading, setTransactionsLoading] = useState(false)
+  const [transactionsError, setTransactionsError] = useState<string | null>(null)
   const auth = useOptionalAuth()
 
   useEffect(() => {
@@ -47,6 +55,28 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
       active = false
     }
   }, [auth?.accessToken])
+
+  useEffect(() => {
+    if (screen !== 'transactions' || !auth?.accessToken) return
+    let active = true
+    listTransactions(auth.accessToken)
+      .then((response) => {
+        if (active) setTransactions(response.data)
+      })
+      .catch((error) => {
+        if (active) {
+          setTransactionsError(
+            error instanceof Error ? error.message : 'Não foi possível carregar as transações.',
+          )
+        }
+      })
+      .finally(() => {
+        if (active) setTransactionsLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [auth?.accessToken, screen])
 
   const startEvaluation = () => {
     setScreen('home')
@@ -188,6 +218,10 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
       activeScreen={screen}
       onNavigate={(nextScreen) => {
         setStep(null)
+        if (nextScreen === 'transactions') {
+          setTransactionsLoading(true)
+          setTransactionsError(null)
+        }
         setScreen(nextScreen)
       }}
       onExit={onExit}
@@ -227,7 +261,14 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
         />
       )}
       {screen === 'credits' && <CreditsScreen accessToken={auth?.accessToken ?? undefined} />}
-      {screen === 'transactions' && <TransactionsScreen onNavigate={setScreen} />}
+      {screen === 'transactions' && (
+        <TransactionsScreen
+          transactions={transactions}
+          loading={transactionsLoading}
+          error={transactionsError}
+          onNavigate={setScreen}
+        />
+      )}
       {screen === 'profile' && <ProfileScreen user={user} />}
     </PrototypeShell>
   )
@@ -1004,7 +1045,17 @@ function CustomCreditsScreen({ accessToken }: { accessToken?: string }) {
   )
 }
 
-function TransactionsScreen({ onNavigate }: { onNavigate: (screen: PrototypeScreen) => void }) {
+function TransactionsScreen({
+  transactions,
+  loading,
+  error,
+  onNavigate,
+}: {
+  transactions: PaymentTransaction[]
+  loading: boolean
+  error: string | null
+  onNavigate: (screen: PrototypeScreen) => void
+}) {
   return (
     <div className="prototype-content transactions-content">
       <section className="simple-screen-heading">
@@ -1014,14 +1065,54 @@ function TransactionsScreen({ onNavigate }: { onNavigate: (screen: PrototypeScre
           Consulte o histórico de compras de créditos realizadas na sua conta.
         </p>
       </section>
-      <div className="prototype-empty prototype-empty-large">
-        <span aria-hidden="true">$</span>
-        <h2>Nenhuma transação encontrada.</h2>
-        <p>Suas compras de créditos aparecerão aqui assim que uma transação for concluída.</p>
-        <button className="primary-button" type="button" onClick={() => onNavigate('credits')}>
-          Comprar créditos <span aria-hidden="true">→</span>
-        </button>
-      </div>
+      {loading && <p className="loading-state">Carregando suas transações...</p>}
+      {error && (
+        <p className="feedback-message feedback-error" role="alert">
+          {error}
+        </p>
+      )}
+      {!loading && !error && transactions.length > 0 && (
+        <div className="transaction-list">
+          {transactions.map((transaction) => (
+            <article className="transaction-card" key={transaction.id}>
+              <div>
+                <p className="transaction-label">Compra de créditos</p>
+                <strong>{transaction.credits} créditos</strong>
+              </div>
+              <div>
+                <p className="transaction-label">Valor</p>
+                <strong>
+                  {Number(transaction.amount).toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </strong>
+              </div>
+              <div>
+                <p className="transaction-label">Status</p>
+                <span
+                  className={`transaction-status transaction-status-${transaction.status.toLowerCase()}`}
+                >
+                  {transaction.status}
+                </span>
+              </div>
+              <time dateTime={transaction.createdAt}>
+                {new Date(transaction.createdAt).toLocaleDateString('pt-BR')}
+              </time>
+            </article>
+          ))}
+        </div>
+      )}
+      {!loading && !error && transactions.length === 0 && (
+        <div className="prototype-empty prototype-empty-large">
+          <span aria-hidden="true">$</span>
+          <h2>Nenhuma transação encontrada.</h2>
+          <p>Suas compras de créditos aparecerão aqui assim que uma transação for concluída.</p>
+          <button className="primary-button" type="button" onClick={() => onNavigate('credits')}>
+            Comprar créditos <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      )}
     </div>
   )
 }
