@@ -39,7 +39,15 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [transactions, setTransactions] = useState<PaymentTransaction[]>([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
+  const [imageFileName, setImageFileName] = useState<string | null>(null)
   const auth = useOptionalAuth()
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
+    }
+  }, [imagePreviewUrl])
 
   useEffect(() => {
     if (!auth?.accessToken) return
@@ -89,6 +97,14 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
     setText('')
     setSubmitError(null)
     setStep('editor')
+  }
+
+  const selectImage = (file: File) => {
+    if (!file.type.startsWith('image/')) return
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
+    setImagePreviewUrl(URL.createObjectURL(file))
+    setImageFileName(file.name)
+    setStep('image')
   }
 
   const confirmText = () => {
@@ -239,6 +255,9 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
           text={text}
           result={result}
           onStart={startEvaluation}
+          onImageSelected={selectImage}
+          imagePreviewUrl={imagePreviewUrl}
+          imageFileName={imageFileName}
           onThemeChange={setTheme}
           onTextChange={setText}
           onEditor={openEditor}
@@ -353,6 +372,9 @@ type HomeScreenProps = {
   text: string
   result: EvaluationResult | null
   onStart: () => void
+  onImageSelected: (file: File) => void
+  imagePreviewUrl: string | null
+  imageFileName: string | null
   onThemeChange: (theme: string) => void
   onTextChange: (text: string) => void
   onEditor: () => void
@@ -372,6 +394,9 @@ function HomeScreen({
   text,
   result,
   onStart,
+  onImageSelected,
+  imagePreviewUrl,
+  imageFileName,
   onThemeChange,
   onTextChange,
   onEditor,
@@ -383,7 +408,12 @@ function HomeScreen({
   onRetry,
   onHome,
 }: HomeScreenProps) {
-  if (step === 'choice') return <ChoiceStep onEditor={onEditor} onBack={onHome} />
+  if (step === 'choice') {
+    return <ChoiceStep onEditor={onEditor} onImageSelected={onImageSelected} onBack={onHome} />
+  }
+  if (step === 'image' && imagePreviewUrl && imageFileName) {
+    return <ImageStep fileName={imageFileName} previewUrl={imagePreviewUrl} onBack={onHome} />
+  }
   if (step === 'editor') {
     return (
       <EditorStep
@@ -504,7 +534,15 @@ function DashboardScreen({
   )
 }
 
-function ChoiceStep({ onEditor, onBack }: { onEditor: () => void; onBack: () => void }) {
+function ChoiceStep({
+  onEditor,
+  onImageSelected,
+  onBack,
+}: {
+  onEditor: () => void
+  onImageSelected: (file: File) => void
+  onBack: () => void
+}) {
   return (
     <FlowFrame
       eyebrow="Nova avaliação"
@@ -521,16 +559,81 @@ function ChoiceStep({ onEditor, onBack }: { onEditor: () => void; onBack: () => 
           <span>Digite sua redação diretamente no Redaê.</span>
           <small>Mais rápido</small>
         </button>
-        <button className="choice-card choice-card-disabled" type="button" disabled>
+        <div className="choice-card image-choice-card">
           <span className="prototype-icon prototype-icon-blue" aria-hidden="true">
             ▧
           </span>
           <strong>Enviar uma imagem</strong>
           <span>Fotografe ou escolha uma redação da galeria.</span>
           <small>Em breve no protótipo</small>
-        </button>
+          <div className="image-source-actions">
+            <ImageSourceInput
+              label="Tirar foto"
+              capture="environment"
+              onSelected={onImageSelected}
+            />
+            <ImageSourceInput label="Galeria" onSelected={onImageSelected} />
+            <ImageSourceInput label="Arquivo no PC" onSelected={onImageSelected} />
+          </div>
+        </div>
       </div>
       <BackButton onClick={onBack} />
+    </FlowFrame>
+  )
+}
+
+function ImageSourceInput({
+  label,
+  capture,
+  onSelected,
+}: {
+  label: string
+  capture?: 'environment'
+  onSelected: (file: File) => void
+}) {
+  return (
+    <label className="image-source-button">
+      {label}
+      <input
+        type="file"
+        accept="image/*"
+        capture={capture}
+        onChange={(event) => {
+          const file = event.target.files?.[0]
+          if (file) onSelected(file)
+          event.target.value = ''
+        }}
+      />
+    </label>
+  )
+}
+
+function ImageStep({
+  fileName,
+  previewUrl,
+  onBack,
+}: {
+  fileName: string
+  previewUrl: string
+  onBack: () => void
+}) {
+  return (
+    <FlowFrame
+      eyebrow="Nova avaliação"
+      title="Confira sua redação."
+      description="A imagem foi selecionada e ficará pronta para a transcrição quando o backend estiver integrado."
+      onBack={onBack}
+    >
+      <div className="image-preview-card">
+        <img src={previewUrl} alt={`Prévia da redação ${fileName}`} />
+        <div>
+          <strong>{fileName}</strong>
+          <p>A transcrição e a edição do texto serão liberadas na próxima etapa.</p>
+        </div>
+      </div>
+      <button className="back-button" type="button" onClick={onBack}>
+        Escolher outra imagem
+      </button>
     </FlowFrame>
   )
 }

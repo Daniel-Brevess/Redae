@@ -1,5 +1,6 @@
 export type PrototypeScreen = 'home' | 'history' | 'credits' | 'transactions' | 'profile'
-export type EvaluationStep = 'choice' | 'editor' | 'confirmation' | 'processing' | 'result'
+export type EvaluationStep =
+  'choice' | 'image' | 'editor' | 'confirmation' | 'processing' | 'result'
 
 export type CompetencyFeedback = {
   code: `C${1 | 2 | 3 | 4 | 5}`
