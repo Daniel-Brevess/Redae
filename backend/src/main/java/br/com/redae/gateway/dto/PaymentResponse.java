@@ -12,9 +12,7 @@ public record PaymentResponse(
     int credits,
     BigDecimal amount,
     String externalReference,
-    String clientSecret,
-    String qrCode,
-    String qrCodeBase64,
+    String checkoutUrl,
     Instant createdAt) {
   public static PaymentResponse from(
       PaymentTransaction transaction, PaymentCreationResult payment) {
@@ -24,9 +22,7 @@ public record PaymentResponse(
         transaction.getTotalCredits(),
         transaction.getAmount(),
         transaction.getExternalReference(),
-        payment.clientSecret(),
-        payment.qrCode(),
-        payment.qrCodeBase64(),
+        payment.checkoutUrl(),
         transaction.getCreatedAt());
   }
 }

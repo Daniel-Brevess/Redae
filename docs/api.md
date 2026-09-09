@@ -43,7 +43,7 @@ Estados: `PENDENTE`, `PROCESSANDO`, `CONCLUIDA` e `FALHOU`. O resultado concluí
 |---|---|---|
 | GET | `/credit-balance` | saldo derivado do ledger |
 | GET | `/credit-offers` | ofertas ativas |
-| POST | `/purchases` | inicia compra personalizada informando somente a quantidade de créditos |
+| POST | `/purchases` | cria transação pendente e retorna a URL do Checkout da Stripe |
 | GET | `/purchases` | lista as transações do usuário autenticado |
 | GET | `/purchases/{purchaseId}` | consulta compra autorizada |
 | POST | `/webhooks/stripe` | confirma pagamento por webhook assinado e idempotente |
@@ -52,8 +52,8 @@ Estados: `PENDENTE`, `PROCESSANDO`, `CONCLUIDA` e `FALHOU`. O resultado concluí
 Somente pagamento aprovado credita o usuário. Estornos e ajustes geram transações auditáveis.
 
 Na compra personalizada, o corpo da requisição contém apenas a quantidade de
-créditos desejada. O backend busca o preço vigente e calcula o valor total; o
-frontend não pode definir o preço.
+créditos desejada. O backend aplica o preço fixo de R$ 3,00 por crédito e calcula
+o valor total; o frontend não pode definir o preço.
 
 ## Upload e limites
 

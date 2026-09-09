@@ -5,6 +5,7 @@ import {
   listEvaluations,
   type Evaluation,
 } from '../../api/evaluationApi'
+import { createPurchase, getCreditBalance } from '../../api/paymentApi'
 import type { EvaluationResult, EvaluationStep, PrototypeScreen } from '../../prototype/types'
 import { PrototypeShell } from './PrototypeShell'
 import { EMAIL_VERIFICATION_ENABLED, type User } from '../../api/authApi'
@@ -29,7 +30,23 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
   const [history, setHistory] = useState<Evaluation[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [openingEvaluationId, setOpeningEvaluationId] = useState<string | null>(null)
+  const [creditBalance, setCreditBalance] = useState<number | null>(null)
   const auth = useOptionalAuth()
+
+  useEffect(() => {
+    if (!auth?.accessToken) return
+    let active = true
+    getCreditBalance(auth.accessToken)
+      .then((response) => {
+        if (active) setCreditBalance(response.data.credits)
+      })
+      .catch(() => {
+        if (active) setCreditBalance(null)
+      })
+    return () => {
+      active = false
+    }
+  }, [auth?.accessToken])
 
   const startEvaluation = () => {
     setScreen('home')
@@ -175,6 +192,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
       }}
       onExit={onExit}
       user={user}
+      creditBalance={creditBalance}
     >
       {EMAIL_VERIFICATION_ENABLED && user && user.emailVerified === false && auth?.accessToken && (
         <EmailVerificationBanner />
@@ -208,7 +226,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
           onOpen={openHistoryEvaluation}
         />
       )}
-      {screen === 'credits' && <CreditsScreen />}
+      {screen === 'credits' && <CreditsScreen accessToken={auth?.accessToken ?? undefined} />}
       {screen === 'transactions' && <TransactionsScreen onNavigate={setScreen} />}
       {screen === 'profile' && <ProfileScreen user={user} />}
     </PrototypeShell>
@@ -893,8 +911,8 @@ function toEvaluationResult(evaluation: Evaluation): EvaluationResult {
   }
 }
 
-function CreditsScreen() {
-  return <CustomCreditsScreen /> /*
+function CreditsScreen({ accessToken }: { accessToken?: string }) {
+  return <CustomCreditsScreen accessToken={accessToken} /> /*
     <InfoScreen
       eyebrow="Seu saldo"
       title="Créditos para continuar praticando."
@@ -902,13 +920,30 @@ function CreditsScreen() {
     />
   ) */
 }
-function CustomCreditsScreen() {
+function CustomCreditsScreen({ accessToken }: { accessToken?: string }) {
   const [creditAmount, setCreditAmount] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
-  const submitPurchase = (event: FormEvent<HTMLFormElement>) => {
+  const submitPurchase = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setMessage('A compra será conectada ao pagamento na próxima etapa.')
+    const amount = Number(creditAmount)
+    if (!accessToken || !Number.isInteger(amount) || amount < 1 || amount > 1000) return
+
+    setSubmitting(true)
+    setMessage(null)
+    try {
+      const response = await createPurchase(amount, accessToken)
+      if (!response.data.checkoutUrl) {
+        setMessage('Não foi possível abrir o checkout. Tente novamente.')
+        return
+      }
+      window.location.assign(response.data.checkoutUrl)
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Não foi possível iniciar a compra.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -955,8 +990,9 @@ function CustomCreditsScreen() {
           <span>Valor da compra</span>
           <strong>A calcular</strong>
         </div>
-        <button className="primary-button" type="submit">
-          Comprar créditos <span aria-hidden="true">→</span>
+        <button className="primary-button" type="submit" disabled={submitting}>
+          {submitting ? 'Abrindo checkout...' : 'Comprar créditos'}{' '}
+          <span aria-hidden="true">→</span>
         </button>
         {message && (
           <p className="credit-purchase-message" role="status">

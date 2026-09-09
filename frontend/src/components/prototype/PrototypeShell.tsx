@@ -8,6 +8,7 @@ type PrototypeShellProps = {
   onNavigate: (screen: PrototypeScreen) => void
   onExit: () => void
   user: User | null
+  creditBalance: number | null
   children: ReactNode
 }
 
@@ -16,6 +17,7 @@ export function PrototypeShell({
   onNavigate,
   onExit,
   user,
+  creditBalance,
   children,
 }: PrototypeShellProps) {
   const navigation: { id: PrototypeScreen; label: string }[] = [
@@ -45,6 +47,13 @@ export function PrototypeShell({
           ))}
         </nav>
         <div className="prototype-user-actions">
+          <div
+            className="prototype-credit-balance"
+            aria-label={`${creditBalance ?? 'Saldo não carregado'} créditos disponíveis`}
+          >
+            <strong>{creditBalance ?? '—'}</strong>
+            <span>créditos</span>
+          </div>
           <button
             className={`prototype-profile${activeScreen === 'profile' ? ' is-active' : ''}`}
             type="button"

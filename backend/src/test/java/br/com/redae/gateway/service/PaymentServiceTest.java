@@ -8,11 +8,9 @@ import static org.mockito.Mockito.when;
 import br.com.redae.gateway.client.PaymentGatewayProvider;
 import br.com.redae.gateway.dto.CreatePaymentRequest;
 import br.com.redae.gateway.dto.PaymentCreationResult;
-import br.com.redae.gateway.entity.CreditPrice;
 import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.entity.PaymentTransaction;
 import br.com.redae.gateway.entity.PaymentTransactionStatus;
-import br.com.redae.gateway.repository.CreditPriceRepository;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
 import br.com.redae.gateway.repository.PaymentTransactionRepository;
 import br.com.redae.user.entity.User;
@@ -28,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PaymentServiceTest {
   @Mock private PaymentTransactionRepository paymentTransactionRepository;
   @Mock private PaymentGatewayProvider paymentGatewayProvider;
-  @Mock private CreditPriceRepository creditPriceRepository;
   @Mock private CreditTransactionRepository creditTransactionRepository;
 
   @InjectMocks private PaymentService paymentService;
@@ -37,18 +34,16 @@ class PaymentServiceTest {
   void fakeApprovalPersistsPaidTransaction() {
     User user = new User("Student", "student@example.com", "hash");
     var request = new CreatePaymentRequest(2);
-    CreditPrice price = org.mockito.Mockito.mock(CreditPrice.class);
-    when(creditPriceRepository.findCurrent(any())).thenReturn(java.util.Optional.of(price));
-    when(price.getAmountPerCredit()).thenReturn(new BigDecimal("2.00"));
     when(paymentTransactionRepository.save(any(PaymentTransaction.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
-    when(paymentGatewayProvider.createPixPayment(any(PaymentTransaction.class)))
-        .thenReturn(new PaymentCreationResult("fake-reference", null, null, null, true));
+    when(paymentGatewayProvider.createCheckoutSession(any(PaymentTransaction.class)))
+        .thenReturn(new PaymentCreationResult("fake-reference", null, true));
 
     var response = paymentService.create(user, request);
 
     assertEquals(PaymentTransactionStatus.PAGA, response.status());
     assertEquals(2, response.credits());
+    assertEquals(new BigDecimal("6.00"), response.amount());
     assertEquals("fake-reference", response.externalReference());
     verify(creditTransactionRepository).save(any());
     verify(paymentTransactionRepository, org.mockito.Mockito.times(2))

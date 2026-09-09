@@ -3,8 +3,8 @@ package br.com.redae.gateway.controller;
 import br.com.redae.gateway.service.PaymentService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
-import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
+import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -41,21 +41,25 @@ public class StripeWebhookController {
     } catch (SignatureVerificationException exception) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Webhook inválido.");
     }
-    if ("payment_intent.succeeded".equals(event.getType())) {
-      paymentIntent(event).ifPresent(intent -> paymentService.confirmPayment(intent.getId()));
-    } else if ("payment_intent.payment_failed".equals(event.getType())) {
-      paymentIntent(event).ifPresent(intent -> paymentService.failPayment(intent.getId()));
+    if ("checkout.session.completed".equals(event.getType())) {
+      checkoutSession(event)
+          .filter(session -> "paid".equals(session.getPaymentStatus()))
+          .ifPresent(session -> paymentService.confirmPayment(session.getId()));
+    } else if ("checkout.session.async_payment_succeeded".equals(event.getType())) {
+      checkoutSession(event).ifPresent(session -> paymentService.confirmPayment(session.getId()));
+    } else if ("checkout.session.expired".equals(event.getType())) {
+      checkoutSession(event).ifPresent(session -> paymentService.failPayment(session.getId()));
     }
     return ResponseEntity.ok().build();
   }
 
-  private java.util.Optional<PaymentIntent> paymentIntent(Event event) {
-    return event.getDataObjectDeserializer().getObject().flatMap(this::asPaymentIntent);
+  private java.util.Optional<Session> checkoutSession(Event event) {
+    return event.getDataObjectDeserializer().getObject().flatMap(this::asCheckoutSession);
   }
 
-  private java.util.Optional<PaymentIntent> asPaymentIntent(StripeObject object) {
-    return object instanceof PaymentIntent intent
-        ? java.util.Optional.of(intent)
+  private java.util.Optional<Session> asCheckoutSession(StripeObject object) {
+    return object instanceof Session session
+        ? java.util.Optional.of(session)
         : java.util.Optional.empty();
   }
 }

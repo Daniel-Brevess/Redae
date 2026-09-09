@@ -54,6 +54,11 @@ services:
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-gemini-3.6-flash}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-fake}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_SUCCESS_URL: ${STRIPE_SUCCESS_URL:-http://localhost:5173/home}
+      STRIPE_CANCEL_URL: ${STRIPE_CANCEL_URL:-http://localhost:5173/home}
 
 volumes:
   postgres_data:

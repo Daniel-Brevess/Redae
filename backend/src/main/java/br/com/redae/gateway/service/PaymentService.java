@@ -9,51 +9,40 @@ import br.com.redae.gateway.entity.CreditTransaction;
 import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.entity.PaymentTransaction;
 import br.com.redae.gateway.entity.PaymentTransactionStatus;
-import br.com.redae.gateway.repository.CreditPriceRepository;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
 import br.com.redae.gateway.repository.PaymentTransactionRepository;
 import br.com.redae.shared.error.ResourceNotFoundException;
 import br.com.redae.user.entity.User;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentService {
+  private static final BigDecimal CREDIT_PRICE = new BigDecimal("3.00");
+
   private final PaymentTransactionRepository paymentTransactionRepository;
   private final PaymentGatewayProvider paymentGatewayProvider;
-  private final CreditPriceRepository creditPriceRepository;
   private final CreditTransactionRepository creditTransactionRepository;
 
   public PaymentService(
       PaymentTransactionRepository paymentTransactionRepository,
       PaymentGatewayProvider paymentGatewayProvider,
-      CreditPriceRepository creditPriceRepository,
       CreditTransactionRepository creditTransactionRepository) {
     this.paymentTransactionRepository = paymentTransactionRepository;
     this.paymentGatewayProvider = paymentGatewayProvider;
-    this.creditPriceRepository = creditPriceRepository;
     this.creditTransactionRepository = creditTransactionRepository;
   }
 
   @Transactional
   public PaymentResponse create(User user, CreatePaymentRequest request) {
-    var price =
-        creditPriceRepository
-            .findCurrent(Instant.now())
-            .orElseThrow(
-                () ->
-                    new ResourceNotFoundException(
-                        "O preço atual dos créditos não foi encontrado."));
-    BigDecimal amount =
-        price.getAmountPerCredit().multiply(BigDecimal.valueOf(request.creditAmount()));
+    BigDecimal amount = CREDIT_PRICE.multiply(BigDecimal.valueOf(request.creditAmount()));
     PaymentTransaction transaction =
         paymentTransactionRepository.save(
             new PaymentTransaction(user, request.creditAmount(), amount));
 
-    var payment = paymentGatewayProvider.createPixPayment(transaction);
+    var payment = paymentGatewayProvider.createCheckoutSession(transaction);
     transaction.markPending(payment.externalReference());
     if (payment.approved()) {
       transaction.markPaid();

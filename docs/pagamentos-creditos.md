@@ -8,19 +8,17 @@ por PIX e receba os créditos após a confirmação do pagamento pela Stripe.
 ## Fluxo principal
 
 ```text
-Usuário escolhe um pacote
+Usuário informa a quantidade de créditos
         ↓
 Frontend solicita a criação da cobrança
         ↓
 Backend cria a transação local como PENDENTE
         ↓
-Backend solicita a cobrança PIX à Stripe
+Backend cria uma Checkout Session na Stripe
         ↓
-Backend salva o identificador externo da cobrança
+Backend salva o identificador externo e retorna a URL do Checkout
         ↓
-Backend retorna QR Code e código copia e cola
-        ↓
-Frontend exibe os dados do PIX
+Frontend redireciona o usuário para o Checkout hospedado
         ↓
 Usuário realiza o pagamento
         ↓
@@ -37,10 +35,9 @@ Transação fica CONCLUIDA
 
 ### Frontend
 
-- exibir os pacotes disponíveis;
+- exibir o campo para quantidade de créditos;
 - solicitar a criação da cobrança;
-- mostrar o QR Code e o código PIX;
-- consultar o status da transação;
+- redirecionar o usuário para a URL do Checkout;
 - informar quando os créditos forem confirmados.
 
 O frontend não confirma pagamentos por conta própria e não recebe credenciais do
@@ -48,10 +45,11 @@ gateway.
 
 ### Backend
 
-- validar o pacote escolhido;
+- validar a quantidade escolhida;
+- aplicar o preço fixo de R$ 3,00 por crédito;
 - criar e persistir a transação;
-- solicitar a cobrança à Stripe;
-- armazenar o identificador externo;
+- criar a Checkout Session na Stripe;
+- armazenar o identificador externo da sessão;
 - receber e validar o webhook;
 - atualizar o status da transação;
 - adicionar os créditos somente após confirmação válida;
@@ -62,14 +60,12 @@ gateway.
 O cliente da Stripe ficará atrás da interface `PaymentGatewayProvider` e
 será responsável por:
 
-- criar pagamentos PIX usando o SDK Java oficial;
-- retornar os dados necessários para o checkout;
-- validar a autenticidade dos webhooks;
-- consultar o pagamento na Stripe a partir do identificador recebido;
-- converter os status do provedor para o estado interno da transação.
+- criar uma Checkout Session usando o SDK Java oficial;
+- retornar a URL para o Checkout hospedado;
+- converter os eventos do Checkout para o estado interno da transação.
 
-O controller do webhook receberá a requisição HTTP e delegará o processamento ao
-cliente e ao service. As regras de negócio não ficarão no controller.
+O controller do webhook receberá a requisição HTTP, validará a assinatura e
+delegará a confirmação ao service. As regras de negócio não ficarão no controller.
 
 ## SDK Java e configuração da Stripe
 
@@ -79,8 +75,8 @@ como dependência Maven. A documentação oficial apresenta esta referência:
 ```xml
 <dependency>
   <groupId>com.stripe</groupId>
-  <artifactId>sdk-java</artifactId>
-  <version>2.1.7</version>
+  <artifactId>stripe-java</artifactId>
+  <version>33.4.1</version>
 </dependency>
 ```
 
@@ -89,9 +85,9 @@ fixada no `pom.xml`. O `StripeClient` deverá configurar o SDK com a chave
 de acesso por variável de ambiente. O token nunca será salvo no banco, enviado
 ao frontend ou versionado.
 
-Também será necessário configurar no painel da Stripe as notificações
-HTTPS para o endpoint de webhook da aplicação. O Pix exige que as chaves Pix
-estejam cadastradas na conta da Stripe.
+Também será necessário configurar no painel da Stripe as notificações HTTPS
+para o endpoint de webhook da aplicação. As URLs de sucesso e cancelamento são
+configuradas por variáveis de ambiente e não contêm segredos.
 
 ## Estados da transação
 
@@ -122,19 +118,30 @@ webhook recebido mais de uma vez não pode gerar créditos novamente.
 - webhooks deverão ser validados antes de alterar a transação;
 - o retorno do usuário ao frontend não será considerado confirmação de pagamento;
 - transações deverão ser associadas ao usuário autenticado;
-- valores e pacotes serão validados no backend;
+- quantidade e valor serão validados no backend;
 - nenhum segredo ou dado sensível será enviado ao frontend ou versionado.
 
 ## Estado atual
 
-O módulo `gateway` possui somente a estrutura inicial de pacotes. A entidade,
-o repository, o service, o `StripeClient`, os endpoints e as migrations
-ainda serão implementados por partes.
+O fluxo de Checkout está implementado no módulo `gateway`. A aplicação cria a
+transação local como `PENDENTE`, cria a sessão na Stripe e só concede créditos
+depois de um webhook válido. Os eventos `checkout.session.completed`,
+`checkout.session.async_payment_succeeded` e `checkout.session.expired` são
+tratados pelo endpoint `/api/v1/webhooks/stripe`.
 
-O fluxo segue a mesma separação planejada anteriormente: a aplicação cria a
-transação local, o provedor cria o pagamento, o usuário paga via Pix e o
-webhook dispara a confirmação. A diferença fica na integração específica com
-a Stripe, nos status retornados e na validação da notificação.
+As variáveis necessárias para usar a Stripe são:
+
+```text
+PAYMENT_PROVIDER=stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_SUCCESS_URL=http://localhost:5173/home
+STRIPE_CANCEL_URL=http://localhost:5173/home
+```
+
+O frontend recebe somente a `checkoutUrl` retornada pelo backend. A confirmação
+da compra não depende da página de sucesso e o provider fake continua disponível
+para testes locais.
 
 Para desenvolvimento local, `PAYMENT_PROVIDER=fake` seleciona o
 `FakePaymentGatewayClient`. Ele gera uma referência fictícia e aprova a
