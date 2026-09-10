@@ -66,6 +66,19 @@ body { margin: 0; }
 @media (max-width: 760px) { .prototype-header { flex-wrap: wrap; gap: 12px; padding: 14px 20px; }.prototype-nav { order: 3; width: 100%; overflow-x: auto; }.prototype-nav-link { padding: 8px 12px; white-space: nowrap; }.prototype-main { width: min(100% - 32px, 540px); }.prototype-content { padding-top: 44px; }.prototype-grid-main, .choice-grid { grid-template-columns: 1fr; }.prototype-welcome, .result-hero { align-items: flex-start; flex-direction: column; }.credit-pill { align-self: flex-start; }.result-score { justify-items: start; }.result-summary { align-items: flex-start; flex-direction: column; }.history-card { align-items: flex-start; flex-wrap: wrap; }.history-card .text-button { margin-left: 116px; }.form-actions { align-items: stretch; }.form-actions .primary-button { flex: 1; }.competency-card > button { grid-template-columns: 42px 1fr 24px; gap: 10px; padding: 15px 12px; }.competency-score { grid-column: 2; grid-row: 2; }.accordion-icon { grid-column: 3; grid-row: 1 / span 2; }.competency-detail { margin-left: 64px; }.prototype-user-actions { margin-left: auto; }.prototype-profile strong { display: none; } }
 
 .feedback-list { display: grid; gap: 12px; }
+.admin-page { min-height: 100vh; width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 86px 0 110px; }
+.admin-header { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 48px; }
+.admin-header h1 { margin: 0; font-size: clamp(2.5rem, 6vw, 4.6rem); letter-spacing: -.08em; line-height: .98; }
+.admin-header p:not(.prototype-eyebrow), .admin-state p { color: #64748b; line-height: 1.7; }
+.admin-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.admin-card { min-height: 190px; padding: 28px; border: 1px solid #e2e8f0; border-radius: 26px; background: #fff; box-shadow: 0 18px 45px #0f172a0a; }
+.admin-card span { color: #64748b; font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
+.admin-card strong { display: block; margin: 20px 0 8px; color: #4f7cff; font-size: 3.5rem; letter-spacing: -.08em; }
+.admin-card p { margin: 0; color: #94a3b8; font-size: .78rem; }
+.admin-state { max-width: 620px; margin: 0 auto; padding: 80px 0; text-align: center; }
+.admin-state h1 { margin: 0; font-size: clamp(2.5rem, 6vw, 4.6rem); letter-spacing: -.08em; }
+.admin-state .primary-button { margin-top: 18px; }
+@media (max-width: 720px) { .admin-page { width: min(100% - 32px, 540px); padding-top: 48px; }.admin-header { align-items: flex-start; flex-direction: column; }.admin-grid { grid-template-columns: 1fr; } }
 .feedback-item { padding: 16px; border: 1px solid #dbe4ee; border-radius: 16px; background: #f8fafc; }
 .feedback-item p:last-child { margin-bottom: 0; }
 .brand-lockup { gap: 9px; }.brand-lockup .brand-mascot { width: 34px; height: 34px; object-fit: contain; }.site-header .brand-lockup .brand-mascot { width: 31px; height: 31px; }.footer .brand-lockup .brand-mascot { width: 62px; height: 62px; }.prototype-brand .brand-mascot { width: 34px; height: 34px; object-fit: contain; }

@@ -131,19 +131,19 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 ### 1. Base de autorização
 
-- [ ] Confirmar o papel `ADMIN` persistido e carregado pelo JWT.
-- [ ] Criar regra reutilizável para proteger endpoints administrativos.
-- [ ] Garantir `403` para usuários `STUDENT`.
-- [ ] Criar testes de autorização para `ADMIN` e `STUDENT`.
+- [x] Confirmar o papel `ADMIN` persistido e carregado pelo JWT.
+- [x] Criar regra reutilizável para proteger endpoints administrativos.
+- [x] Garantir `403` para usuários `STUDENT`.
+- [x] Criar testes de autorização para `ADMIN` e `STUDENT`.
 
 **Resultado:** somente administradores podem acessar recursos administrativos.
 
 ### 2. Rota e layout administrativo
 
-- [ ] Criar rota administrativa no frontend.
-- [ ] Exibir o link somente para `ADMIN`.
-- [ ] Bloquear acesso direto de usuários comuns.
-- [ ] Criar estados de carregamento, erro e acesso negado.
+- [x] Criar rota administrativa no frontend.
+- [x] Exibir o link somente para `ADMIN`.
+- [x] Bloquear acesso direto de usuários comuns.
+- [x] Criar estados de carregamento, erro e acesso negado.
 
 **Resultado:** o administrador possui uma área própria e protegida.
 

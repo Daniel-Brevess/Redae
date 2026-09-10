@@ -39,11 +39,15 @@ public class User {
   private Instant emailVerifiedAt;
 
   public User(String name, String email, String passwordHash) {
+    this(name, email, passwordHash, UserRole.STUDENT);
+  }
+
+  public User(String name, String email, String passwordHash, UserRole role) {
     this.id = UUID.randomUUID();
     this.name = name;
     this.email = email;
     this.passwordHash = passwordHash;
-    this.role = UserRole.STUDENT;
+    this.role = role;
   }
 
   protected User() {}
@@ -66,6 +70,10 @@ public class User {
 
   public UserRole getRole() {
     return role;
+  }
+
+  public void promoteToAdmin() {
+    role = UserRole.ADMIN;
   }
 
   public boolean isEmailVerified() {

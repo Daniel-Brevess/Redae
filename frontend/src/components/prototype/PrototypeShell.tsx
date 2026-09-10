@@ -10,6 +10,7 @@ type PrototypeShellProps = {
   user: User | null
   creditBalance: number | null
   children: ReactNode
+  onOpenAdmin?: () => void
 }
 
 export function PrototypeShell({
@@ -19,6 +20,7 @@ export function PrototypeShell({
   user,
   creditBalance,
   children,
+  onOpenAdmin,
 }: PrototypeShellProps) {
   const navigation: { id: PrototypeScreen; label: string }[] = [
     { id: 'home', label: 'Início' },
@@ -63,6 +65,11 @@ export function PrototypeShell({
             <span aria-hidden="true">{user?.name?.slice(0, 2).toUpperCase() ?? 'US'}</span>
             <strong>{user?.name ?? 'Usuário'}</strong>
           </button>
+          {user?.role === 'ADMIN' && onOpenAdmin && (
+            <button className="prototype-exit" type="button" onClick={onOpenAdmin}>
+              Admin
+            </button>
+          )}
           <button className="prototype-exit" type="button" onClick={onExit}>
             Sair
           </button>

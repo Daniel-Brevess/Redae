@@ -7,8 +7,10 @@ import br.com.redae.auth.dto.RegisterRequest;
 import br.com.redae.auth.dto.UserResponse;
 import br.com.redae.shared.error.ApiException;
 import br.com.redae.user.entity.User;
+import br.com.redae.user.entity.UserRole;
 import br.com.redae.user.repository.UserRepository;
 import java.util.Locale;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,16 +22,19 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final SessionService sessionService;
+  private final String adminEmail;
 
   public AuthService(
       UserRepository userRepository,
       PasswordEncoder passwordEncoder,
       JwtService jwtService,
-      SessionService sessionService) {
+      SessionService sessionService,
+      @Value("${security.admin-email:}") String adminEmail) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.jwtService = jwtService;
     this.sessionService = sessionService;
+    this.adminEmail = normalizeEmail(adminEmail);
   }
 
   @Transactional
@@ -43,8 +48,9 @@ public class AuthService {
       throw new ApiException(
           HttpStatus.CONFLICT, "EMAIL_ALREADY_REGISTERED", "Este email já está cadastrado.");
     }
+    UserRole role = email.equals(adminEmail) ? UserRole.ADMIN : UserRole.STUDENT;
     return userRepository.save(
-        new User(request.name().trim(), email, passwordEncoder.encode(request.password())));
+        new User(request.name().trim(), email, passwordEncoder.encode(request.password()), role));
   }
 
   @Transactional
@@ -54,6 +60,10 @@ public class AuthService {
     if (user == null || !passwordEncoder.matches(request.password(), user.getPasswordHash())) {
       throw new ApiException(
           HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", "Email ou senha inválidos.");
+    }
+    if (email.equals(adminEmail) && user.getRole() != UserRole.ADMIN) {
+      user.promoteToAdmin();
+      userRepository.save(user);
     }
     return new LoginResult(
         new AuthResponse(

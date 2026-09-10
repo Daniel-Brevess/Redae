@@ -7,10 +7,12 @@ import { SiteFooter } from './components/layout/SiteFooter'
 import { SiteHeader } from './components/layout/SiteHeader'
 import { PrototypeExperience } from './components/prototype/PrototypeExperience'
 import { AuthProvider, useAuth } from './auth/AuthContext'
+import { AdminDashboard } from './components/admin/AdminDashboard'
 
-type AppPath = '/' | '/home'
+type AppPath = '/' | '/home' | '/admin'
 
 function getPath(): AppPath {
+  if (window.location.pathname === '/admin') return '/admin'
   return window.location.pathname === '/home' ? '/home' : '/'
 }
 
@@ -44,7 +46,7 @@ function AppContent() {
       navigate('/home')
       return
     }
-    if (!user && path === '/home') navigate('/')
+    if (!user && (path === '/home' || path === '/admin')) navigate('/')
   }, [loading, navigate, path, user])
 
   const closePrototype = async () => {
@@ -52,9 +54,20 @@ function AppContent() {
     navigate('/')
   }
 
+  if (path === '/admin') {
+    if (loading || !user) return null
+    return <AdminDashboard user={user} onBack={() => navigate('/home')} />
+  }
+
   if (path === '/home') {
     if (loading || !user) return null
-    return <PrototypeExperience onExit={closePrototype} user={user} />
+    return (
+      <PrototypeExperience
+        onExit={closePrototype}
+        onOpenAdmin={() => navigate('/admin')}
+        user={user}
+      />
+    )
   }
 
   return (

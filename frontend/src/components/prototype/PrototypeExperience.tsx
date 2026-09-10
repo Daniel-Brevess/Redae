@@ -17,13 +17,21 @@ import { PrototypeShell } from './PrototypeShell'
 import { EMAIL_VERIFICATION_ENABLED, type User } from '../../api/authApi'
 import { useAuth, useOptionalAuth } from '../../auth/AuthContext'
 
-type PrototypeExperienceProps = { onExit: () => void; user?: User | null }
+type PrototypeExperienceProps = {
+  onExit: () => void
+  onOpenAdmin?: () => void
+  user?: User | null
+}
 
 const EVALUATION_POLL_INTERVAL_MS = 2000
 const EVALUATION_PROCESSING_TIMEOUT_MS = 120000
 type ProcessingStatus = 'PENDENTE' | 'PROCESSANDO'
 
-export function PrototypeExperience({ onExit, user = null }: PrototypeExperienceProps) {
+export function PrototypeExperience({
+  onExit,
+  onOpenAdmin,
+  user = null,
+}: PrototypeExperienceProps) {
   const [screen, setScreen] = useState<PrototypeScreen>('home')
   const [step, setStep] = useState<EvaluationStep | null>(null)
   const [theme, setTheme] = useState('Os desafios da educação digital no Brasil')
@@ -264,6 +272,7 @@ export function PrototypeExperience({ onExit, user = null }: PrototypeExperience
       }}
       onExit={onExit}
       user={user}
+      onOpenAdmin={onOpenAdmin}
       creditBalance={creditBalance}
     >
       {EMAIL_VERIFICATION_ENABLED && user && user.emailVerified === false && auth?.accessToken && (
