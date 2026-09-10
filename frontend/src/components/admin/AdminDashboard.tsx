@@ -1,8 +1,26 @@
+import { useEffect, useState } from 'react'
+import { getAdminUserCount } from '../../api/adminApi'
 import type { User } from '../../api/authApi'
 
-type AdminDashboardProps = { user: User; onBack: () => void }
+type AdminDashboardProps = { user: User; accessToken: string | null; onBack: () => void }
 
-export function AdminDashboard({ user, onBack }: AdminDashboardProps) {
+export function AdminDashboard({ user, accessToken, onBack }: AdminDashboardProps) {
+  const [totalUsers, setTotalUsers] = useState<number | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (user.role !== 'ADMIN' || !accessToken) return
+    getAdminUserCount(accessToken)
+      .then((response) => setTotalUsers(response.data.totalUsers))
+      .catch((requestError: unknown) => {
+        setError(
+          requestError instanceof Error
+            ? requestError.message
+            : 'Não foi possível carregar o indicador.',
+        )
+      })
+  }, [accessToken, user.role])
+
   if (user.role !== 'ADMIN') {
     return (
       <main className="admin-page">
@@ -33,8 +51,8 @@ export function AdminDashboard({ user, onBack }: AdminDashboardProps) {
       <section className="admin-grid" aria-label="Indicadores administrativos">
         <article className="admin-card">
           <span>Usuários</span>
-          <strong>—</strong>
-          <p>Indicador disponível na próxima etapa.</p>
+          <strong>{totalUsers ?? '—'}</strong>
+          <p>{error ?? 'Quantidade total cadastrada.'}</p>
         </article>
         <article className="admin-card">
           <span>Créditos</span>

@@ -1,7 +1,9 @@
 package br.com.redae.auth.config;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import br.com.redae.ai.client.AIClient;
@@ -52,5 +54,22 @@ class AdminAuthorizationTest {
     mockMvc
         .perform(get("/api/v1/admin/test").with(user("admin").roles("ADMIN")))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void studentReceivesForbiddenForUserCount() throws Exception {
+    mockMvc
+        .perform(get("/api/v1/admin/users/count").with(user("student").roles("STUDENT")))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void adminCanReadUserCount() throws Exception {
+    when(userRepository.count()).thenReturn(4L);
+
+    mockMvc
+        .perform(get("/api/v1/admin/users/count").with(user("admin").roles("ADMIN")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data.totalUsers").value(4));
   }
 }

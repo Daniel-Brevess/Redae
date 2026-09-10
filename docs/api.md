@@ -22,6 +22,7 @@
 | POST | `/auth/logout` | revoga a sessão e limpa o cookie |
 | GET | `/profile` | consulta o usuário autenticado |
 | PATCH | `/profile` | altera dados básicos permitidos |
+| GET | `/admin/users/count` | total de usuários; exclusivo de administradores |
 
 Senhas nunca são retornadas ou armazenadas em texto puro. Falhas de login usam mensagem genérica.
 

@@ -30,7 +30,7 @@ function AppContent() {
       window.dispatchEvent(new PopStateEvent('popstate'))
     }
   }, [])
-  const { user, loading, signOut } = useAuth()
+  const { user, accessToken, loading, signOut } = useAuth()
   const closeCard = () => setActiveCard(null)
 
   const navigate = useCallback((nextPath: AppPath) => {
@@ -56,7 +56,7 @@ function AppContent() {
 
   if (path === '/admin') {
     if (loading || !user) return null
-    return <AdminDashboard user={user} onBack={() => navigate('/home')} />
+    return <AdminDashboard user={user} accessToken={accessToken} onBack={() => navigate('/home')} />
   }
 
   if (path === '/home') {

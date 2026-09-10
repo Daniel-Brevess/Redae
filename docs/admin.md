@@ -149,10 +149,10 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 ### 3. Contagem de usuários
 
-- [ ] Criar endpoint administrativo para contar usuários.
-- [ ] Criar service e consulta no repository.
-- [ ] Exibir o total no painel.
-- [ ] Testar com usuários fictícios.
+- [x] Criar endpoint administrativo para contar usuários.
+- [x] Criar service e consulta no repository.
+- [x] Exibir o total no painel.
+- [x] Testar com usuários fictícios.
 
 **Resultado:** o painel mostra a quantidade de usuários cadastrados.
 
