@@ -42,8 +42,7 @@ class AuthServiceTest {
 
     User admin =
         authService.register(
-            new RegisterRequest(
-                "Daniel", " DANIELBREVES1.20@GMAIL.COM ", "password", "password"));
+            new RegisterRequest("Daniel", " DANIELBREVES1.20@GMAIL.COM ", "password", "password"));
     User student =
         authService.register(
             new RegisterRequest("Student", "student@example.com", "password", "password"));
@@ -56,9 +55,7 @@ class AuthServiceTest {
   void promotesExistingConfiguredEmailOnLogin() {
     User existingUser =
         new User(
-            "Daniel",
-            "danielbreves1.20@gmail.com",
-            new BCryptPasswordEncoder().encode("password"));
+            "Daniel", "danielbreves1.20@gmail.com", new BCryptPasswordEncoder().encode("password"));
     when(userRepository.findByEmail("danielbreves1.20@gmail.com"))
         .thenReturn(java.util.Optional.of(existingUser));
 
