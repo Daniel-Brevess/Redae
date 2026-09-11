@@ -158,11 +158,11 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 ### 4. Lista de usuários
 
-- [ ] Definir os dados básicos exibidos.
-- [ ] Criar DTO e endpoint paginado.
-- [ ] Implementar ordenação e estado vazio.
-- [ ] Exibir a lista no frontend.
-- [ ] Não retornar senhas, tokens ou dados desnecessários.
+- [x] Definir os dados básicos exibidos.
+- [x] Criar DTO e endpoint paginado.
+- [x] Implementar ordenação e estado vazio.
+- [x] Exibir a lista no frontend.
+- [x] Não retornar senhas, tokens ou dados desnecessários.
 
 **Resultado:** o administrador consulta usuários com segurança e paginação.
 

@@ -1,6 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api/v1'
 
-export type ApiEnvelope<T> = { data: T; meta: Record<string, unknown>; traceId: string }
+export type ApiEnvelope<T, M = Record<string, unknown>> = { data: T; meta: M; traceId: string }
 
 export async function request<T>(path: string, options: RequestInit = {}, accessToken?: string) {
   const headers = new Headers(options.headers)

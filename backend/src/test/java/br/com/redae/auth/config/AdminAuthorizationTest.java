@@ -1,5 +1,6 @@
 package br.com.redae.auth.config;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,12 +14,17 @@ import br.com.redae.evaluation.repository.EvaluationRepository;
 import br.com.redae.gateway.repository.CreditPriceRepository;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
 import br.com.redae.gateway.repository.PaymentTransactionRepository;
+import br.com.redae.user.entity.User;
+import br.com.redae.user.entity.UserRole;
 import br.com.redae.user.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(
@@ -71,5 +77,21 @@ class AdminAuthorizationTest {
         .perform(get("/api/v1/admin/users/count").with(user("admin").roles("ADMIN")))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.totalUsers").value(4));
+  }
+
+  @Test
+  void adminCanReadPaginatedUsersWithoutSensitiveData() throws Exception {
+    User listedUser = new User("Student", "student@example.com", "password-hash", UserRole.STUDENT);
+    when(userRepository.findAll(any(Pageable.class)))
+        .thenReturn(new PageImpl<>(List.of(listedUser)));
+
+    mockMvc
+        .perform(get("/api/v1/admin/users").with(user("admin").roles("ADMIN")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data[0].name").value("Student"))
+        .andExpect(jsonPath("$.data[0].email").value("student@example.com"))
+        .andExpect(jsonPath("$.data[0].role").value("STUDENT"))
+        .andExpect(jsonPath("$.data[0].passwordHash").doesNotExist())
+        .andExpect(jsonPath("$.meta.totalElements").value(1));
   }
 }

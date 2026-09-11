@@ -6,4 +6,8 @@ public record ApiResponse<T>(T data, Map<String, Object> meta, String traceId) {
   public static <T> ApiResponse<T> of(T data, String traceId) {
     return new ApiResponse<>(data, Map.of(), traceId);
   }
+
+  public static <T> ApiResponse<T> of(T data, Map<String, Object> meta, String traceId) {
+    return new ApiResponse<>(data, meta, traceId);
+  }
 }

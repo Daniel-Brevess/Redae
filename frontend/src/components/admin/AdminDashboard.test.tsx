@@ -1,10 +1,11 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AdminDashboard } from './AdminDashboard'
-import { getAdminUserCount } from '../../api/adminApi'
+import { getAdminUserCount, getAdminUsers } from '../../api/adminApi'
 
 vi.mock('../../api/adminApi', () => ({
   getAdminUserCount: vi.fn(),
+  getAdminUsers: vi.fn(),
 }))
 
 const user = (role: 'ADMIN' | 'STUDENT') => ({
@@ -18,10 +19,19 @@ const user = (role: 'ADMIN' | 'STUDENT') => ({
 describe('AdminDashboard', () => {
   afterEach(cleanup)
 
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('renders the total users returned by the backend', async () => {
     vi.mocked(getAdminUserCount).mockResolvedValue({
       data: { totalUsers: 4 },
       meta: {},
+      traceId: 'trace-id',
+    })
+    vi.mocked(getAdminUsers).mockResolvedValue({
+      data: [],
+      meta: { page: 0, size: 20, totalElements: 0, totalPages: 0, hasNext: false },
       traceId: 'trace-id',
     })
 
@@ -30,10 +40,42 @@ describe('AdminDashboard', () => {
     expect(await screen.findByText('4')).toBeInTheDocument()
   })
 
+  it('renders users returned by the paginated endpoint', async () => {
+    vi.mocked(getAdminUserCount).mockResolvedValue({
+      data: { totalUsers: 1 },
+      meta: {},
+      traceId: 'trace-id',
+    })
+    vi.mocked(getAdminUsers).mockResolvedValue({
+      data: [
+        {
+          id: 'user-id',
+          name: 'Estudante',
+          email: 'student@example.com',
+          role: 'STUDENT',
+          emailVerified: false,
+        },
+      ],
+      meta: { page: 0, size: 20, totalElements: 1, totalPages: 1, hasNext: false },
+      traceId: 'trace-id',
+    })
+
+    render(<AdminDashboard user={user('ADMIN')} accessToken="token" onBack={vi.fn()} />)
+
+    expect(await screen.findByText('Estudante')).toBeInTheDocument()
+    expect(screen.getByText('student@example.com')).toBeInTheDocument()
+    expect(screen.getByText('E-mail pendente')).toBeInTheDocument()
+  })
+
   it('renders the administrative layout for an admin', () => {
     vi.mocked(getAdminUserCount).mockResolvedValue({
       data: { totalUsers: 0 },
       meta: {},
+      traceId: 'trace-id',
+    })
+    vi.mocked(getAdminUsers).mockResolvedValue({
+      data: [],
+      meta: { page: 0, size: 20, totalElements: 0, totalPages: 0, hasNext: false },
       traceId: 'trace-id',
     })
     render(<AdminDashboard user={user('ADMIN')} accessToken="token" onBack={vi.fn()} />)
