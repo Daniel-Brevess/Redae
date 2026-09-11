@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -14,10 +15,12 @@ import br.com.redae.evaluation.repository.EvaluationRepository;
 import br.com.redae.gateway.repository.CreditPriceRepository;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
 import br.com.redae.gateway.repository.PaymentTransactionRepository;
+import br.com.redae.gateway.service.CreditService;
 import br.com.redae.user.entity.User;
 import br.com.redae.user.entity.UserRole;
 import br.com.redae.user.repository.UserRepository;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(
@@ -46,6 +50,7 @@ class AdminAuthorizationTest {
   @MockBean PaymentTransactionRepository paymentTransactionRepository;
   @MockBean CreditPriceRepository creditPriceRepository;
   @MockBean CreditTransactionRepository creditTransactionRepository;
+  @MockBean CreditService creditService;
   @MockBean AIClient aiClient;
 
   @Test
@@ -84,6 +89,7 @@ class AdminAuthorizationTest {
     User listedUser = new User("Student", "student@example.com", "password-hash", UserRole.STUDENT);
     when(userRepository.findAll(any(Pageable.class)))
         .thenReturn(new PageImpl<>(List.of(listedUser)));
+    when(creditService.getBalances(any())).thenReturn(Map.of());
 
     mockMvc
         .perform(get("/api/v1/admin/users").with(user("admin").roles("ADMIN")))
@@ -93,5 +99,16 @@ class AdminAuthorizationTest {
         .andExpect(jsonPath("$.data[0].role").value("STUDENT"))
         .andExpect(jsonPath("$.data[0].passwordHash").doesNotExist())
         .andExpect(jsonPath("$.meta.totalElements").value(1));
+  }
+
+  @Test
+  void studentReceivesForbiddenForCreditAdjustment() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/v1/admin/credit-adjustments")
+                .with(user("student").roles("STUDENT"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":\"00000000-0000-0000-0000-000000000001\",\"credits\":5}"))
+        .andExpect(status().isForbidden());
   }
 }

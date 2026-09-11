@@ -180,17 +180,17 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 Antes do deploy, o administrador poderá conceder créditos manualmente para
 contas de testers pela área administrativa.
 
-- [ ] Criar busca administrativa de usuários por nome ou e-mail.
-- [ ] Exibir os resultados em cards com dados básicos e saldo atual.
-- [ ] Adicionar ação protegida para informar a quantidade de créditos.
-- [ ] Validar que a quantidade seja inteira e positiva.
-- [ ] Reutilizar o ledger, registrando a concessão como transação auditável.
-- [ ] Registrar internamente o identificador do administrador e a data da operação.
-- [ ] Excluir a concessão da lista comum de transações do tester.
-- [ ] Não expor o nome ou outros dados do administrador ao tester.
-- [ ] Atualizar o saldo exibido após a concessão.
-- [ ] Garantir `403` para usuários sem o papel `ADMIN`.
-- [ ] Testar busca, concessão, saldo atualizado, valores inválidos e autorização.
+- [x] Criar busca administrativa de usuários por nome ou e-mail.
+- [x] Exibir os resultados em cards com dados básicos e saldo atual.
+- [x] Adicionar ação protegida para informar a quantidade de créditos.
+- [x] Validar que a quantidade seja inteira e positiva.
+- [x] Reutilizar o ledger, registrando a concessão como transação auditável.
+- [x] Registrar internamente o identificador do administrador e a data da operação.
+- [x] Excluir a concessão da lista comum de transações do tester.
+- [x] Não expor o nome ou outros dados do administrador ao tester.
+- [x] Atualizar o saldo exibido após a concessão.
+- [x] Garantir `403` para usuários sem o papel `ADMIN`.
+- [x] Testar busca, concessão, saldo atualizado, valores inválidos e autorização.
 
 **Resultado:** o administrador consegue preparar contas de testers sem alterar
 diretamente o banco de dados, e cada concessão permanece rastreável.

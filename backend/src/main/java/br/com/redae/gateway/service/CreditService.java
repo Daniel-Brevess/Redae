@@ -5,6 +5,7 @@ import br.com.redae.evaluation.service.EvaluationAccessException;
 import br.com.redae.gateway.entity.CreditTransaction;
 import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
+import br.com.redae.shared.error.ResourceNotFoundException;
 import br.com.redae.user.entity.User;
 import br.com.redae.user.repository.UserRepository;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CreditService {
   private static final int EVALUATION_CREDIT_COST = 1;
+  private static final String ADMIN_GRANT_REASON = "Concessão manual para tester";
 
   private final CreditTransactionRepository creditTransactionRepository;
   private final UserRepository userRepository;
@@ -38,6 +40,17 @@ public class CreditService {
                 CreditTransactionRepository.BalanceProjection::getUserId,
                 CreditTransactionRepository.BalanceProjection::getCredits,
                 (first, ignored) -> first));
+  }
+
+  @Transactional
+  public long grantCredits(UUID userId, User administrator, int quantity) {
+    User targetUser =
+        userRepository
+            .findByIdForUpdate(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("O usuário não foi encontrado."));
+    creditTransactionRepository.save(
+        new CreditTransaction(targetUser, administrator, quantity, ADMIN_GRANT_REASON));
+    return creditTransactionRepository.sumBalanceByUserId(targetUser.getId());
   }
 
   @Transactional

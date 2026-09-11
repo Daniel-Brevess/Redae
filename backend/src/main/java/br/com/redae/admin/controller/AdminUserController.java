@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,8 +31,10 @@ public class AdminUserController {
 
   @GetMapping
   public ResponseEntity<ApiResponse<List<AdminUserResponse>>> list(
-      Pageable pageable, HttpServletRequest httpRequest) {
-    var users = adminService.listUsers(pageable);
+      @RequestParam(required = false) String search,
+      Pageable pageable,
+      HttpServletRequest httpRequest) {
+    var users = adminService.listUsers(search, pageable);
     var meta =
         Map.<String, Object>of(
             "page", users.getNumber(),

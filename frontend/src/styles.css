@@ -82,7 +82,11 @@ body { margin: 0; }
 .admin-feedback { margin: 0; color: #64748b; line-height: 1.6; }
 .admin-feedback-error { color: #991b1b; }
 .admin-user-list { display: grid; gap: 10px; }
-.admin-user-row { display: grid; grid-template-columns: minmax(0, 1.5fr) .7fr 1fr 1fr; gap: 18px; align-items: center; padding: 16px 18px; border: 1px solid #eef2f7; border-radius: 16px; }
+.admin-user-row { display: grid; grid-template-columns: minmax(0, 1.5fr) .7fr 1fr 1fr minmax(210px, 1.2fr); gap: 18px; align-items: center; padding: 16px 18px; border: 1px solid #eef2f7; border-radius: 16px; }
+.admin-search { display: grid; gap: 8px; max-width: 420px; margin: 0 0 18px; color: #334155; font-size: .78rem; font-weight: 800; }
+.admin-search input, .admin-credit-action input { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; color: #15171a; background: #fff; font: inherit; }
+.admin-credit-action { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.admin-credit-action label { display: grid; gap: 4px; color: #64748b; font-size: .7rem; }
 .admin-user-row div { display: grid; gap: 4px; min-width: 0; }
 .admin-user-row strong { overflow: hidden; color: #15171a; text-overflow: ellipsis; white-space: nowrap; }
 .admin-user-row span { color: #64748b; font-size: .78rem; }

@@ -1,5 +1,6 @@
 package br.com.redae.admin.service;
 
+import br.com.redae.admin.dto.AdminCreditAdjustmentResponse;
 import br.com.redae.admin.dto.AdminUserResponse;
 import br.com.redae.gateway.service.CreditService;
 import br.com.redae.user.repository.UserRepository;
@@ -30,10 +31,32 @@ public class AdminService {
 
   @Transactional(readOnly = true)
   public Page<AdminUserResponse> listUsers(Pageable pageable) {
-    var users = userRepository.findAll(normalizePageable(pageable));
+    return listUsers(null, pageable);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<AdminUserResponse> listUsers(String search, Pageable pageable) {
+    var normalizedPageable = normalizePageable(pageable);
+    var normalizedSearch = normalizeSearch(search);
+    var users =
+        normalizedSearch.isEmpty()
+            ? userRepository.findAll(normalizedPageable)
+            : userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                normalizedSearch, normalizedSearch, normalizedPageable);
     var userIds = users.getContent().stream().map(user -> user.getId()).toList();
     var balances = creditService.getBalances(userIds);
     return users.map(user -> AdminUserResponse.from(user, balances.getOrDefault(user.getId(), 0L)));
+  }
+
+  @Transactional
+  public AdminCreditAdjustmentResponse grantCredits(
+      java.util.UUID userId, br.com.redae.user.entity.User administrator, int credits) {
+    long balance = creditService.grantCredits(userId, administrator, credits);
+    return new AdminCreditAdjustmentResponse(userId, balance);
+  }
+
+  private String normalizeSearch(String search) {
+    return search == null ? "" : search.trim();
   }
 
   private Pageable normalizePageable(Pageable pageable) {

@@ -1,6 +1,7 @@
 package br.com.redae.admin.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,5 +45,36 @@ class AdminServiceTest {
     assertThat(result.getContent())
         .singleElement()
         .satisfies(response -> assertThat(response.credits()).isEqualTo(5L));
+  }
+
+  @Test
+  void searchesUsersByNameOrEmail() {
+    User user = new User("Student", "student@example.com", "hash");
+    var pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "createdAt"));
+    when(userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+            "student", "student", pageable))
+        .thenReturn(new PageImpl<>(List.of(user), pageable, 1));
+    when(creditService.getBalances(any())).thenReturn(Map.of());
+
+    var result = new AdminService(userRepository, creditService).listUsers(" student ", pageable);
+
+    assertThat(result.getContent())
+        .singleElement()
+        .extracting("email")
+        .isEqualTo("student@example.com");
+  }
+
+  @Test
+  void delegatesCreditGrantToCreditService() {
+    User administrator = new User("Admin", "admin@example.com", "hash");
+    var userId = java.util.UUID.randomUUID();
+    when(creditService.grantCredits(userId, administrator, 5)).thenReturn(5L);
+
+    var result =
+        new AdminService(userRepository, creditService).grantCredits(userId, administrator, 5);
+
+    assertThat(result.userId()).isEqualTo(userId);
+    assertThat(result.credits()).isEqualTo(5L);
+    verify(creditService).grantCredits(userId, administrator, 5);
   }
 }

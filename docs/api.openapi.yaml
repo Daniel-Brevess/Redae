@@ -136,9 +136,25 @@ paths:
         - name: sort
           in: query
           schema: { type: string, example: 'createdAt,desc' }
+        - name: search
+          in: query
+          schema: { type: string, maxLength: 120 }
       responses:
         '200': { $ref: '#/components/responses/Success' }
         '403': { $ref: '#/components/responses/Error' }
+  /admin/credit-adjustments:
+    post:
+      summary: Concede creditos a um usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminCreditAdjustmentRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
   /credit-offers:
     get:
       summary: Lista ofertas ativas
@@ -209,6 +225,12 @@ components:
         theme: { type: string, maxLength: 500 }
         origin: { type: string, enum: [DIGITADA] }
         text: { type: string, minLength: 1 }
+    AdminCreditAdjustmentRequest:
+      type: object
+      required: [userId, credits]
+      properties:
+        userId: { type: string, format: uuid }
+        credits: { type: integer, minimum: 1 }
   responses:
     Success:
       description: Operação concluída

@@ -1,5 +1,6 @@
 package br.com.redae.gateway.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -84,5 +85,18 @@ class CreditServiceTest {
     Map<java.util.UUID, Long> balances = creditService.getBalances(List.of(userId));
 
     org.junit.jupiter.api.Assertions.assertEquals(Map.of(userId, 5L), balances);
+  }
+
+  @Test
+  void grantsCreditsToUserAndReturnsUpdatedBalance() {
+    User target = new User("Student", "student@example.com", "hash");
+    User administrator = new User("Admin", "admin@example.com", "hash");
+    when(userRepository.findByIdForUpdate(target.getId())).thenReturn(Optional.of(target));
+    when(creditTransactionRepository.sumBalanceByUserId(target.getId())).thenReturn(5L);
+
+    long balance = creditService.grantCredits(target.getId(), administrator, 5);
+
+    assertEquals(5L, balance);
+    verify(creditTransactionRepository).save(any(CreditTransaction.class));
   }
 }

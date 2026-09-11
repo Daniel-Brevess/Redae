@@ -33,12 +33,19 @@ public class CreditTransaction {
   @JoinColumn(name = "avaliacao_id")
   private Evaluation evaluation;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "administrador_id")
+  private User administrator;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "tipo", nullable = false, length = 20)
   private CreditTransactionType type;
 
   @Column(name = "quantidade", nullable = false)
   private int quantity;
+
+  @Column(name = "motivo")
+  private String reason;
 
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
@@ -63,6 +70,15 @@ public class CreditTransaction {
     this.evaluation = evaluation;
     this.type = type;
     this.quantity = quantity;
+  }
+
+  public CreditTransaction(User user, User administrator, int quantity, String reason) {
+    this.id = UUID.randomUUID();
+    this.user = user;
+    this.administrator = administrator;
+    this.type = CreditTransactionType.CONCESSAO;
+    this.quantity = quantity;
+    this.reason = reason;
   }
 
   public User getUser() {
