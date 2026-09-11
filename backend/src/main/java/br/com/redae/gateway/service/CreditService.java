@@ -7,7 +7,10 @@ import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
 import br.com.redae.user.entity.User;
 import br.com.redae.user.repository.UserRepository;
+import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,19 @@ public class CreditService {
       CreditTransactionRepository creditTransactionRepository, UserRepository userRepository) {
     this.creditTransactionRepository = creditTransactionRepository;
     this.userRepository = userRepository;
+  }
+
+  @Transactional(readOnly = true)
+  public Map<UUID, Long> getBalances(Collection<UUID> userIds) {
+    if (userIds.isEmpty()) {
+      return Map.of();
+    }
+    return creditTransactionRepository.findBalancesByUserIds(userIds).stream()
+        .collect(
+            Collectors.toMap(
+                CreditTransactionRepository.BalanceProjection::getUserId,
+                CreditTransactionRepository.BalanceProjection::getCredits,
+                (first, ignored) -> first));
   }
 
   @Transactional

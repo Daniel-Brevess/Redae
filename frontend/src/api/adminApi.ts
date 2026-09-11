@@ -8,6 +8,7 @@ export type AdminUser = {
   email: string
   role: string
   emailVerified: boolean
+  credits: number
 }
 
 export type AdminUserPageMeta = {

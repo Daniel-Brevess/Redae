@@ -168,10 +168,10 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 ### 5. Créditos por usuário
 
-- [ ] Reutilizar o cálculo oficial do ledger.
-- [ ] Disponibilizar o saldo no DTO ou endpoint administrativo.
-- [ ] Exibir os créditos na lista.
-- [ ] Testar compras, consumos e estornos.
+- [x] Reutilizar o cálculo oficial do ledger.
+- [x] Disponibilizar o saldo no DTO ou endpoint administrativo.
+- [x] Exibir os créditos na lista.
+- [x] Testar compras, consumos e estornos.
 
 **Resultado:** cada usuário aparece com seu saldo correto.
 

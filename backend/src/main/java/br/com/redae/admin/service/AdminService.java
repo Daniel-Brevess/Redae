@@ -1,6 +1,7 @@
 package br.com.redae.admin.service;
 
 import br.com.redae.admin.dto.AdminUserResponse;
+import br.com.redae.gateway.service.CreditService;
 import br.com.redae.user.repository.UserRepository;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -15,9 +16,11 @@ public class AdminService {
   private static final int DEFAULT_PAGE_SIZE = 20;
   private static final int MAX_PAGE_SIZE = 100;
   private final UserRepository userRepository;
+  private final CreditService creditService;
 
-  public AdminService(UserRepository userRepository) {
+  public AdminService(UserRepository userRepository, CreditService creditService) {
     this.userRepository = userRepository;
+    this.creditService = creditService;
   }
 
   @Transactional(readOnly = true)
@@ -27,7 +30,10 @@ public class AdminService {
 
   @Transactional(readOnly = true)
   public Page<AdminUserResponse> listUsers(Pageable pageable) {
-    return userRepository.findAll(normalizePageable(pageable)).map(AdminUserResponse::from);
+    var users = userRepository.findAll(normalizePageable(pageable));
+    var userIds = users.getContent().stream().map(user -> user.getId()).toList();
+    var balances = creditService.getBalances(userIds);
+    return users.map(user -> AdminUserResponse.from(user, balances.getOrDefault(user.getId(), 0L)));
   }
 
   private Pageable normalizePageable(Pageable pageable) {

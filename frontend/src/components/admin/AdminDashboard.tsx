@@ -111,6 +111,7 @@ export function AdminDashboard({ user, accessToken, onBack }: AdminDashboardProp
                 </div>
                 <span>{adminUser.role}</span>
                 <span>{adminUser.emailVerified ? 'E-mail verificado' : 'E-mail pendente'}</span>
+                <span>{adminUser.credits} créditos disponíveis</span>
               </article>
             ))}
           </div>

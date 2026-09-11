@@ -125,7 +125,7 @@ paths:
         '403': { $ref: '#/components/responses/Error' }
   /admin/users:
     get:
-      summary: Lista usuários para administradores
+      summary: Lista usuários e saldos de créditos para administradores
       parameters:
         - name: page
           in: query

@@ -23,7 +23,7 @@
 | GET | `/profile` | consulta o usuário autenticado |
 | PATCH | `/profile` | altera dados básicos permitidos |
 | GET | `/admin/users/count` | total de usuários; exclusivo de administradores |
-| GET | `/admin/users` | lista paginada de usuários; exclusiva de administradores |
+| GET | `/admin/users` | lista paginada de usuários com saldo de créditos; exclusiva de administradores |
 
 Senhas nunca são retornadas ou armazenadas em texto puro. Falhas de login usam mensagem genérica.
 

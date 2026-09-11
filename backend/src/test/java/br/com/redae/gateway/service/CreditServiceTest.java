@@ -13,6 +13,8 @@ import br.com.redae.gateway.entity.CreditTransactionType;
 import br.com.redae.gateway.repository.CreditTransactionRepository;
 import br.com.redae.user.entity.User;
 import br.com.redae.user.repository.UserRepository;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,5 +70,19 @@ class CreditServiceTest {
     creditService.refundEvaluationCredit(evaluation.getId());
 
     verify(creditTransactionRepository).save(any(CreditTransaction.class));
+  }
+
+  @Test
+  void returnsBalancesForRequestedUsers() {
+    var userId = java.util.UUID.randomUUID();
+    var projection = org.mockito.Mockito.mock(CreditTransactionRepository.BalanceProjection.class);
+    when(projection.getUserId()).thenReturn(userId);
+    when(projection.getCredits()).thenReturn(5L);
+    when(creditTransactionRepository.findBalancesByUserIds(List.of(userId)))
+        .thenReturn(List.of(projection));
+
+    Map<java.util.UUID, Long> balances = creditService.getBalances(List.of(userId));
+
+    org.junit.jupiter.api.Assertions.assertEquals(Map.of(userId, 5L), balances);
   }
 }

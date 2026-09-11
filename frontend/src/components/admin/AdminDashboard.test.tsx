@@ -14,6 +14,7 @@ const user = (role: 'ADMIN' | 'STUDENT') => ({
   email: 'user@example.com',
   role,
   emailVerified: true,
+  credits: 0,
 })
 
 describe('AdminDashboard', () => {
@@ -54,6 +55,7 @@ describe('AdminDashboard', () => {
           email: 'student@example.com',
           role: 'STUDENT',
           emailVerified: false,
+          credits: 5,
         },
       ],
       meta: { page: 0, size: 20, totalElements: 1, totalPages: 1, hasNext: false },
@@ -65,6 +67,7 @@ describe('AdminDashboard', () => {
     expect(await screen.findByText('Estudante')).toBeInTheDocument()
     expect(screen.getByText('student@example.com')).toBeInTheDocument()
     expect(screen.getByText('E-mail pendente')).toBeInTheDocument()
+    expect(screen.getByText('5 créditos disponíveis')).toBeInTheDocument()
   })
 
   it('renders the administrative layout for an admin', () => {
