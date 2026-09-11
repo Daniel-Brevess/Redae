@@ -185,7 +185,9 @@ contas de testers pela área administrativa.
 - [ ] Adicionar ação protegida para informar a quantidade de créditos.
 - [ ] Validar que a quantidade seja inteira e positiva.
 - [ ] Reutilizar o ledger, registrando a concessão como transação auditável.
-- [ ] Registrar o administrador responsável e a data da operação.
+- [ ] Registrar internamente o identificador do administrador e a data da operação.
+- [ ] Excluir a concessão da lista comum de transações do tester.
+- [ ] Não expor o nome ou outros dados do administrador ao tester.
 - [ ] Atualizar o saldo exibido após a concessão.
 - [ ] Garantir `403` para usuários sem o papel `ADMIN`.
 - [ ] Testar busca, concessão, saldo atualizado, valores inválidos e autorização.
