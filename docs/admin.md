@@ -175,7 +175,32 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 **Resultado:** cada usuário aparece com seu saldo correto.
 
-### 6. Modelo de cupons
+### 6. Créditos manuais para testers
+
+Antes do deploy, o administrador poderá conceder créditos manualmente para
+contas de testers pela área administrativa.
+
+- [ ] Criar busca administrativa de usuários por nome ou e-mail.
+- [ ] Exibir os resultados em cards com dados básicos e saldo atual.
+- [ ] Adicionar ação protegida para informar a quantidade de créditos.
+- [ ] Validar que a quantidade seja inteira e positiva.
+- [ ] Reutilizar o ledger, registrando a concessão como transação auditável.
+- [ ] Registrar o administrador responsável e a data da operação.
+- [ ] Atualizar o saldo exibido após a concessão.
+- [ ] Garantir `403` para usuários sem o papel `ADMIN`.
+- [ ] Testar busca, concessão, saldo atualizado, valores inválidos e autorização.
+
+**Resultado:** o administrador consegue preparar contas de testers sem alterar
+diretamente o banco de dados, e cada concessão permanece rastreável.
+
+---
+
+## Funcionalidades pós-deploy
+
+As tarefas abaixo ficam adiadas para depois do primeiro deploy e da validação
+com testers.
+
+### 7. Modelo de cupons
 
 - [ ] Definir código, benefício, validade e limites.
 - [ ] Criar entity, enum, repository e migration.
@@ -184,7 +209,7 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 **Resultado:** cupons podem ser armazenados de forma consistente.
 
-### 7. Criação de cupons
+### 8. Criação de cupons
 
 - [ ] Criar DTO, service e endpoint `POST` administrativo.
 - [ ] Garantir que somente `ADMIN` possa criar.
@@ -193,7 +218,7 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 **Resultado:** o administrador cria cupons pela área administrativa.
 
-### 8. Modelo de pacotes
+### 9. Modelo de pacotes
 
 - [ ] Definir nome, créditos, bônus, preço, moeda e disponibilidade.
 - [ ] Reutilizar ou adaptar as entidades de oferta existentes.
@@ -202,7 +227,7 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 **Resultado:** pacotes podem ser persistidos e validados.
 
-### 9. Criação de pacotes
+### 10. Criação de pacotes
 
 - [ ] Criar DTO, service e endpoint administrativo.
 - [ ] Criar formulário no frontend.
@@ -211,7 +236,7 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 **Resultado:** o administrador cria pacotes para venda.
 
-### 10. Métricas comerciais
+### 11. Métricas comerciais
 
 - [ ] Definir período padrão e filtros.
 - [ ] Consultar cupons usados em pagamentos válidos.
@@ -221,7 +246,7 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 
 **Resultado:** o painel mostra o cupom mais usado e o pacote mais comprado.
 
-### 11. Testes e fechamento
+### 12. Testes e fechamento
 
 - [ ] Atualizar `docs/api.md` e `docs/api.openapi.yaml`.
 - [ ] Atualizar arquitetura e decisões quando necessário.
@@ -239,9 +264,13 @@ As tarefas devem ser executadas na ordem e validadas individualmente.
 3. Contagem de usuários.
 4. Lista de usuários.
 5. Créditos.
-6. Modelo de cupons.
-7. Criação de cupons.
-8. Modelo de pacotes.
-9. Criação de pacotes.
-10. Métricas.
-11. Testes e fechamento.
+6. Créditos manuais para testers.
+
+### Após o deploy
+
+7. Modelo de cupons.
+8. Criação de cupons.
+9. Modelo de pacotes.
+10. Criação de pacotes.
+11. Métricas comerciais.
+12. Testes e fechamento.
