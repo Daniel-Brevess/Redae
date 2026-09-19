@@ -27,6 +27,13 @@ O produto prioriza clareza, confiança, feedback específico e progresso visíve
 
 Ficam fora do MVP: comunidade, ranking, gamificação, plano de estudos completo, outros vestibulares, correção humana integrada e recomendações avançadas de longo prazo.
 
+## Aviso de transcrição experimental
+
+A transcrição por imagem será publicada inicialmente como recurso experimental, com aviso
+visível e revisão obrigatória pelo estudante antes da avaliação. O texto só será enviado para
+correção depois da confirmação do usuário; a transcrição automática não é considerada fiel ou
+oficial.
+
 ## Diagnóstico e avaliação completa
 
 O primeiro envio do usuário é um diagnóstico. O diagnóstico pode apresentar nota e apontamentos resumidos, além da chamada para comprar créditos. Avaliações completas usam créditos e exibem os feedbacks detalhados, exemplos e evidências permitidos pelo contrato.

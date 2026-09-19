@@ -55,6 +55,12 @@ sequenceDiagram
 
 Imagens são temporárias. O backend recebe o upload, inicia a transcrição, permite que o estudante revise o texto e só cria a avaliação persistente depois da confirmação. A imagem é excluída após a confirmação ou expiração definida.
 
+## OCR de imagens
+
+A primeira implementação de transcrição usa Tesseract OCR em português no backend, com arquivos
+temporários e limite de execução. O resultado é experimental, pode conter erros em manuscritos e
+deve ser revisado pelo estudante antes da confirmação. O frontend não acessa o OCR diretamente.
+
 ## IA e processamento
 
 O módulo `evaluation` chama `AIClient`. O módulo `ai/client` contém o contrato e os adaptadores. O cliente padrão é o OpenAI GPT-4o Mini, e o Gemini permanece disponível por configuração; `AI_PROVIDER` define qual implementação é registrada.

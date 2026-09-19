@@ -725,6 +725,10 @@ function ImageStep({
           </p>
         </div>
       </div>
+      <p className="field-hint" role="status">
+        A transcrição automática é experimental e pode conter erros. Revise e corrija o texto antes
+        de confirmar a avaliação.
+      </p>
       {error && (
         <p className="field-hint field-hint-error" role="alert">
           {error}

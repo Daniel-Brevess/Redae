@@ -50,6 +50,14 @@ Este arquivo é a referência rápida das decisões vigentes. As decisões antig
 - A calibração usa redações de referência com notas oficiais e compara coerência entre competências, não apenas proximidade da nota total.
 - A futura troca de provedor será feita por novo adaptador, mantendo o contrato.
 
+## Transcrição por imagem no lançamento
+
+- A primeira versão pública usará Tesseract OCR em português no backend para a transcrição de imagens.
+- O resultado será apresentado como experimental, especialmente para manuscritos, e poderá conter erros.
+- O estudante deve revisar e editar o texto antes de confirmar a avaliação.
+- A imagem permanece temporária e o OCR usa arquivos temporários com limite de execução.
+- A decisão poderá ser substituída por um OCR manuscrito especializado ou fluxo híbrido após os testes reais.
+
 ## Histórico consolidado
 
 As decisões numeradas anteriores cobriram: monólito e stack (0001–0018), domínio e fluxo de avaliação (0019–0044), créditos e pagamentos (0045–0073), API e operação (0074–0079), calibração e provedor futuro (0080–0081) e arquitetura modular atual (0082). O conteúdo normativo vigente desses grupos está refletido neste documento e nos documentos `produto.md`, `arquitetura.md` e `api.md`.
