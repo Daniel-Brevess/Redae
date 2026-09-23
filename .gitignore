@@ -50,3 +50,4 @@ backend/.cache/
 .codex/
 .terraform/
 docker-compose.override.yml
+tmp/
