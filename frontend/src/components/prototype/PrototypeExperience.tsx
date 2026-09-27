@@ -726,8 +726,9 @@ function ImageStep({
         </div>
       </div>
       <p className="field-hint" role="status">
-        A transcrição automática é experimental e pode conter erros. Revise e corrija o texto antes
-        de confirmar a avaliação.
+        A transcrição da imagem é automática e pode não capturar 100% do texto, especialmente em
+        redações manuscritas ou fotos com baixa qualidade. Revise tudo antes de continuar. Se você
+        tiver o texto digitado, recomendamos copiar e colar para obter uma avaliação mais fiel.
       </p>
       {error && (
         <p className="field-hint field-hint-error" role="alert">
@@ -889,6 +890,16 @@ function ConfirmationStep({
         <strong>{theme}</strong>
         <span>Texto</span>
         <p>{text}</p>
+      </div>
+      <div className="evaluation-notice" role="note">
+        <strong>Sobre esta avaliação</strong>
+        <p>
+          A avaliação é automática e serve como orientação de estudo, não como uma nota oficial do
+          ENEM. O avaliador segue os critérios das competências C1 a C5, mas ainda pode interpretar
+          alguns aspectos de forma mais rígida ou identificar limitações discutíveis. Use os
+          comentários como apoio para revisar sua redação, especialmente quando discordar de alguma
+          análise.
+        </p>
       </div>
       <div className="form-actions">
         <BackButton onClick={onBack} />
