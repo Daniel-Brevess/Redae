@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import logoUrl from '../../../assets/redae_logo.png'
+import logoUrl from '../../../assets/redae-logo-transparent.png'
 import type { PrototypeScreen } from '../../prototype/types'
 import type { User } from '../../api/authApi'
 

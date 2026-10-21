@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 import { AuthCard, type AuthCardType } from './components/auth/AuthCard'
-import { BenefitsSection } from './components/landing/BenefitsSection'
-import { HeroSection } from './components/landing/HeroSection'
-import { HowItWorksSection } from './components/landing/HowItWorksSection'
+import { SalesPage } from './components/landing/SalesPage'
 import { SiteFooter } from './components/layout/SiteFooter'
 import { SiteHeader } from './components/layout/SiteHeader'
 import { PrototypeExperience } from './components/prototype/PrototypeExperience'
@@ -71,7 +69,7 @@ function AppContent() {
   }
 
   return (
-    <main>
+    <main className="sales-page">
       <SiteHeader activeCard={activeCard} onCardChange={setActiveCard} onNavigate={closeCard} />
       {activeCard && (
         <AuthCard
@@ -81,9 +79,12 @@ function AppContent() {
           onAuthenticated={() => navigate('/home')}
         />
       )}
-      <HeroSection />
-      <HowItWorksSection />
-      <BenefitsSection />
+      <SalesPage
+        onStart={() => {
+          setActiveCard('signup')
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+      />
       <SiteFooter />
     </main>
   )

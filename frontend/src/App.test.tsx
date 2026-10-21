@@ -1,10 +1,24 @@
-import { render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { App } from './App'
 
 describe('landing page authentication cards', () => {
-  afterEach(() => vi.unstubAllGlobals())
+  afterEach(() => {
+    cleanup()
+    vi.unstubAllGlobals()
+  })
+
+  it('opens signup from the main correction CTA', async () => {
+    window.history.replaceState({}, '', '/')
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(null, { status: 401 })))
+    vi.stubGlobal('scrollTo', vi.fn())
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: /Corrigir minha redação agora/ }))
+    expect(screen.getByLabelText('Nome')).toBeInTheDocument()
+    expect(screen.getByLabelText('Confirmar senha')).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/')
+  })
 
   it('opens the login form and enters the private area after authentication', async () => {
     const response = new Response(
