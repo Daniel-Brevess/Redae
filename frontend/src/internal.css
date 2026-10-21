@@ -1,0 +1,746 @@
+.internal-theme {
+  --app-ink: #0f2e22;
+  --app-green: #22c55e;
+  --app-lime: #d9f99d;
+  --app-muted: #526358;
+  --app-border: #dce7d5;
+  --app-surface: #f8faf6;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+  color: var(--app-ink);
+  background: var(--app-surface);
+  min-height: 100dvh;
+  padding-top: 1px;
+}
+.internal-theme :is(button, input, textarea, select) {
+  font-family: inherit;
+}
+.internal-theme :is(h1, h2, h3, strong, b) {
+  color: inherit;
+}
+.internal-theme :is(h1, h2) {
+  font-weight: 800;
+}
+.internal-theme :is(h3, strong, b, button, label) {
+  font-weight: 700;
+}
+.internal-theme :is(button, a, input, textarea, select):focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 4px;
+}
+.internal-theme .prototype-header {
+  top: 16px;
+  width: min(1180px, calc(100% - 40px));
+  min-height: 82px;
+  padding: 14px 22px;
+  margin: 20px auto 0;
+  gap: 18px;
+  border: 1px solid #fff;
+  border-radius: 28px;
+  background: #ffffffda;
+  box-shadow: 0 8px 30px #0f2e2208;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.internal-theme .prototype-brand {
+  flex-shrink: 0;
+}
+.internal-theme .prototype-brand img {
+  width: 120px;
+  height: auto;
+}
+.internal-theme .prototype-nav {
+  gap: 4px;
+}
+.internal-theme .prototype-nav-link {
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  color: var(--app-muted);
+  white-space: nowrap;
+}
+.internal-theme .prototype-nav-link:hover {
+  color: var(--app-ink);
+  background: #edf5e7;
+}
+.internal-theme .prototype-nav-link.is-active {
+  color: #fff;
+  background: var(--app-ink);
+}
+.internal-theme .prototype-user-actions {
+  gap: 12px;
+}
+.internal-theme .prototype-credit-balance {
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #eff7e4;
+  border: 1px solid #d8e8c4;
+}
+.internal-theme .prototype-credit-balance strong {
+  color: #16743d;
+}
+.internal-theme .prototype-credit-balance span {
+  color: #526358;
+}
+.internal-theme .prototype-profile {
+  padding: 0;
+  color: var(--app-ink);
+}
+.internal-theme .prototype-profile span {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--app-lime);
+  color: var(--app-ink);
+  font-weight: 700;
+}
+.internal-theme .prototype-exit {
+  color: #526358;
+  padding: 9px 0;
+}
+.internal-theme .prototype-exit:hover {
+  color: #16743d;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.internal-theme .prototype-main {
+  width: min(1120px, calc(100% - 48px));
+}
+.internal-theme .prototype-content {
+  padding: 62px 0 88px;
+}
+.internal-theme
+  :is(
+    .prototype-welcome h1,
+    .simple-screen-heading h1,
+    .flow-heading h1,
+    .result-hero h1,
+    .admin-header h1,
+    .admin-state h1
+  ) {
+  color: var(--app-ink);
+  font-size: clamp(2.2rem, 4.7vw, 3.8rem);
+  letter-spacing: -0.055em;
+  line-height: 1.12;
+  font-weight: 800;
+}
+.internal-theme .prototype-eyebrow {
+  color: #16743d;
+  font-size: 0.66rem;
+  letter-spacing: 0.11em;
+  font-weight: 700;
+}
+.internal-theme :is(.prototype-lede, .credit-purchase-description) {
+  color: var(--app-muted);
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.internal-theme
+  :is(
+    .new-evaluation-card,
+    .progress-card,
+    .history-card,
+    .prototype-empty,
+    .choice-card,
+    .confirmation-card,
+    .processing-card,
+    .credit-purchase-card,
+    .transaction-card,
+    .admin-card,
+    .admin-users,
+    .essay-result,
+    .image-preview-card
+  ) {
+  border-color: var(--app-border);
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 8px 24px #0f2e2204;
+}
+.internal-theme .prototype-grid-main {
+  gap: 22px;
+  margin-bottom: 52px;
+}
+.internal-theme .new-evaluation-card {
+  position: relative;
+  overflow: hidden;
+  padding: 32px;
+  min-height: 350px;
+  background: linear-gradient(130deg, #fff, #edf7e4);
+}
+.internal-theme .new-evaluation-card > div {
+  max-width: calc(100% - 128px);
+  position: relative;
+}
+.internal-theme .new-evaluation-card h2 {
+  color: var(--app-ink);
+  font-size: clamp(1.65rem, 2.5vw, 2.2rem);
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+}
+.internal-theme .new-evaluation-card p:not(.prototype-eyebrow) {
+  color: #526358;
+  font-size: 0.87rem;
+  line-height: 1.8;
+}
+.dashboard-mascot {
+  position: absolute;
+  width: 155px;
+  height: auto;
+  right: 12px;
+  bottom: 72px;
+  transform: rotate(8deg);
+  pointer-events: none;
+}
+.internal-theme .prototype-icon {
+  border-radius: 12px;
+  margin-bottom: 22px;
+  font-weight: 700;
+}
+.internal-theme .prototype-icon-green {
+  color: var(--app-ink);
+  background: var(--app-lime);
+}
+.internal-theme .prototype-icon-blue {
+  color: #1e40af;
+  background: #e5efff;
+}
+.internal-theme .primary-button {
+  position: relative;
+  min-height: 46px;
+  padding: 13px 20px;
+  border: 1px solid #18a84d;
+  border-radius: 12px;
+  color: var(--app-ink);
+  background: var(--app-green);
+  font-weight: 700;
+  font-size: 0.82rem;
+  box-shadow: 0 3px 0 #14813c;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.internal-theme .primary-button:hover:not(:disabled) {
+  color: var(--app-ink);
+  background: #40d875;
+  box-shadow: 0 4px 0 #14813c;
+}
+.internal-theme .primary-button:disabled {
+  opacity: 0.55;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.internal-theme :is(.primary-button, .text-button) > span[aria-hidden='true'] {
+  display: none;
+}
+.internal-theme :is(.text-button, .back-link, .back-button, .auth-prototype-link) {
+  color: #16743d;
+  font-weight: 700;
+}
+.internal-theme :is(.text-button, .back-link, .back-button):hover {
+  color: var(--app-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.internal-theme .back-link {
+  margin-bottom: 32px;
+}
+.internal-theme .credit-pill {
+  border-color: #d5e5bf;
+  border-radius: 12px;
+  color: #326444;
+  background: #eff7e4;
+}
+.internal-theme .progress-card {
+  padding: 32px;
+  background: var(--app-ink);
+  border-color: var(--app-ink);
+  color: #fff;
+}
+.internal-theme .progress-card .prototype-eyebrow {
+  color: var(--app-lime);
+}
+.internal-theme .progress-card-score strong {
+  color: #fff;
+  font-size: 4.25rem;
+  letter-spacing: -0.065em;
+}
+.internal-theme :is(.progress-card-score span, .progress-card > p:last-child) {
+  color: #c2d6c8;
+  line-height: 1.8;
+}
+.internal-theme .progress-bar {
+  height: 8px;
+  background: #ffffff24;
+}
+.internal-theme .progress-bar span {
+  background: var(--app-lime);
+}
+.internal-theme
+  :is(.prototype-section-heading h2, .simple-screen-heading h2, .credit-purchase-card h2) {
+  color: var(--app-ink);
+  letter-spacing: -0.045em;
+  line-height: 1.2;
+}
+.internal-theme .status-badge {
+  border-radius: 9px;
+  color: #526358;
+  background: #edf3e8;
+}
+.internal-theme .status-badge-green {
+  color: #166534;
+  background: #dcfce7;
+}
+.internal-theme .history-card {
+  padding: 24px;
+  gap: 24px;
+}
+.internal-theme :is(.history-score, .competency-score, .result-score) {
+  color: #16743d;
+}
+.internal-theme
+  :is(
+    .history-card p,
+    .history-score span,
+    .result-score span,
+    .competency-total,
+    .field-heading span,
+    .credit-purchase-field span
+  ) {
+  color: #65765d;
+}
+.internal-theme .prototype-empty {
+  border-style: dashed;
+  background: #f0f6eb;
+  color: #526358;
+}
+.internal-theme .prototype-empty > span {
+  color: #16743d;
+}
+.internal-theme .prototype-empty h2 {
+  color: var(--app-ink);
+}
+.internal-theme .choice-card {
+  padding: 28px;
+  min-height: 250px;
+}
+.internal-theme .choice-card strong {
+  color: var(--app-ink);
+}
+.internal-theme .choice-card > span:not(.prototype-icon) {
+  color: var(--app-muted);
+  line-height: 1.8;
+}
+.internal-theme .choice-card:hover:not(:disabled),
+.internal-theme .choice-card-selected {
+  border-color: #83c99a;
+  background: #f0f6eb;
+  box-shadow: 0 8px 24px #0f2e2206;
+}
+.internal-theme .choice-card small {
+  color: #16743d;
+}
+.internal-theme
+  :is(
+    .prototype-form label,
+    .field-heading label,
+    .credit-purchase-field label,
+    .admin-search,
+    .admin-credit-action label
+  ) {
+  color: #326444;
+  font-weight: 700;
+}
+.internal-theme
+  :is(
+    .prototype-form input,
+    .prototype-form textarea,
+    .credit-purchase-field input,
+    .admin-search input,
+    .admin-credit-action input,
+    .email-verification-banner input
+  ) {
+  min-height: 46px;
+  border: 1px solid #cfddc8;
+  border-radius: 12px;
+  color: var(--app-ink);
+  background: #fff;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.internal-theme :is(input, textarea)::placeholder {
+  color: #798674;
+}
+.internal-theme
+  :is(.prototype-form input, .prototype-form textarea, .credit-purchase-field input):focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px #22c55e20;
+}
+.internal-theme .prototype-form textarea {
+  min-height: 300px;
+  padding: 20px;
+  line-height: 1.9;
+}
+.internal-theme .image-source-actions {
+  gap: 10px;
+  padding-top: 18px;
+}
+.internal-theme .image-source-button {
+  min-height: 42px;
+  padding: 11px 14px;
+  border: 1px solid #cce4b0;
+  border-radius: 12px;
+  color: var(--app-ink);
+  background: var(--app-lime);
+  font-weight: 700;
+}
+.internal-theme .image-source-button:hover {
+  background: #c6ef83;
+}
+.internal-theme .image-source-button:focus-within {
+  outline: 3px solid #3b82f6;
+  outline-offset: 4px;
+}
+.internal-theme .image-preview-card {
+  margin-bottom: 18px;
+}
+.internal-theme .image-preview-card img {
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: var(--app-surface);
+}
+.internal-theme .image-preview-card strong {
+  color: var(--app-ink);
+  overflow-wrap: anywhere;
+}
+.internal-theme .image-preview-card p {
+  color: var(--app-muted);
+  line-height: 1.8;
+}
+.internal-theme .email-verification-banner {
+  border-radius: 20px;
+  border-color: #e5d587;
+  background: #fffbea;
+}
+.internal-theme .transaction-card time {
+  color: #65765d;
+}
+.internal-theme .confirmation-card {
+  padding: 28px;
+}
+.internal-theme .confirmation-card span {
+  color: #65765d;
+  font-weight: 700;
+}
+.internal-theme
+  :is(.confirmation-card p, .essay-result-text, .competency-detail p, .processing-card p) {
+  color: #526358;
+  line-height: 1.85;
+}
+.internal-theme .evaluation-notice {
+  border-color: #c9daf8;
+  background: #edf4ff;
+  color: #1e40af;
+  border-radius: 16px;
+}
+.internal-theme .processing-spinner {
+  border-color: #d9f99d;
+  border-top-color: #22c55e;
+}
+.internal-theme .processing-card {
+  padding: 64px 24px;
+  background: linear-gradient(145deg, #fff, #f0f6eb);
+}
+.internal-theme .result-hero {
+  align-items: center;
+  gap: 30px;
+}
+.internal-theme .result-score {
+  padding: 26px;
+  border: 1px solid #cce4b0;
+  border-radius: 24px;
+  background: #eaf6d8;
+}
+.internal-theme .result-score strong {
+  font-size: clamp(3.6rem, 8vw, 6rem);
+  letter-spacing: -0.07em;
+  font-weight: 800;
+}
+.internal-theme .result-summary {
+  border-color: var(--app-border);
+  margin-bottom: 32px;
+}
+.internal-theme .competency-card {
+  border-color: var(--app-border);
+  border-radius: 20px;
+}
+.internal-theme .competency-card > button {
+  padding: 22px;
+  color: var(--app-ink);
+}
+.internal-theme .competency-card > button:hover,
+.internal-theme .competency-card > button[aria-expanded='true'] {
+  background: #f0f6eb;
+}
+.internal-theme .competency-code {
+  color: var(--app-ink);
+  background: var(--app-lime);
+  border-radius: 12px;
+}
+.internal-theme .competency-copy strong {
+  font-size: 0.9rem;
+}
+.internal-theme .competency-copy small,
+.internal-theme .competency-score small {
+  color: #65765d;
+}
+.internal-theme .accordion-icon {
+  color: #16743d;
+}
+.internal-theme .competency-detail {
+  border-color: var(--app-border);
+}
+.internal-theme .competency-detail a {
+  color: #16743d;
+}
+.internal-theme .feedback-item {
+  border-color: var(--app-border);
+  background: #f0f6eb;
+}
+.internal-theme .essay-result {
+  padding: 28px;
+}
+.internal-theme .credit-purchase-card {
+  width: 100%;
+  max-width: 720px;
+  padding: 32px;
+  gap: 26px;
+  background: linear-gradient(145deg, #fff, #f0f6eb);
+}
+.internal-theme .credit-purchase-summary {
+  border-color: var(--app-border);
+}
+.internal-theme .credit-purchase-summary strong {
+  color: #16743d;
+}
+.internal-theme .transaction-card {
+  padding: 24px;
+}
+.internal-theme .transaction-card strong {
+  color: var(--app-ink);
+}
+.internal-theme .transaction-label {
+  color: #65765d;
+  font-weight: 700;
+}
+.internal-theme .transaction-status {
+  border-radius: 8px;
+}
+.internal-theme :is(.loading-state, .empty-state, .feedback-info) {
+  border: 1px solid #c9daf8;
+  color: #1e40af;
+  background: #edf4ff;
+  border-radius: 12px;
+}
+.internal-theme .feedback-success {
+  border: 1px solid #b8e3bd;
+  background: #eaf8e9;
+  color: #166534;
+}
+.internal-theme .feedback-error {
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: #991b1b;
+}
+.internal-theme .field-hint-error {
+  color: #b91c1c;
+}
+.internal-admin .admin-page {
+  padding: 60px 0 88px;
+}
+.internal-theme .admin-header {
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--app-border);
+}
+.internal-theme .admin-header p:not(.prototype-eyebrow),
+.internal-theme .admin-state p {
+  color: #526358;
+}
+.internal-theme .admin-card {
+  padding: 28px;
+  background: linear-gradient(145deg, #fff, #f0f6eb);
+}
+.internal-theme .admin-card > span {
+  color: #526358;
+  font-weight: 700;
+}
+.internal-theme .admin-card > strong {
+  color: #16743d;
+  font-weight: 800;
+  letter-spacing: -0.055em;
+}
+.internal-theme
+  :is(.admin-card p, .admin-section-heading > span, .admin-user-row span, .admin-pagination) {
+  color: #65765d;
+}
+.internal-theme .admin-users {
+  padding: 30px;
+}
+.internal-theme .admin-section-heading h2 {
+  color: var(--app-ink);
+}
+.internal-theme .admin-user-row {
+  border-color: var(--app-border);
+  padding: 20px;
+  background: #fbfdf9;
+}
+.internal-theme .admin-user-row strong {
+  color: var(--app-ink);
+}
+.internal-theme .admin-feedback {
+  color: #526358;
+}
+.internal-theme .admin-feedback-error {
+  color: #991b1b;
+}
+@media (max-width: 1050px) {
+  .internal-theme .prototype-header {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .internal-theme .prototype-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .internal-theme .prototype-user-actions {
+    margin-left: auto;
+  }
+  .internal-theme .admin-user-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .internal-theme .prototype-header {
+    top: 10px;
+    width: calc(100% - 24px);
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 22px;
+    gap: 12px;
+  }
+  .internal-theme .prototype-brand img {
+    width: 104px;
+  }
+  .internal-theme .prototype-main {
+    width: calc(100% - 32px);
+  }
+  .internal-theme .prototype-content {
+    padding: 38px 0 64px;
+  }
+  .internal-theme .prototype-nav {
+    gap: 4px;
+    padding-bottom: 2px;
+  }
+  .internal-theme .prototype-nav-link {
+    padding: 11px 13px;
+    font-size: 0.75rem;
+  }
+  .internal-theme .prototype-credit-balance {
+    padding: 8px;
+  }
+  .internal-theme .prototype-credit-balance span {
+    font-size: 0.62rem;
+  }
+  .internal-theme .prototype-user-actions {
+    gap: 9px;
+  }
+  .internal-theme .prototype-profile span {
+    width: 32px;
+    height: 32px;
+  }
+  .internal-theme .prototype-exit {
+    font-size: 0.7rem;
+  }
+  .internal-theme .new-evaluation-card {
+    padding: 26px;
+    min-height: 340px;
+  }
+  .internal-theme .new-evaluation-card > div {
+    max-width: 100%;
+  }
+  .dashboard-mascot {
+    display: none;
+  }
+  .internal-theme .progress-card {
+    padding: 28px;
+    min-height: 280px;
+  }
+  .internal-theme
+    :is(
+      .prototype-form input,
+      .prototype-form textarea,
+      .credit-purchase-field input,
+      .admin-search input,
+      .admin-credit-action input
+    ) {
+    font-size: 16px;
+  }
+  .internal-theme .primary-button {
+    min-height: 46px;
+  }
+  .internal-theme .history-card {
+    gap: 16px;
+    padding: 20px;
+  }
+  .internal-theme .history-card .text-button {
+    margin-left: 0;
+  }
+  .internal-theme .result-score {
+    align-self: stretch;
+    justify-items: start;
+    padding: 24px;
+  }
+  .internal-theme .competency-card > button {
+    padding: 18px 16px;
+  }
+  .internal-theme .competency-detail {
+    margin-left: 68px;
+  }
+  .internal-theme :is(.credit-purchase-card, .confirmation-card, .essay-result) {
+    padding: 24px;
+  }
+  .internal-theme .form-actions {
+    flex-wrap: wrap;
+  }
+  .internal-theme .admin-page {
+    width: calc(100% - 32px);
+    padding-top: 34px;
+  }
+  .internal-theme .admin-users {
+    padding: 22px;
+  }
+  .internal-theme .admin-user-row {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 390px) {
+  .internal-theme .prototype-user-actions {
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .internal-theme .prototype-profile span {
+    width: 28px;
+    height: 28px;
+  }
+  .internal-theme .prototype-credit-balance {
+    padding: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .internal-theme .primary-button,
+  .internal-theme .choice-card,
+  .internal-theme .progress-bar span {
+    transition: none;
+  }
+}

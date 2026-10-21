@@ -1,4 +1,10 @@
-import redazinhoUrl from '../../../assets/redazinho-vsl.png'
+import redazinhoUrl from '../../../assets/redazinho-reaching-cta.png'
+import redazinhoMobileUrl from '../../../assets/redazinho-reaching-cta-mobile.png'
+import readingUrl from '../../../assets/redazinho-reading.png'
+import holdingHandUrl from '../../../assets/hand-holding-redazinho.png'
+import reachingHandUrl from '../../../assets/hand-reaching.png'
+import { useLandingMotion } from './useLandingMotion'
+import { ScrollStory } from './ScrollStory'
 
 type SalesPageProps = { onStart: () => void }
 
@@ -11,13 +17,13 @@ const competencies = [
 ]
 
 export function SalesPage({ onStart }: SalesPageProps) {
+  const contentRef = useLandingMotion()
   return (
-    <>
+    <div className="sales-content" ref={contentRef}>
       <section id="top" className="vsl-hero page-width">
         <div className="vsl-hero-copy">
           <h1>
-            Você pode estar <strong className="hero-highlight">PERDENDO PONTOS</strong>
-            <span className="hero-title-ending">na redação e nem sabe.</span>
+            Sua redação pode estar te <em>afastando da faculdade</em> que você tanto quer.
           </h1>
           <p className="vsl-lede">
             Não espere o ENEM para descobrir seus erros. Envie sua redação, receba uma avaliação nas
@@ -32,12 +38,14 @@ export function SalesPage({ onStart }: SalesPageProps) {
         </div>
         <div className="vsl-hero-art">
           <div className="vsl-orbit" aria-hidden="true" />
-          <img
-            className="vsl-mascot"
-            src={redazinhoUrl}
-            alt="Redazinho, a borracha amarela de mochila verde, fazendo sinal de positivo"
-            fetchPriority="high"
-          />
+          <picture className="vsl-mascot vsl-mascot-reaching">
+            <source media="(max-width: 640px)" srcSet={redazinhoMobileUrl} />
+            <img
+              src={redazinhoUrl}
+              alt="Redazinho se esticando para tentar clicar no botão de corrigir a redação"
+              fetchPriority="high"
+            />
+          </picture>
           <div className="vsl-art-note">
             <span aria-hidden="true">✦</span>
             <div>
@@ -48,38 +56,22 @@ export function SalesPage({ onStart }: SalesPageProps) {
         </div>
       </section>
 
-      <div className="vsl-strip">
-        <div className="page-width">
-          <span>Seu texto como ponto de partida.</span>
-          <strong>
-            Treine. Evolua. Conquiste. <span aria-hidden="true">✦</span>
-          </strong>
+      <div
+        className="hands-scroll"
+        role="img"
+        aria-label="Duas mãos se aproximando, uma delas oferecendo o Redazinho"
+      >
+        <div className="hands-stage" aria-hidden="true">
+          <div className="hand-half hand-half-left">
+            <img className="hand-reaching" src={reachingHandUrl} alt="" decoding="async" />
+          </div>
+          <div className="hand-half hand-half-right">
+            <img className="hand-holding" src={holdingHandUrl} alt="" decoding="async" />
+          </div>
         </div>
       </div>
 
-      <section className="vsl-section page-width vsl-pain" aria-labelledby="vsl-pain-title">
-        <div>
-          <p className="eyebrow">Escrever é só o começo</p>
-          <h2 id="vsl-pain-title">
-            Você estuda, escreve.
-            <br />
-            Mas sabe <em>onde perde pontos?</em>
-          </h2>
-        </div>
-        <div>
-          <p className="vsl-lede">
-            Praticar sem entender os próprios erros pode fazer você repetir as mesmas dificuldades
-            na próxima redação.
-          </p>
-          <p className="vsl-body">
-            Um argumento que não ficou claro. Uma conexão que faltou. Uma intervenção incompleta.
-            Enxergar esses detalhes é o primeiro passo para trabalhar neles.
-          </p>
-          <a className="vsl-text-link" href="#sobre-nos">
-            Veja o que o Redaê analisa <span aria-hidden="true">↓</span>
-          </a>
-        </div>
-      </section>
+      <ScrollStory />
 
       <section id="sobre-nos" className="vsl-solution">
         <div className="page-width vsl-section">
@@ -91,14 +83,19 @@ export function SalesPage({ onStart }: SalesPageProps) {
               <em>impedindo de melhorar.</em>
             </h2>
             <p className="vsl-lede">
-              O Redaê transforma sua redação em um ponto de partida: nota estimada e orientações
-              para guiar sua próxima tentativa.
+              O Redaê transforma sua redação em um ponto de partida:{' '}
+              <strong>nota estimada e orientações</strong> para guiar sua próxima tentativa.
             </p>
           </div>
           <div className="vsl-competencies">
             {competencies.map(([code, title, description]) => (
               <article key={code}>
-                <span>{code}</span>
+                <div className="competency-card-top">
+                  <span>{code}</span>
+                  <span aria-hidden="true" className="competency-spark">
+                    ✦
+                  </span>
+                </div>
                 <h3>{title}</h3>
                 <p>{description}</p>
               </article>
@@ -110,8 +107,12 @@ export function SalesPage({ onStart }: SalesPageProps) {
         </div>
       </section>
 
-      <section id="como-funciona" className="vsl-section page-width vsl-demo">
-        <div className="vsl-phone-wrap">
+      <section
+        id="como-funciona"
+        className="vsl-section page-width vsl-demo"
+        aria-labelledby="vsl-demo-title"
+      >
+        <div className="vsl-phone-wrap" id="demonstracao">
           <div
             className="vsl-phone"
             role="img"
@@ -148,9 +149,9 @@ export function SalesPage({ onStart }: SalesPageProps) {
           </div>
           <p className="vsl-micro">Exemplo ilustrativo · Não representa uma correção real.</p>
         </div>
-        <div>
+        <div className="vsl-demo-copy">
           <p className="eyebrow">Do seu texto ao próximo passo</p>
-          <h2>
+          <h2 id="vsl-demo-title">
             Sua próxima correção
             <br />
             começa em <em>3 passos.</em>
@@ -184,7 +185,11 @@ export function SalesPage({ onStart }: SalesPageProps) {
         </div>
       </section>
 
-      <section className="vsl-section page-width vsl-faq" aria-labelledby="vsl-faq-title">
+      <section
+        id="duvidas"
+        className="vsl-section page-width vsl-faq"
+        aria-labelledby="vsl-faq-title"
+      >
         <div>
           <p className="eyebrow">Pode perguntar</p>
           <h2 id="vsl-faq-title">
@@ -239,19 +244,35 @@ export function SalesPage({ onStart }: SalesPageProps) {
         </div>
       </section>
 
-      <section className="vsl-final page-width">
-        <p className="eyebrow">O próximo texto começa aqui</p>
-        <h2>
-          A próxima redação
-          <br />
-          pode ser <em>melhor.</em>
-        </h2>
-        <p>Primeiro, descubra onde está errando.</p>
-        <button className="vsl-cta" onClick={onStart}>
-          Quero corrigir minha redação
-        </button>
-        <p className="vsl-micro">Seu esforço merece um próximo passo mais claro.</p>
+      <section className="vsl-final" aria-labelledby="final-title">
+        <div className="vsl-final-copy page-width">
+          <p className="eyebrow">Já que você chegou até aqui…</p>
+          <h2 id="final-title">
+            Deu vontade de descobrir
+            <br />
+            <em>o potencial do seu texto, né?</em>
+          </h2>
+          <p>
+            Você já deu o primeiro passo: quis entender como melhorar.
+            <br />
+            Agora, deixe sua redação mostrar por onde começar.
+          </p>
+          <button className="vsl-cta" onClick={onStart}>
+            Bora corrigir minha redação
+          </button>
+          <p className="vsl-micro">
+            Primeiro diagnóstico gratuito. Seu próximo passo começa com uma conta.
+          </p>
+        </div>
+        <div className="vsl-final-scene" aria-hidden="true">
+          <span className="final-orbit final-orbit-one" />
+          <span className="final-orbit final-orbit-two" />
+          <span className="final-spark final-spark-one">✦</span>
+          <span className="final-spark final-spark-two">✦</span>
+          <img src={readingUrl} alt="" loading="lazy" />
+          <span className="final-scene-caption">Uma palavra de cada vez.</span>
+        </div>
       </section>
-    </>
+    </div>
   )
 }

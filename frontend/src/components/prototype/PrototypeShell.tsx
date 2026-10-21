@@ -30,7 +30,7 @@ export function PrototypeShell({
   ]
 
   return (
-    <div className="prototype-app">
+    <div className="prototype-app internal-theme">
       <header className="prototype-header">
         <a className="prototype-brand" href="#prototype-home" aria-label="Redaê — início">
           <img src={logoUrl} alt="Redaê" />

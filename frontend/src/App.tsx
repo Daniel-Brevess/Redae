@@ -54,7 +54,11 @@ function AppContent() {
 
   if (path === '/admin') {
     if (loading || !user) return null
-    return <AdminDashboard user={user} accessToken={accessToken} onBack={() => navigate('/home')} />
+    return (
+      <div className="internal-theme internal-admin">
+        <AdminDashboard user={user} accessToken={accessToken} onBack={() => navigate('/home')} />
+      </div>
+    )
   }
 
   if (path === '/home') {
@@ -85,7 +89,12 @@ function AppContent() {
           window.scrollTo({ top: 0, behavior: 'smooth' })
         }}
       />
-      <SiteFooter />
+      <SiteFooter
+        onStart={() => {
+          setActiveCard('signup')
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+      />
     </main>
   )
 }

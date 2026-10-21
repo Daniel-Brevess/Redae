@@ -8,6 +8,12 @@ type SiteHeaderProps = {
   onNavigate: () => void
 }
 
+const pageLinks = [
+  { href: '#como-funciona', label: 'Como funciona' },
+  { href: '#sobre-nos', label: 'Competências' },
+  { href: '#duvidas', label: 'Dúvidas' },
+]
+
 export function SiteHeader({ activeCard, onCardChange, onNavigate }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const toggleCard = (card: AuthCardType) => {
@@ -29,6 +35,13 @@ export function SiteHeader({ activeCard, onCardChange, onNavigate }: SiteHeaderP
       <a className="logo" href="#top" aria-label="Redaê — início">
         <img src={logoUrl} alt="Redaê" />
       </a>
+      <nav className="desktop-navigation" aria-label="Seções da página">
+        {pageLinks.map(({ href, label }) => (
+          <a key={href} className="nav-link" href={href} onClick={closeMenu}>
+            {label}
+          </a>
+        ))}
+      </nav>
       <nav className="site-nav" aria-label="Navegação principal">
         <button
           className="nav-link nav-button login-link auth-trigger"
@@ -66,12 +79,18 @@ export function SiteHeader({ activeCard, onCardChange, onNavigate }: SiteHeaderP
         aria-label="Links da página"
         hidden={!menuOpen}
       >
-        <a className="nav-link" href="#como-funciona" onClick={closeMenu}>
-          Como funciona
-        </a>
-        <a className="nav-link" href="#sobre-nos" onClick={closeMenu}>
-          Sobre nós
-        </a>
+        {pageLinks.map(({ href, label }) => (
+          <a key={href} className="nav-link" href={href} onClick={closeMenu}>
+            {label}
+          </a>
+        ))}
+        <button
+          className="nav-link nav-button login-link auth-trigger"
+          type="button"
+          onClick={() => toggleCard('login')}
+        >
+          Login
+        </button>
       </nav>
     </header>
   )

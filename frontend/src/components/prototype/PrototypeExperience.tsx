@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import redazinhoUrl from '../../../assets/redazinho-vsl.png'
 import {
   createEvaluation,
   getEvaluation,
@@ -537,6 +538,7 @@ function DashboardScreen({
       </section>
       <section className="prototype-grid prototype-grid-main" aria-label="Resumo da sua jornada">
         <article className="new-evaluation-card">
+          <img className="dashboard-mascot" src={redazinhoUrl} alt="" aria-hidden="true" />
           <div>
             <span className="prototype-icon prototype-icon-green" aria-hidden="true">
               ＋
