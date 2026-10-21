@@ -94,3 +94,9 @@ implementadas.
 ## Infraestrutura
 
 Frontend e backend são serviços separados. PostgreSQL roda no Compose local. O backend pode ser hospedado no Render e o frontend na Vercel. Secrets são fornecidos pelo ambiente e nunca versionados.
+
+No Docker local, o Nginx do frontend encaminha `/api/v1/` ao serviço `backend:8080`,
+preservando caminho e Host da requisição. O build usa `VITE_API_URL=/api/v1` por
+padrão, permitindo acessar página e API pela mesma origem, inclusive no celular
+na rede local. Cookies e controles de autenticação permanecem no backend.
+O Vite fora do Docker mantém sua configuração de API independente.

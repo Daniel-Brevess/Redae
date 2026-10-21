@@ -170,6 +170,9 @@ docker compose up --build
 Depois que os containers iniciarem, acesse:
 
 - Frontend: http://localhost:5173
+- Celular na mesma rede: `http://<IP-local-do-computador>:5173`. No Docker, as chamadas
+  de API passam pelo frontend em `/api/v1/`, sem depender do `localhost` do celular.
+  Se houver `VITE_API_URL` definido no ambiente, use `/api/v1` para esse acesso.
 - Backend: http://localhost:8080
 - Swagger: http://localhost:8080/swagger-ui.html
 
